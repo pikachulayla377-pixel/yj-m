@@ -20,7 +20,7 @@ const NOTICE_CONFIG = {
       text: "24×7 Automated Delivery",
     },
   ],
-  animationDuration: "18s",
+  animationDuration: "23s",
 };
 /* ============================================================= */
 
