@@ -1,5 +1,6 @@
 // app/page.tsx
 import HomeSection from "@/components/Home/Home";
+import MaintenancePage from "./maintenance/page";
 
 export const metadata = {
   title: "YUJI MAIN – MLBB Diamond Top Up | Instant & Secure",
@@ -17,7 +18,8 @@ export const metadata = {
 export default function Page() {
   return (
     <main>
-      <HomeSection />
+      {/* <HomeSection /> */}
+      <MaintenancePage />
     </main>
   );
 }
