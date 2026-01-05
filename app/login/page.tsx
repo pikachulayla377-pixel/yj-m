@@ -12,8 +12,13 @@ import {
   CheckCircle,
 } from "lucide-react";
 
+/* ================= TYPES ================= */
+type Tab = "login" | "register" | "forgot";
+type ForgotStep = 1 | 2;
+
+/* ================= PAGE ================= */
 export default function AuthPage() {
-  const [tab, setTab] = useState<"login" | "register">("login");
+  const [tab, setTab] = useState<Tab>("login");
   const [showPassword, setShowPassword] = useState(false);
 
   const [loginData, setLoginData] = useState({ user: "", password: "" });
@@ -24,29 +29,41 @@ export default function AuthPage() {
     password: "",
   });
 
+  const [forgotStep, setForgotStep] = useState<ForgotStep>(1);
+  const [forgotData, setForgotData] = useState({
+    email: "",
+    otp: "",
+    newPassword: "",
+  });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState("");
 
   const [loggingIn, setLoggingIn] = useState(false);
   const [registering, setRegistering] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
-  /* ---------- VALIDATION ---------- */
+  /* ================= HELPERS ================= */
   const isGmail = (email: string) =>
     /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email);
   const isPhone = (phone: string) => /^[0-9]{10}$/.test(phone);
+  const togglePasswordVisibility = () => setShowPassword((s) => !s);
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const resetMessages = () => {
+    setErrors({});
+    setSuccess("");
+  };
 
   /* ================= LOGIN ================= */
   const handleLogin = async () => {
     const errs: Record<string, string> = {};
-    if (!loginData.user.trim()) errs.user = "Email or Phone is required";
-    if (!loginData.password.trim()) errs.password = "Password is required";
+    if (!loginData.user.trim()) errs.user = "Email or phone required";
+    if (!loginData.password.trim()) errs.password = "Password required";
     if (Object.keys(errs).length) return setErrors(errs);
 
     setLoggingIn(true);
-    setErrors({});
-    setSuccess("");
+    resetMessages();
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -54,8 +71,8 @@ export default function AuthPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
       });
-
       const data = await res.json();
+
       if (!data.success) return setErrors({ user: data.message });
 
       localStorage.setItem("token", data.token);
@@ -67,7 +84,7 @@ export default function AuthPage() {
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => (window.location.href = "/"), 1000);
     } catch {
-      setErrors({ user: "Something went wrong. Try again." });
+      setErrors({ user: "Login failed. Try again." });
     } finally {
       setLoggingIn(false);
     }
@@ -76,20 +93,16 @@ export default function AuthPage() {
   /* ================= REGISTER ================= */
   const handleRegister = async () => {
     const errs: Record<string, string> = {};
-
-    if (!regData.name.trim()) errs.name = "Name is required";
-    if (!regData.email.trim() || !isGmail(regData.email))
-      errs.email = "Valid Gmail required";
-    if (!regData.phone.trim() || !isPhone(regData.phone))
-      errs.phone = "Valid 10 digit phone required";
-    if (!regData.password.trim() || regData.password.length < 6)
+    if (!regData.name.trim()) errs.name = "Name required";
+    if (!isGmail(regData.email)) errs.email = "Valid Gmail required";
+    if (!isPhone(regData.phone)) errs.phone = "Valid phone required";
+    if (regData.password.length < 6)
       errs.password = "Min 6 characters";
 
     if (Object.keys(errs).length) return setErrors(errs);
 
     setRegistering(true);
-    setErrors({});
-    setSuccess("");
+    resetMessages();
 
     try {
       const res = await fetch("/api/auth/register", {
@@ -97,11 +110,11 @@ export default function AuthPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(regData),
       });
-
       const data = await res.json();
+
       if (!data.success) return setErrors({ email: data.message });
 
-      setSuccess("Account created! Please log in.");
+      setSuccess("Account created! Please login.");
       setTab("login");
     } catch {
       setErrors({ email: "Registration failed." });
@@ -110,37 +123,91 @@ export default function AuthPage() {
     }
   };
 
+  /* ================= FORGOT – SEND OTP ================= */
+  const sendOtp = async () => {
+    if (!isGmail(forgotData.email))
+      return setErrors({ email: "Valid Gmail required" });
+
+    setSendingOtp(true);
+    resetMessages();
+
+    try {
+      const res = await fetch("/api/auth/forgot-password/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotData.email }),
+      });
+      const data = await res.json();
+
+      if (!data.success) return setErrors({ email: data.message });
+
+      setSuccess("OTP sent to your email");
+      setForgotStep(2);
+    } catch {
+      setErrors({ email: "Failed to send OTP" });
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  /* ================= FORGOT – RESET ================= */
+  const resetPassword = async () => {
+    const errs: Record<string, string> = {};
+    if (!forgotData.otp) errs.otp = "OTP required";
+    if (forgotData.newPassword.length < 6)
+      errs.newPassword = "Min 6 characters";
+
+    if (Object.keys(errs).length) return setErrors(errs);
+
+    setResetting(true);
+    resetMessages();
+
+    try {
+      const res = await fetch("/api/auth/forgot-password/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(forgotData),
+      });
+      const data = await res.json();
+
+      if (!data.success) return setErrors({ otp: data.message });
+
+      setSuccess("Password reset successful. Please login.");
+      setTab("login");
+      setForgotStep(1);
+      setForgotData({ email: "", otp: "", newPassword: "" });
+    } catch {
+      setErrors({ otp: "Reset failed" });
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  /* ================= UI ================= */
   return (
-    <section className="
-      min-h-screen flex items-center justify-center px-5 py-2
-      bg-gradient-to-br
-      from-[var(--background)]
-      via-[var(--card)]
-      to-[var(--background)]
-      text-[var(--foreground)]
-    ">
+    <section className="min-h-screen flex items-center justify-center px-5 bg-gradient-to-br from-[var(--background)] via-[var(--card)] to-[var(--background)]">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-[var(--accent)]">
-            Welcome to Yuji
-          </h1>
+          <h1 className="text-3xl font-bold text-[var(--accent)]">Welcome</h1>
           <p className="text-[var(--muted)] mt-2">
-            {tab === "login" ? "Sign in to your account" : "Create a new account"}
+            {tab === "login"
+              ? "Sign in to your account"
+              : tab === "register"
+              ? "Create a new account"
+              : "Reset your password"}
           </p>
         </div>
 
-        {/* Card */}
         <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl shadow-xl overflow-hidden">
           {/* Tabs */}
           <div className="flex">
-            {["login", "register"].map((t) => (
+            {["login", "register", "forgot"].map((t) => (
               <button
                 key={t}
                 onClick={() => {
-                  setErrors({});
-                  setSuccess("");
-                  setTab(t as any);
+                  resetMessages();
+                  setTab(t as Tab);
+                  if (t !== "forgot") setForgotStep(1);
                 }}
                 className={`flex-1 py-3 font-semibold transition ${
                   tab === t
@@ -148,13 +215,16 @@ export default function AuthPage() {
                     : "bg-[var(--background)] text-[var(--muted)] hover:bg-[var(--border)]"
                 }`}
               >
-                {t === "login" ? "Login" : "Register"}
+                {t === "login"
+                  ? "Login"
+                  : t === "register"
+                  ? "Register"
+                  : "Forgot"}
               </button>
             ))}
           </div>
 
           <div className="p-6 space-y-5">
-            {/* Success */}
             {success && (
               <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30 flex gap-2 text-green-400">
                 <CheckCircle size={18} /> {success}
@@ -164,26 +234,24 @@ export default function AuthPage() {
             {/* LOGIN */}
             {tab === "login" && (
               <>
-                {/* User */}
                 <Input
                   icon={<Mail size={16} />}
                   placeholder="Email or Phone"
                   value={loginData.user}
                   error={errors.user}
-                  onChange={(v: any) => setLoginData({ ...loginData, user: v })}
+                  onChange={(v: string) =>
+                    setLoginData({ ...loginData, user: v })
+                  }
                 />
-
-                {/* Password */}
                 <PasswordInput
                   value={loginData.password}
                   error={errors.password}
                   show={showPassword}
                   toggle={togglePasswordVisibility}
-                  onChange={(v: any) =>
+                  onChange={(v: string) =>
                     setLoginData({ ...loginData, password: v })
                   }
                 />
-
                 <PrimaryButton
                   loading={loggingIn}
                   text="Sign In"
@@ -200,35 +268,37 @@ export default function AuthPage() {
                   placeholder="Full Name"
                   value={regData.name}
                   error={errors.name}
-                  onChange={(v: any) => setRegData({ ...regData, name: v })}
+                  onChange={(v: string) =>
+                    setRegData({ ...regData, name: v })
+                  }
                 />
-
                 <Input
                   icon={<Mail size={16} />}
-                  placeholder="Gmail Address"
+                  placeholder="Gmail"
                   value={regData.email}
                   error={errors.email}
-                  onChange={(v: any) => setRegData({ ...regData, email: v })}
+                  onChange={(v: string) =>
+                    setRegData({ ...regData, email: v })
+                  }
                 />
-
                 <Input
                   icon={<Phone size={16} />}
-                  placeholder="Phone Number"
+                  placeholder="Phone"
                   value={regData.phone}
                   error={errors.phone}
-                  onChange={(v: any) => setRegData({ ...regData, phone: v })}
+                  onChange={(v: string) =>
+                    setRegData({ ...regData, phone: v })
+                  }
                 />
-
                 <PasswordInput
                   value={regData.password}
                   error={errors.password}
                   show={showPassword}
                   toggle={togglePasswordVisibility}
-                  onChange={(v: any) =>
+                  onChange={(v: string) =>
                     setRegData({ ...regData, password: v })
                   }
                 />
-
                 <PrimaryButton
                   loading={registering}
                   text="Create Account"
@@ -236,24 +306,69 @@ export default function AuthPage() {
                 />
               </>
             )}
+
+            {/* FORGOT */}
+            {tab === "forgot" && (
+              <>
+                {forgotStep === 1 && (
+                  <>
+                    <Input
+                      icon={<Mail size={16} />}
+                      placeholder="Registered Gmail"
+                      value={forgotData.email}
+                      error={errors.email}
+                      onChange={(v: string) =>
+                        setForgotData({ ...forgotData, email: v })
+                      }
+                    />
+                    <PrimaryButton
+                      loading={sendingOtp}
+                      text="Send OTP"
+                      onClick={sendOtp}
+                    />
+                  </>
+                )}
+
+                {forgotStep === 2 && (
+                  <>
+                    <Input
+                      icon={<Lock size={16} />}
+                      placeholder="OTP"
+                      value={forgotData.otp}
+                      error={errors.otp}
+                      onChange={(v: string) =>
+                        setForgotData({ ...forgotData, otp: v })
+                      }
+                    />
+                    <PasswordInput
+                      value={forgotData.newPassword}
+                      error={errors.newPassword}
+                      show={showPassword}
+                      toggle={togglePasswordVisibility}
+                      onChange={(v: string) =>
+                        setForgotData({
+                          ...forgotData,
+                          newPassword: v,
+                        })
+                      }
+                    />
+                    <PrimaryButton
+                      loading={resetting}
+                      text="Reset Password"
+                      onClick={resetPassword}
+                    />
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
-
-        <p className="mt-6 text-center text-sm text-[var(--muted)]">
-          {tab === "login" ? "No account?" : "Already registered?"}{" "}
-          <button
-            onClick={() => setTab(tab === "login" ? "register" : "login")}
-            className="text-[var(--accent)] font-semibold hover:underline"
-          >
-            {tab === "login" ? "Sign up" : "Sign in"}
-          </button>
-        </p>
       </div>
     </section>
   );
 }
 
-/* ================= COMPONENTS ================= */
+/* ================= UI COMPONENTS ================= */
 
 function Input({ icon, value, onChange, placeholder, error }: any) {
   return (
@@ -266,14 +381,11 @@ function Input({ icon, value, onChange, placeholder, error }: any) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full py-2.5 pl-9 pr-3 text-sm rounded-xl
-          bg-[var(--background)] border
-          ${
+          className={`w-full py-2.5 pl-9 pr-3 text-sm rounded-xl bg-[var(--background)] border ${
             error
               ? "border-red-400"
               : "border-[var(--border)] focus:border-[var(--accent)]"
-          }
-          focus:outline-none`}
+          } focus:outline-none`}
         />
       </div>
       {error && (
@@ -294,14 +406,11 @@ function PasswordInput({ value, onChange, show, toggle, error }: any) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Password"
-          className={`w-full py-2.5 px-3 pr-10 text-sm rounded-xl
-          bg-[var(--background)] border
-          ${
+          className={`w-full py-2.5 px-3 pr-10 text-sm rounded-xl bg-[var(--background)] border ${
             error
               ? "border-red-400"
               : "border-[var(--border)] focus:border-[var(--accent)]"
-          }
-          focus:outline-none`}
+          } focus:outline-none`}
         />
         <button
           type="button"
@@ -325,8 +434,7 @@ function PrimaryButton({ text, loading, onClick }: any) {
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full py-3 rounded-xl font-semibold text-white
-      bg-[var(--accent)] hover:opacity-90 transition"
+      className="w-full py-3 rounded-xl font-semibold text-white bg-[var(--accent)] hover:opacity-90 transition disabled:opacity-60"
     >
       {loading ? "Please wait..." : text}
     </button>

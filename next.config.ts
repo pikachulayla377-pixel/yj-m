@@ -19,6 +19,7 @@ const nextConfig = {
 
 
   },
+    serverExternalPackages: ["nodemailer"],
 
    experimental: {
     serverActions: {
