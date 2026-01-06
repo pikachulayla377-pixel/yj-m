@@ -202,12 +202,11 @@ const handleProceed = async () => {
             
             <button
               onClick={handleProceed}
-              // disabled={
-              //    isRedirecting ||
-              //   !paymentMethod ||
-              //   (paymentMethod === "wallet" && walletBalance < totalPrice)
-              // }
-              disabled={true}
+              disabled={
+                 isRedirecting ||
+                !paymentMethod ||
+                (paymentMethod === "wallet" && walletBalance < totalPrice)
+              }
               className="
     bg-[var(--accent)] text-black p-3 rounded-lg w-full mt-4 font-semibold
     disabled:opacity-50 flex items-center justify-center gap-2
