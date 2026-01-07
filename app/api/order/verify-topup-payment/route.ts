@@ -1,14 +1,43 @@
 import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import User from "@/models/User";
 
 export async function POST(req: Request) {
-  const startTime = Date.now();
-
   try {
     await connectDB();
 
+    /* =====================================================
+       AUTH (JWT)
+    ===================================================== */
+    const authHeader = req.headers.get("authorization");
+
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(
+        authHeader.split(" ")[1],
+        process.env.JWT_SECRET!
+      );
+    } catch {
+      return NextResponse.json(
+        { success: false, message: "Invalid token" },
+        { status: 401 }
+      );
+    }
+
+    const tokenUserId = decoded.userId;
+
+    /* =====================================================
+       REQUEST BODY
+    ===================================================== */
     const { orderId } = await req.json();
 
     if (!orderId) {
@@ -28,6 +57,16 @@ export async function POST(req: Request) {
         success: false,
         message: "Order not found",
       });
+    }
+
+    /* =====================================================
+       🔒 OWNERSHIP CHECK (CRITICAL)
+    ===================================================== */
+    if (order.userId && order.userId !== tokenUserId) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden" },
+        { status: 403 }
+      );
     }
 
     // Already completed → safe exit
@@ -73,10 +112,10 @@ export async function POST(req: Request) {
     const txnStatus = data?.result?.txnStatus;
 
     /* =====================================================
-       HANDLE PAYMENT STATES CORRECTLY
+       PAYMENT STATES
     ===================================================== */
 
-    // ⏳ Payment still processing
+    // ⏳ Pending
     if (txnStatus === "PENDING") {
       return NextResponse.json({
         success: false,
@@ -84,7 +123,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // ❌ Payment failed
+    // ❌ Failed
     if (txnStatus !== "SUCCESS" && txnStatus !== "COMPLETED") {
       order.status = "failed";
       order.paymentStatus = "failed";
@@ -127,7 +166,7 @@ export async function POST(req: Request) {
     await order.save();
 
     /* =====================================================
-       TOPUP CALL (IDEMPOTENT VIA STATUS CHECK)
+       TOPUP (IDEMPOTENT)
     ===================================================== */
     if (order.topupStatus === "success") {
       return NextResponse.json({
@@ -168,16 +207,10 @@ export async function POST(req: Request) {
       order.topupStatus = "success";
       await order.save();
 
-      // 📧 email (best-effort)
+      // Optional email
       try {
         const user = await User.findOne({ userId: order.userId });
-        // if (user?.email) {
-        //   await sendPurchaseMail({
-        //     to: user.email,
-        //     name: user.name || "Customer",
-        //     orderId: order.orderId,
-        //   });
-        // }
+        // send mail if needed
       } catch {}
     } else {
       order.status = "failed";
@@ -197,10 +230,7 @@ export async function POST(req: Request) {
     console.error("VERIFY ERROR:", error);
 
     return NextResponse.json(
-      {
-        success: false,
-        message: "Server error",
-      },
+      { success: false, message: "Server error" },
       { status: 500 }
     );
   }
