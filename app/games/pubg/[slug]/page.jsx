@@ -28,7 +28,7 @@ export default function GameDetailPage() {
 
   /* ================= FETCH GAME ================= */
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     fetch(`/api/games/${slug}`, {
       headers: {
