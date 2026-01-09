@@ -75,7 +75,7 @@ export default function GameDetailPage() {
 
   const basePath = isBGMI
     ? `/games/pubg/${slug}/buy`
-    : `/games/${slug}/buy`;
+    : `/games/membership/${slug}/buy`;
 
   router.push(
     `${basePath}/${item.itemSlug}?${query.toString()}`

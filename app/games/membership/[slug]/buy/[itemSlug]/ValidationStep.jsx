@@ -10,15 +10,15 @@ export default function ValidationStep({
     <div className="space-y-5">
       {/* HEADER */}
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl font-bold">Character Verification</h2>
-        <HelpImagePopup />
+        <h2 className="text-2xl font-bold">Email/phone Verification</h2>
+        {/* <HelpImagePopup /> */}
       </div>
 
       {/* CHARACTER ID INPUT */}
       <input
         value={playerId}
         onChange={(e) => setPlayerId(e.target.value)}
-        placeholder="Enter Character ID"
+        placeholder="Enter your email or phone number"
         className="p-3 rounded-lg bg-black/20 border border-gray-700 w-full"
         disabled={loading}
       />
