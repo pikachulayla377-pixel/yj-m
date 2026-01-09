@@ -20,7 +20,7 @@ const MEMBERSHIPS = {
     gameAvailablity: true,
     itemId: [
       {
-        itemName: "3 Month",
+        itemName: "1 Month",
         itemSlug: "silver-1m",
         sellingPrice: 99,
         dummyPrice: 299,
@@ -32,7 +32,7 @@ const MEMBERSHIPS = {
       },
     
       {
-        itemName: " 1 year",
+        itemName: "3 Month",
         itemSlug: "silver-3m",
         sellingPrice: 299,
         dummyPrice: 1099,
@@ -59,7 +59,7 @@ const MEMBERSHIPS = {
     gameAvailablity: true,
     itemId: [
       {
-        itemName: "3 Month",
+        itemName: "1 Month",
         itemSlug: "reseller-1m",
         sellingPrice: 99,
         dummyPrice: 299,
@@ -71,9 +71,9 @@ const MEMBERSHIPS = {
       },
   
       {
-        itemName: "1 Year",
+        itemName: "3 Month",
         itemSlug: "reseller-3m",
-        sellingPrice: 199,
+        sellingPrice: 299,
         dummyPrice: 1099,
         itemAvailablity: true,
         index: 3,
