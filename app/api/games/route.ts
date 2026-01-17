@@ -5,8 +5,19 @@ const MLBB_MAIN_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/7fd445965237d07c1583c1dfb0ee9517_bp14p4.jpg";
 
 const MLBB_SMALL_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/e5467ac4556c15c54810e9a78c0d7950_1_dvzsmd.jpg";
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768634764/WhatsApp_Image_2026-01-17_at_12.28.35_uhiep6.jpg";
 
+  const MLBB_SVALUE_IND_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768634472/WhatsApp_Image_2026-01-17_at_12.28.33_tjwvay.jpg";
+    const MLBB_SVALUE_PHP_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768634472/WhatsApp_Image_2026-01-17_at_12.28.33_1_wyiquc.jpg";
+
+    const MLBB_RUSIA_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768634764/WhatsApp_Image_2026-01-17_at_12.28.34_bnxlys.jpg";
+    const MLBB_INDO_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768634764/WhatsApp_Image_2026-01-17_at_12.28.35_1_zbt393.jpg";
+    const MLBB_PHP_IMAGE =
+  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768634472/WhatsApp_Image_2026-01-17_at_12.28.33_1_wyiquc.jpg";
 /* ================= OTT SECTION ================= */
 const OTTS = [
   {
@@ -99,7 +110,31 @@ export async function GET() {
           image: MLBB_SMALL_IMAGE,
         };
       }
+       if (updatedGame.gameName === "MLBB RUSSIA") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_RUSIA_IMAGE,
+        };
+      }
+       if (updatedGame.gameName === "MLBB INDO") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_INDO_IMAGE,
+        };
+      }
 
+       if (updatedGame.gameName === "PH VALUE PASS") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_SVALUE_PHP_IMAGE,
+        };
+      }
+          if (updatedGame.gameName === "Value pass ml") {
+        updatedGame.gameImageId = {
+          ...updatedGame.gameImageId,
+          image: MLBB_SVALUE_IND_IMAGE,
+        };
+      }
       return updatedGame;
     };
 
