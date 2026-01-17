@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.0.8",
+    "@react-oauth/google": "^0.13.4",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",
     "framer-motion": "^12.26.2",
