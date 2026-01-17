@@ -28,7 +28,8 @@ export default function GamesPage() {
     "Honor Of Kings",
     "TEST 1",
     "Wuthering of Waves",
-    "Where Winds Meet"
+    "Where Winds Meet",
+    "Mobile Legends Backup"
   ];
 
   const isOutOfStock = (name) => outOfStockGames.includes(name);
@@ -261,7 +262,7 @@ export default function GamesPage() {
                 {cat.categoryTitle}
               </h2>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+<div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {filtered.map((game, index) => (
                   <GameCard key={index} game={game} />
                 ))}
@@ -276,7 +277,7 @@ export default function GamesPage() {
             All Games
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+<div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {processGames(games).map((game, i) => (
               <GameCard key={i} game={game} />
             ))}
@@ -296,7 +297,7 @@ export default function GamesPage() {
       </span>
     </div>
 
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+<div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-5">
       {memberships.items.map((plan) => (
         <Link
           key={plan.slug}

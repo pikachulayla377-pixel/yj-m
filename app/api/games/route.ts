@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
 
+const BLOCKED_GAME_SLUGS = [
+  "test-1637",
+  "genshin-impact742",
+  "honor-of-kings57",
+  "mobile-legends-backup826",
+  "wuthering-of-waves464",
+  "where-winds-meet280",
+];
+
 /* ================= IMAGES ================= */
 const MLBB_MAIN_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1766076026/7fd445965237d07c1583c1dfb0ee9517_bp14p4.jpg";
@@ -139,10 +148,12 @@ export async function GET() {
     };
 
     /* ================= FILTER GAMES ================= */
-    const filteredGames =
-      data?.data?.games
-        ?.filter((game: any) => game.gameSlug !== "test-1637")
-        ?.map(normalizeGame) || [];
+const filteredGames =
+  data?.data?.games
+    ?.filter(
+      (game: any) => !BLOCKED_GAME_SLUGS.includes(game.gameSlug)
+    )
+    ?.map(normalizeGame) || [];
 
     /* ================= FILTER CATEGORY GAMES ================= */
     const filteredCategories =
