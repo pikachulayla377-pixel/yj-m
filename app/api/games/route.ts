@@ -128,7 +128,7 @@ export async function GET() {
          if (updatedGame.gameName === "SG/MY Mlbb") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
-          image: MLBB_RUSIA_IMAGE,
+          image: MLBB_MY_SING_IMAGE,
         };
       }
        if (updatedGame.gameName === "MLBB INDO") {
