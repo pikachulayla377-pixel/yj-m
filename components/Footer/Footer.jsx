@@ -1,27 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import {
-  FaInstagram,
-  FaWhatsapp,
-  FaHeart,
-} from "react-icons/fa6";
+import { FaInstagram, FaWhatsapp, FaHeart } from "react-icons/fa6";
 
 /* ===================== CONFIG ===================== */
 
 const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "MewJi";
 
 const BRAND = {
-  primary: BRAND_NAME.slice(0, 4),
-  secondary: BRAND_NAME.slice(4),
+  name: BRAND_NAME,
   description:
-    "Fast, secure MLBB top-ups with instant delivery and 24×7 support — recharge diamonds in seconds.",
+    "Fast, secure MLBB top-ups with instant delivery and 24×7 support.",
 };
 
 /* ===================== ENV LINKS ===================== */
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "";
-const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "#";
+const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "";
 const INSTAGRAM_USERNAME =
   process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME || "instagram";
 const WHATSAPP_STORE_LINK =
@@ -29,7 +24,7 @@ const WHATSAPP_STORE_LINK =
 
 const WHATSAPP_CHAT_LINK = WHATSAPP_NUMBER
   ? `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, "")}`
-  : "#";
+  : "";
 
 /* ===================== FOOTER LINKS ===================== */
 
@@ -54,22 +49,7 @@ const FOOTER_LINKS = [
 
 /* ===================== SOCIALS ===================== */
 
-const SOCIALS_DESKTOP = [
-  {
-    label: "Instagram",
-    href: INSTAGRAM_URL,
-    icon: FaInstagram,
-    hover: "hover:text-[var(--accent)]",
-  },
-  {
-    label: "WhatsApp",
-    href: WHATSAPP_CHAT_LINK,
-    icon: FaWhatsapp,
-    hover: "hover:text-[var(--accent)]",
-  },
-];
-
-const SOCIALS_MOBILE = [
+const SOCIALS = [
   {
     label: "Instagram",
     href: INSTAGRAM_URL,
@@ -82,40 +62,59 @@ const SOCIALS_MOBILE = [
     icon: FaWhatsapp,
     hover: "hover:text-green-500",
   },
-];
+].filter((s) => s.href);
 
 /* ===================== COMPONENT ===================== */
 
 export default function Footer() {
   return (
-    <footer className="mt-16 bg-[var(--card)] text-[var(--muted)] border-t border-[var(--border)]">
+    <footer className="mt-10 bg-[var(--card)] text-[var(--muted)] border-t border-[var(--border)]">
 
       {/* ================= MAIN ================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
 
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <h2 className="text-xl sm:text-2xl font-extrabold mb-2 bg-gradient-to-r from-[var(--accent)] to-purple-500 bg-clip-text text-transparent">
-              {BRAND.primary}
-              <span className="text-[var(--foreground)]">
-                {BRAND.secondary}
+            <h2 className="relative text-xl font-extrabold tracking-tight leading-tight">
+              <span
+                className="
+                  absolute inset-0
+                  bg-gradient-to-r
+                  from-[#facc15]/15
+                  via-[var(--accent)]/15
+                  to-purple-500/15
+                  blur-md
+                  -z-10
+                "
+              />
+              <span
+                className="
+                  bg-gradient-to-r
+                  from-[#facc15]
+                  via-[var(--accent)]
+                  to-purple-500
+                  bg-clip-text
+                  text-transparent
+                "
+              >
+                {BRAND.name}
               </span>
             </h2>
 
-            <p className="text-xs leading-relaxed max-w-[220px]">
+            <p className="text-[11px] leading-snug max-w-[220px] mt-1">
               {BRAND.description}
             </p>
 
-            <p className="text-[10px] mt-2 text-[var(--muted)]">
+            <p className="text-[10px] mt-1 opacity-60">
               @{INSTAGRAM_USERNAME}
             </p>
           </div>
 
           {/* Link Sections */}
           {FOOTER_LINKS.map((section) => (
-            <div key={section.title} className="flex flex-col gap-1.5">
-              <h3 className="text-[var(--accent)] font-semibold text-xs sm:text-sm mb-1">
+            <div key={section.title} className="flex flex-col gap-1">
+              <h3 className="text-[var(--accent)] font-semibold text-xs">
                 {section.title}
               </h3>
 
@@ -123,7 +122,7 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs sm:text-sm hover:text-[var(--accent)] transition"
+                  className="text-[11px] hover:text-[var(--accent)] transition"
                 >
                   {link.label}
                 </Link>
@@ -132,55 +131,58 @@ export default function Footer() {
           ))}
 
           {/* Desktop Socials */}
-          <div className="hidden md:flex flex-col gap-1.5">
-            <h3 className="text-[var(--accent)] font-semibold text-xs sm:text-sm mb-1">
-              Connect With Us
-            </h3>
+          {SOCIALS.length > 0 && (
+            <div className="hidden md:flex flex-col gap-2">
+              <h3 className="text-[var(--accent)] font-semibold text-xs">
+                Connect
+              </h3>
 
-            <div className="flex items-center gap-3">
-              {SOCIALS_DESKTOP.map(({ label, href, icon: Icon, hover }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className={`${hover} hover:scale-110 transition-all`}
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
+              <div className="flex gap-3">
+                {SOCIALS.map(({ label, href, icon: Icon, hover }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className={`${hover} transition-transform hover:scale-110`}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
-
+          )}
         </div>
       </div>
 
       {/* ================= BOTTOM ================= */}
-      <div className="border-t border-[var(--border)] py-3 sm:py-4">
+      <div className="border-t border-[var(--border)] py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
 
             {/* Mobile Socials */}
-            <div className="flex md:hidden gap-4">
-              {SOCIALS_MOBILE.map(({ label, href, icon: Icon, hover }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className={`${hover} hover:scale-110 transition-all`}
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
+            {SOCIALS.length > 0 && (
+              <div className="flex md:hidden gap-4">
+                {SOCIALS.map(({ label, href, icon: Icon, hover }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className={`${hover} transition-transform hover:scale-110`}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
+            )}
 
             {/* Made By */}
-            <p className="text-[10px] sm:text-xs text-center order-first sm:order-none">
+            <p className="text-[10px] text-center">
               Made with{" "}
-              <FaHeart className="inline w-3 h-3 text-[var(--accent)] mx-0.5 animate-pulse" />{" "}
+              <FaHeart className="inline w-3 h-3 text-[var(--accent)] mx-0.5" />{" "}
               by{" "}
               <a
                 href={WHATSAPP_STORE_LINK}
@@ -193,14 +195,12 @@ export default function Footer() {
             </p>
 
             {/* Copyright */}
-            <p className="text-[10px] sm:text-xs">
-              © {new Date().getFullYear()} {BRAND_NAME}. All rights reserved.
+            <p className="text-[10px] opacity-60">
+              © {new Date().getFullYear()} {BRAND_NAME}
             </p>
-
           </div>
         </div>
       </div>
-
     </footer>
   );
 }

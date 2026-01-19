@@ -30,10 +30,10 @@
    🌙 DARK – PROFESSIONAL / UNIVERSAL
    ====================================================== */
 html[data-theme="dark"] {
-  --background: #020617;
-  --foreground: #e5e7eb;
-  --accent: #38bdf8;
-  --accent-hover: #0ea5e9;
+  --background: #050505;
+  --foreground: #f1f5f9;
+  --accent: #7dd3fc;
+  --accent-hover: #38bdf8;
   --muted: #94a3b8;
   --border: #1e293b;
   --card: #0f172a;
