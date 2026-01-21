@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { QRCodeCanvas } from "qrcode.react";
 import { FaInstagram, FaWhatsapp, FaHeart } from "react-icons/fa6";
 
 /* ===================== CONFIG ===================== */
@@ -21,6 +22,10 @@ const INSTAGRAM_USERNAME =
   process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME || "instagram";
 const WHATSAPP_STORE_LINK =
   process.env.NEXT_PUBLIC_WHATSAPP_STORE_LINK || "#";
+
+const TRUSTPILOT_URL =
+  process.env.NEXT_PUBLIC_TRUSTPILOT_URL ||
+  "https://www.trustpilot.com/evaluate/yujimlbb.com";
 
 const WHATSAPP_CHAT_LINK = WHATSAPP_NUMBER
   ? `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, "")}`
@@ -74,41 +79,67 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
 
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <h2 className="relative text-xl font-extrabold tracking-tight leading-tight">
-              <span
-                className="
-                  absolute inset-0
-                  bg-gradient-to-r
-                  from-[#facc15]/15
-                  via-[var(--accent)]/15
-                  to-purple-500/15
-                  blur-md
-                  -z-10
-                "
-              />
-              <span
-                className="
-                  bg-gradient-to-r
-                  from-[#facc15]
-                  via-[var(--accent)]
-                  to-purple-500
-                  bg-clip-text
-                  text-transparent
-                "
-              >
-                {BRAND.name}
+          {/* Brand + Trustpilot QR */}
+          <div className="col-span-2 md:col-span-1 flex justify-between gap-3">
+            {/* Brand Info */}
+            <div>
+              <h2 className="relative text-xl font-extrabold tracking-tight leading-tight">
+                <span
+                  className="
+                    absolute inset-0
+                    bg-gradient-to-r
+                    from-[#facc15]/15
+                    via-[var(--accent)]/15
+                    to-purple-500/15
+                    blur-md
+                    -z-10
+                  "
+                />
+                <span
+                  className="
+                    bg-gradient-to-r
+                    from-[#facc15]
+                    via-[var(--accent)]
+                    to-purple-500
+                    bg-clip-text
+                    text-transparent
+                  "
+                >
+                  {BRAND.name}
+                </span>
+              </h2>
+
+              <p className="text-[11px] leading-snug max-w-[190px] mt-1">
+                {BRAND.description}
+              </p>
+
+              <p className="text-[10px] mt-1 opacity-60">
+                @{INSTAGRAM_USERNAME}
+              </p>
+            </div>
+
+            {/* Trustpilot QR (Right side) */}
+            <a
+              href={TRUSTPILOT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Give us a review on Trustpilot"
+              className="flex flex-col items-center gap-0.5 hover:opacity-90 transition"
+            >
+              <div className="bg-white p-[2px] rounded border border-[var(--border)]">
+                <QRCodeCanvas
+                  value={TRUSTPILOT_URL}
+                  size={42}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="Q"
+                />
+              </div>
+
+              <span className="text-[9px] opacity-70 text-center">
+                Give us a<br />review here
               </span>
-            </h2>
-
-            <p className="text-[11px] leading-snug max-w-[220px] mt-1">
-              {BRAND.description}
-            </p>
-
-            <p className="text-[10px] mt-1 opacity-60">
-              @{INSTAGRAM_USERNAME}
-            </p>
+            </a>
           </div>
 
           {/* Link Sections */}
