@@ -24,7 +24,7 @@ export default function TopupComplete() {
       try {
         const token = sessionStorage.getItem("token");
 
-        const res = await fetch("/api/order/verify-topup-payment", {
+       const res = await fetch("/api/order/verify-topup-payment", {
           method: "POST",
   headers: {
         Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ export default function TopupComplete() {
           setStatus("success");
           setMessage("Payment successful!");
 
-          // Optional cleanup
+          // cleanup
           sessionStorage.removeItem("pending_topup_order");
         } else {
           setStatus("failed");
@@ -84,13 +84,31 @@ export default function TopupComplete() {
             "If the amount was deducted, delivery or refund will be processed shortly."}
         </p>
 
-        {/* ACTION */}
-        <button
-          onClick={() => (window.location.href = "/")}
-          className="mt-6 w-full rounded-xl bg-[var(--accent)] py-3 font-semibold text-black hover:opacity-90 transition"
-        >
-          Go to Home
-        </button>
+        {/* ACTIONS */}
+        {status === "success" ? (
+          <div className="mt-6 flex flex-col gap-3">
+            <a
+              href="/dashboard"
+              className="w-full rounded-xl bg-[var(--accent)] py-3 font-semibold text-black text-center hover:opacity-90 transition"
+            >
+              Check Order
+            </a>
+
+            <a
+              href="/home"
+              className="w-full rounded-xl border border-[var(--border)] py-3 font-semibold text-[var(--text)] text-center hover:bg-[var(--muted-bg)] transition"
+            >
+              Go to Home
+            </a>
+          </div>
+        ) : (
+          <button
+            onClick={() => (window.location.href = "/home")}
+            className="mt-6 w-full rounded-xl bg-[var(--accent)] py-3 font-semibold text-black hover:opacity-90 transition"
+          >
+            Go to Home
+          </button>
+        )}
       </div>
     </div>
   );
