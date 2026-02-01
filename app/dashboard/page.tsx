@@ -47,14 +47,14 @@ export default function Dashboard() {
 
   const tabCards = [
     { key: "orders", label: "Orders", value: "View" },
-    { key: "wallet", label: "Wallet", value: `₹${walletBalance}` },
-    { key: "account", label: "Account", value: "Manage" },
+    // { key: "wallet", label: "Wallet", value: `₹${walletBalance}` },
+    // { key: "account", label: "Account", value: "Manage" },
     { key: "query", label: "Support", value: "Help" },
   ];
 
   return (
     <AuthGuard>
-      <section className="min-h-screen px-5 py-10 bg-[var(--background)] text-[var(--foreground)]">
+      <section className="min-h-screen px-5 py-8 bg-[var(--background)] text-[var(--foreground)]">
 
         {/* HEADER */}
         <div className="max-w-5xl mx-auto mb-8 flex flex-col md:flex-row gap-5 md:items-center md:justify-between">

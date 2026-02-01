@@ -1,131 +1,141 @@
+"use client";
+
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function BlueBuffCoreLoader() {
+export default function Loader() {
   return (
-    <div
-      className="
-        fixed inset-0 z-50 flex items-center justify-center
-        bg-[var(--background)]
-      "
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--background)]/80 backdrop-blur-md"
     >
-      <div className="relative w-48 h-48">
-        {/* Subtle gradient ring */}
+      <div className="relative flex items-center justify-center h-64 w-64">
+        {/* Background Glow */}
         <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'conic-gradient(from 0deg, var(--accent), #22d3ee, var(--accent))',
-            animation: 'rotateGradient 3s linear infinite',
-            opacity: 0.6
-          }}
-        >
-          <div
-            className="absolute inset-1 rounded-full"
-            style={{
-              background: 'var(--background)'
-            }}
-          />
-        </div>
+          className="absolute inset-0 opacity-10 blur-[100px] rounded-full"
+          style={{ background: 'var(--accent)' }}
+        />
 
-        {/* Breathing circle */}
-        <div
-          className="absolute inset-0 flex items-center justify-center"
+        {/* Outer Orbit */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 border border-[var(--accent)]/10 rounded-full"
+        />
+
+        {/* Dashed Orbital */}
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-4 border-2 border-dashed border-[var(--accent)]/20 rounded-full"
+        />
+
+        {/* Glass Ring */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-10 border-t-2 border-r-2 border-[var(--accent)] rounded-full shadow-[0_0_20px_var(--accent)]"
           style={{
-            animation: 'breathe 2s ease-in-out infinite'
+            boxShadow: 'inset 0 0 20px color-mix(in srgb, var(--accent), transparent 80%)'
           }}
+        />
+
+        {/* Main Logo Container */}
+        <motion.div
+          animate={{
+            scale: [1, 1.05, 1],
+            boxShadow: [
+              "0 0 20px color-mix(in srgb, var(--accent), transparent 80%)",
+              "0 0 40px color-mix(in srgb, var(--accent), transparent 60%)",
+              "0 0 20px color-mix(in srgb, var(--accent), transparent 80%)"
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="relative z-10 w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-[var(--accent)] to-[#22d3ee] flex items-center justify-center p-1"
         >
-          <div
-            className="w-32 h-32 rounded-full flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, var(--accent), #22d3ee)',
-              boxShadow: '0 8px 32px rgba(34, 211, 238, 0.3)'
-            }}
-          >
-            <span
-              className="text-4xl font-bold tracking-tight"
+          <div className="w-full h-full rounded-[2.4rem] bg-[var(--background)] flex items-center justify-center overflow-hidden">
+            <motion.span
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.8, 1, 0.8]
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="text-4xl font-black tracking-tight text-[var(--foreground)]"
               style={{
-                color: 'var(--foreground)',
-                textShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                textShadow: '0 0 15px var(--accent)'
               }}
             >
               yJ
-            </span>
-          </div>
-        </div>
+            </motion.span>
 
-        {/* Minimal orbit dots */}
-        {[0, 120, 240].map((angle, i) => (
-          <div
-            key={i}
-            className="absolute inset-0"
-            style={{
-              animation: `orbit ${3 + i * 0.2}s linear infinite`,
-              animationDelay: `${i * -1}s`
-            }}
-          >
-            <div
-              className="absolute w-2 h-2 rounded-full"
-              style={{
-                top: '50%',
-                left: '50%',
-                transform: `rotate(${angle}deg) translateX(72px) translateY(-50%)`,
-                background: 'var(--accent)',
-                boxShadow: '0 0 8px var(--accent)',
-                opacity: 0.8
+            {/* Liquid wave effect inside logo */}
+            <motion.div
+              animate={{
+                y: [40, -40, 40],
+                rotate: [0, 360],
               }}
+              transition={{
+                y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 10, repeat: Infinity, ease: "linear" }
+              }}
+              className="absolute inset-0 pointer-events-none rounded-full blur-xl"
+              style={{ background: 'color-mix(in srgb, var(--accent), transparent 95%)' }}
             />
           </div>
+        </motion.div>
+
+        {/* Orbital Particles */}
+        {[0, 120, 240].map((angle, i) => (
+          <motion.div
+            key={i}
+            className="absolute inset-0"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 3 + i, repeat: Infinity, ease: "linear" }}
+          >
+            <motion.div
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.5, 1, 0.5]
+              }}
+              transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[var(--accent)] shadow-[0_0_15px_var(--accent)]"
+            />
+          </motion.div>
         ))}
       </div>
 
-      {/* Clean loading text */}
-      <div className="absolute bottom-32 text-center">
-        <p
-          className="text-sm tracking-wider text-[var(--muted)] font-medium"
-          style={{
-            animation: 'fadeInOut 2s ease-in-out infinite'
-          }}
+      {/* Loading Status */}
+      <div className="mt-8 flex flex-col items-center gap-4">
+        <motion.div
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="flex items-center gap-3"
         >
-          Loading
-        </p>
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+          <p className="text-sm font-bold tracking-[0.4em] text-[var(--accent)] uppercase">
+            Loading System
+          </p>
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+        </motion.div>
+
+        {/* Progress bar */}
+        <div className="w-48 h-1 bg-[var(--accent)]/10 rounded-full overflow-hidden">
+          <motion.div
+            animate={{
+              x: ["-100%", "100%"]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="w-full h-full bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"
+          />
+        </div>
       </div>
-
-      <style>{`
-        @keyframes rotateGradient {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes breathe {
-          0%, 100% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.05);
-          }
-        }
-
-        @keyframes orbit {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes fadeInOut {
-          0%, 100% {
-            opacity: 0.5;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
 }
+
