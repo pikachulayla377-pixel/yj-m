@@ -9,7 +9,7 @@ export default function Loader() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--background)]/80 backdrop-blur-md"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--background)]"
     >
       <div className="relative flex items-center justify-center h-64 w-64">
         {/* Background Glow */}
