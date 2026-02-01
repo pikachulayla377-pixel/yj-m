@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import AuthGuard from "@/components/AuthGuard";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaCrown,
   FaStar,
   FaUserTie,
   FaCheckCircle,
+  FaArrowRight,
+  FaGem,
+  FaShieldAlt,
 } from "react-icons/fa";
 
 export default function AdminPanalPage() {
@@ -43,66 +47,106 @@ export default function AdminPanalPage() {
   const isUser = role === "user";
 
   const currentTier = isOwner
-    ? "Owner"
+    ? "Supreme Owner"
     : isReseller
-    ? "Reseller"
-    : isSilver
-    ? "Silver"
-    : "Free User";
+      ? "Elite Reseller"
+      : isSilver
+        ? "Silver Member"
+        : "Verified User";
 
   const daysLeft =
     expiry
       ? Math.max(
-          0,
-          Math.ceil((expiry.getTime() - Date.now()) / 86400000)
-        )
+        0,
+        Math.ceil((expiry.getTime() - Date.now()) / 86400000)
+      )
       : null;
 
   return (
     <AuthGuard>
-      <section className="min-h-screen flex items-center justify-center bg-[var(--background)] px-4">
-        <div className="w-full max-w-2xl bg-[var(--card)] border border-[var(--border)] rounded-3xl p-8 sm:p-10 shadow-xl">
+      <section className="min-h-screen bg-[var(--background)] px-6 py-24 flex flex-col items-center overflow-hidden">
+        {/* Background Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[var(--accent)]/5 blur-[120px] pointer-events-none" />
 
-          {/* ================= CURRENT TIER ================= */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <p className="text-sm text-[var(--muted)]">Your Membership</p>
-              <p className="text-2xl font-bold flex items-center gap-2">
-                {isOwner && <FaCrown className="text-yellow-400" />}
-                {isReseller && <FaUserTie className="text-yellow-500" />}
-                {isSilver && <FaStar className="text-gray-400" />}
-                {currentTier}
-              </p>
+        <div className="w-full max-w-3xl relative z-10">
+          {/* ================= HEADER ================= */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic">
+              Membership <span className="text-[var(--accent)]">Center</span>
+            </h1>
+            <p className="mt-2 text-[var(--muted)] text-xs md:text-sm font-black uppercase tracking-widest opacity-80">
+              Manage your tier and unlock premium world-class benefits
+            </p>
+          </motion.div>
+
+          {/* ================= STATUS CARD ================= */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative overflow-hidden bg-[var(--card)]/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 md:p-10 shadow-2xl mb-10"
+          >
+            <div className="absolute top-0 right-0 p-6 opacity-10">
+              <FaShieldAlt className="text-8xl" />
             </div>
 
-            {(isSilver || isReseller) && expiry && (
-              <div className="text-right">
-                <p className="text-xs text-[var(--muted)]">Expires in</p>
-                <p className="text-lg font-semibold">
-                  {daysLeft} days
-                </p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)]">Initial Status</p>
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-2xl bg-black/40 border border-white/5 
+                    ${isOwner ? "text-yellow-400" : isReseller ? "text-yellow-500" : isSilver ? "text-blue-400" : "text-[var(--muted)]"}`}>
+                    {isOwner ? <FaCrown className="text-2xl" /> : isReseller ? <FaUserTie className="text-2xl" /> : isSilver ? <FaStar className="text-2xl" /> : <FaGem className="text-2xl" />}
+                  </div>
+                  <div>
+                    <h2 className={`text-2xl md:text-3xl font-black uppercase tracking-tighter 
+                      ${isOwner ? "text-yellow-400" : isReseller ? "text-yellow-500" : isSilver ? "text-blue-400" : "text-white"}`}>
+                      {currentTier}
+                    </h2>
+                    <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest">
+                      {isOwner ? "Infinite Validity" : expiry ? `Expires in ${daysLeft} Days` : "No Active Plan"}
+                    </p>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
+
+              {(isSilver || isReseller) && expiry && (
+                <div className="h-2 w-full md:w-48 bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(100, (daysLeft / 30) * 100)}%` }}
+                    className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-secondary)]"
+                  />
+                </div>
+              )}
+            </div>
+          </motion.div>
 
           {/* ================= OWNER VIEW ================= */}
           {isOwner && (
-            <div className="text-center py-10">
-              <FaCrown className="text-5xl text-yellow-400 mx-auto mb-4" />
-              <p className="text-lg font-semibold">
-                Lifetime Access Enabled
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-16 bg-[var(--card)]/20 border border-white/5 rounded-[2.5rem] backdrop-blur-md"
+            >
+              <div className="w-20 h-20 bg-yellow-400/10 border border-yellow-400/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_50px_rgba(250,204,21,0.1)]">
+                <FaCrown className="text-4xl text-yellow-400" />
+              </div>
+              <p className="text-2xl font-black uppercase tracking-tighter">Ultimate Control Active</p>
+              <p className="text-sm text-[var(--muted)] font-medium mt-2 max-w-md mx-auto">
+                You possess full administrative authority and lifetime premium access to every module in the Digital Universe.
               </p>
-              <p className="text-sm text-[var(--muted)] mt-1">
-                You have full access to all features.
-              </p>
-            </div>
+            </motion.div>
           )}
 
           {/* ================= PLANS ================= */}
           {!isOwner && (
-            <>
+            <div className="space-y-8">
               {/* Tabs */}
-              <div className="flex justify-center gap-3 mb-8">
+              <div className="flex justify-center p-1.5 bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl max-w-xs mx-auto">
                 <PlanTab
                   active={activeTab === "silver"}
                   label="Silver"
@@ -117,61 +161,52 @@ export default function AdminPanalPage() {
                 />
               </div>
 
-              {/* Silver Plan */}
-              {activeTab === "silver" && (
-                <>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, x: activeTab === "silver" ? -20 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: activeTab === "silver" ? 20 : -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-8"
+                >
                   <PerkList
-                    perks={[
-                      "Cheaper product pricing",
-                      "Collage / Profile Maker access",
-                      "ID Rent priority access",
+                    perks={activeTab === "silver" ? [
+                      "Unlock significantly lower product pricing",
+                      "Exclusive access to Profile & Collage Maker",
+                      "Priority Rent-ID listing and service",
+                      "Verified identity badge on profile",
+                    ] : [
+                      "Guaranteed absolute lowest market prices",
+                      "Professional heavy-duty bulk order tools",
+                      "High-priority ID Rent management system",
+                      "Personalized reseller dashboard & metrics",
                     ]}
                   />
 
                   {(isUser || isSilver) && (
-                    <div className="flex justify-center mt-8">
+                    <div className="flex justify-center">
                       <ActionButton
                         href={
-                          isSilver
+                          activeTab === "reseller"
                             ? "/games/membership/reseller-membership"
                             : "/games/membership/silver-membership"
                         }
                         label={
-                          isSilver
-                            ? "Upgrade to Reseller"
-                            : "Buy Silver Membership"
+                          isSilver && activeTab === "silver"
+                            ? "Plan Active"
+                            : isSilver && activeTab === "reseller"
+                              ? "Upgrade To Reseller"
+                              : `Become A ${activeTab}`
                         }
-                        type="silver"
+                        type={activeTab}
+                        disabled={isSilver && activeTab === "silver"}
                       />
                     </div>
                   )}
-                </>
-              )}
-
-              {/* Reseller Plan */}
-              {activeTab === "reseller" && (
-                <>
-                  <PerkList
-                    perks={[
-                      "Lowest possible prices",
-                      "Bulk tools & reseller dashboard",
-                      "Collage / Profile Maker access",
-                      "Highest priority ID Rent access",
-                    ]}
-                  />
-
-                  {(isUser || isSilver) && (
-                    <div className="flex justify-center mt-8">
-                      <ActionButton
-                        href="/games/membership/reseller-membership"
-                        label="Buy Reseller Membership"
-                        type="gold"
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-            </>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           )}
         </div>
       </section>
@@ -185,12 +220,11 @@ function PlanTab({ active, label, icon, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-6 py-3 rounded-full font-semibold
-                  flex items-center gap-2 transition
-        ${
-          active
-            ? "bg-[var(--accent)] text-black"
-            : "bg-[var(--background)] border border-[var(--border)]"
+      className={`flex-1 py-3 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest
+                  flex items-center justify-center gap-2 transition-all duration-300
+        ${active
+          ? "bg-[var(--accent)] text-black shadow-lg"
+          : "text-[var(--muted)] hover:text-white"
         }`}
     >
       {icon}
@@ -201,33 +235,42 @@ function PlanTab({ active, label, icon, onClick }) {
 
 function PerkList({ perks }) {
   return (
-    <div className="border border-[var(--border)] rounded-xl overflow-hidden">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {perks.map((perk, i) => (
-        <div
+        <motion.div
           key={i}
-          className={`flex items-center gap-3 px-6 py-4 text-sm
-            ${i % 2 === 0 ? "bg-[var(--background)]" : "bg-[var(--card)]"}`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.1 }}
+          className="flex items-start gap-4 p-5 bg-[var(--card)]/30 border border-white/5 rounded-3xl backdrop-blur-md"
         >
-          <FaCheckCircle className="text-green-500 shrink-0" />
-          <span>{perk}</span>
-        </div>
+          <div className="p-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-500">
+            <FaCheckCircle className="text-sm" />
+          </div>
+          <span className="text-sm font-medium text-white/80 leading-snug">{perk}</span>
+        </motion.div>
       ))}
     </div>
   );
 }
 
-function ActionButton({ href, label, type }) {
+function ActionButton({ href, label, type, disabled }) {
   return (
-    <Link
-      href={href}
-      className={`px-8 py-3 rounded-xl font-semibold text-center transition
-        ${
-          type === "gold"
-            ? "bg-yellow-400 text-black hover:opacity-90"
-            : "bg-gray-300 text-black hover:opacity-90"
-        }`}
-    >
-      {label}
-    </Link>
+    <motion.div whileHover={!disabled ? { scale: 1.05 } : {}} whileTap={!disabled ? { scale: 0.95 } : {}}>
+      <Link
+        href={disabled ? "#" : href}
+        className={`inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl
+          ${disabled
+            ? "bg-white/5 text-white/20 border border-white/10 cursor-not-allowed"
+            : type === "reseller"
+              ? "bg-yellow-500 text-black shadow-yellow-500/20"
+              : "bg-white text-black shadow-white/10"
+          }`}
+      >
+        {label}
+        {!disabled && <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform" />}
+      </Link>
+    </motion.div>
   );
 }
+

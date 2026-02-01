@@ -9,6 +9,8 @@ export default function BuyPanel({
   redirecting,
   buyPanelRef,
 }) {
+  if (!activeItem) return null;
+
   return (
     <div
       ref={buyPanelRef}
@@ -18,8 +20,8 @@ export default function BuyPanel({
       <div className="flex gap-4 items-center">
         <div className="relative w-[110px] h-[110px] rounded-xl overflow-hidden">
           <Image
-            src={activeItem.itemImageId?.image || logo}
-            alt={activeItem.itemName}
+            src={activeItem?.itemImageId?.image || logo}
+            alt={activeItem?.itemName || "Item"}
             fill
             className="object-cover"
           />
@@ -27,17 +29,17 @@ export default function BuyPanel({
 
         <div className="flex-1 min-w-0">
           <h2 className="text-lg font-bold">
-            💎 {activeItem.itemName}
+            💎 {activeItem?.itemName}
           </h2>
 
           <div className="flex items-center gap-2 mt-1.5">
             <p className="text-2xl font-extrabold text-[var(--accent)]">
-              ₹{activeItem.sellingPrice}
+              ₹{activeItem?.sellingPrice}
             </p>
 
-            {activeItem.dummyPrice && (
+            {activeItem?.dummyPrice && (
               <p className="text-xs line-through text-[var(--muted)]">
-                ₹{activeItem.dummyPrice}
+                ₹{activeItem?.dummyPrice}
               </p>
             )}
           </div>
@@ -48,10 +50,9 @@ export default function BuyPanel({
         onClick={() => onBuy(activeItem)}
         disabled={redirecting}
         className={`w-full py-3 rounded-xl font-bold text-base transition
-          ${
-            redirecting
-              ? "bg-[var(--border)] text-[var(--muted)] cursor-not-allowed"
-              : "bg-[var(--accent)] text-black hover:opacity-90"
+          ${redirecting
+            ? "bg-[var(--border)] text-[var(--muted)] cursor-not-allowed"
+            : "bg-[var(--accent)] text-black hover:opacity-90"
           }`}
       >
         {redirecting ? "Redirecting…" : "Buy Now →"}

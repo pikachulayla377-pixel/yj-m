@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 import logo from "@/public/logo.png";
@@ -22,13 +23,17 @@ export default function GameDetailPage() {
   const [game, setGame] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
-  const isBGMI =
-      game?.gameName?.toLowerCase() === "pubg mobile" || game?.gameName?.toLowerCase() === "bgmi";
+  const [notFound, setNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  const isBGMI =
+    game?.gameName?.toLowerCase() === "pubg mobile" || game?.gameName?.toLowerCase() === "bgmi";
 
 
   /* ================= FETCH GAME ================= */
   useEffect(() => {
+    setIsLoading(true);
+    setNotFound(false);
     const token = sessionStorage.getItem("token");
 
     fetch(`/api/games/${slug}`, {
@@ -38,6 +43,11 @@ export default function GameDetailPage() {
     })
       .then((res) => res.json())
       .then((data) => {
+        if (!data?.data || !data?.success) {
+          setNotFound(true);
+          return;
+        }
+
         const items = [...(data?.data?.itemId || [])].sort(
           (a, b) => a.sellingPrice - b.sellingPrice
         );
@@ -48,12 +58,36 @@ export default function GameDetailPage() {
         });
 
         setActiveItem(items[0] || null);
-      });
+      })
+      .catch(() => setNotFound(true))
+      .finally(() => setIsLoading(false));
   }, [slug]);
 
-  /* ================= LOADING ================= */
-  if (!game || !activeItem) {
+  /* ================= RENDER STATES ================= */
+  if (isLoading) {
     return <Loader />;
+  }
+
+  if (notFound || !game) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-24 h-24 mb-6 opacity-20">
+          <Image src={logo} alt="Logo" className="grayscale" />
+        </div>
+        <h2 className="text-3xl font-black uppercase tracking-tighter italic mb-2">
+          Game <span className="text-[var(--accent)]">Not Found</span>
+        </h2>
+        <p className="text-[var(--muted)] text-sm mb-8 max-w-xs">
+          The game you are looking for does not exist or has been removed from our catalog.
+        </p>
+        <Link
+          href="/games"
+          className="px-8 py-3 rounded-2xl bg-white text-black font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-transform"
+        >
+          View All Games
+        </Link>
+      </div>
+    );
   }
 
   /* ================= BUY HANDLER ================= */
@@ -68,19 +102,17 @@ export default function GameDetailPage() {
       image: item.itemImageId?.image || "",
     });
 
-    // router.push(
-    //   `/games/${slug}/buy/${item.itemSlug}?${query.toString()}`
-    // );
-     const isBGMI =
-    game?.gameName?.toLowerCase() === "pubg mobile" || game?.gameName?.toLowerCase() === "bgmi";
 
-  const basePath = isBGMI
-    ? `/games/pubg/${slug}/buy`
-    : `/games/${slug}/buy`;
+    const isBGMI =
+      game?.gameName?.toLowerCase() === "pubg mobile" || game?.gameName?.toLowerCase() === "bgmi";
 
-  router.push(
-    `${basePath}/${item.itemSlug}?${query.toString()}`
-  );
+    const basePath = isBGMI
+      ? `/games/pubg/${slug}/buy`
+      : `/games/${slug}/buy`;
+
+    router.push(
+      `${basePath}/${item.itemSlug}?${query.toString()}`
+    );
   };
 
   return (
@@ -107,43 +139,58 @@ export default function GameDetailPage() {
         </div>
       </div>
 
-      {/* ================= ITEM GRID ================= */}
-        {isBGMI ? (
-      <ItemGridBgmi
-        items={game.allItems}
-        activeItem={activeItem}
-        setActiveItem={setActiveItem}
-        buyPanelRef={buyPanelRef}
-      />
-         ) : (
-           <ItemGrid
-        items={game.allItems}
-        activeItem={activeItem}
-        setActiveItem={setActiveItem}
-        buyPanelRef={buyPanelRef}
-      />
-        )}
+      {/* ================= CONTENT HANDLING ================= */}
+      {game.allItems && game.allItems.length > 0 ? (
+        <>
+          {/* ================= ITEM GRID ================= */}
+          {isBGMI ? (
+            <ItemGridBgmi
+              items={game.allItems}
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              buyPanelRef={buyPanelRef}
+            />
+          ) : (
+            <ItemGrid
+              items={game.allItems}
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              buyPanelRef={buyPanelRef}
+            />
+          )}
 
-      {/* ================= BUY PANEL ================= */}
-       {isBGMI ? (
-      <BuyPanelBgmi
-        activeItem={activeItem}
-        onBuy={goBuy}
-        redirecting={redirecting}
-        buyPanelRef={buyPanelRef}
-      />
+          {/* ================= BUY PANEL ================= */}
+          {activeItem && (
+            isBGMI ? (
+              <BuyPanelBgmi
+                activeItem={activeItem}
+                onBuy={goBuy}
+                redirecting={redirecting}
+                buyPanelRef={buyPanelRef}
+              />
+            ) : (
+              <BuyPanel
+                activeItem={activeItem}
+                onBuy={goBuy}
+                redirecting={redirecting}
+                buyPanelRef={buyPanelRef}
+              />
+            )
+          )}
+        </>
       ) : (
-       <BuyPanel
-        activeItem={activeItem}
-        onBuy={goBuy}
-        redirecting={redirecting}
-        buyPanelRef={buyPanelRef}
-      />
-  )}
-      {/* ================= HELP GUIDE ================= */}
-      {/* <div className="max-w-6xl mx-auto mt-6">
-        <MLBBPurchaseGuide />
-      </div> */}
+        /* ================= EMPTY STATE ================= */
+        <div className="max-w-6xl mx-auto py-20 px-4 text-center border-2 border-dashed border-white/5 rounded-3xl">
+          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Image src={logo} alt="Logo" className="w-8 h-8 opacity-20 grayscale" />
+          </div>
+          <h3 className="text-xl font-black uppercase tracking-tighter italic">Coming Soon</h3>
+          <p className="text-xs text-[var(--muted)] mt-2">
+            No items are currently listed for {game.gameName}. Please check back later!
+          </p>
+        </div>
+      )}
+
     </section>
   );
 }
