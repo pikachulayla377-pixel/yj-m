@@ -61,11 +61,10 @@ export default function MLBBPurchaseGuide() {
           return (
             <div
               key={index}
-              className={`rounded-xl border transition-all ${
-                isActive
+              className={`rounded-xl border transition-all ${isActive
                   ? "border-[var(--accent)] bg-[var(--accent)]/10"
                   : "border-[var(--border)] bg-[var(--background)]"
-              }`}
+                }`}
             >
               {/* Header row */}
               <button
@@ -75,11 +74,10 @@ export default function MLBBPurchaseGuide() {
                 <div className="flex items-center gap-3">
                   {/* Step Number / Tick */}
                   <div
-                    className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center ${
-                      isCompleted
+                    className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center ${isCompleted
                         ? "bg-green-500 text-white"
                         : "bg-[var(--accent)] text-black"
-                    }`}
+                      }`}
                   >
                     {isCompleted ? "✓" : index + 1}
                   </div>
@@ -94,19 +92,17 @@ export default function MLBBPurchaseGuide() {
                 </div>
 
                 <FiChevronDown
-                  className={`transition-transform ${
-                    isActive ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform ${isActive ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
               {/* Expandable content BELOW */}
               <div
-                className={`grid transition-all duration-300 ease-in-out ${
-                  isActive
+                className={`grid transition-all duration-300 ease-in-out ${isActive
                     ? "grid-rows-[1fr] opacity-100"
                     : "grid-rows-[0fr] opacity-0"
-                }`}
+                  }`}
               >
                 <div className="overflow-hidden px-4 pb-4 text-xs text-[var(--muted)] leading-relaxed">
                   {step.content}

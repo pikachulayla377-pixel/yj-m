@@ -8,78 +8,43 @@ export default function BlueBuffCoreLoader() {
         bg-[var(--background)]
       "
     >
-      <div className="relative w-36 h-36">
-
-        {/* ================= OUTER RING ================= */}
+      <div className="relative w-48 h-48">
+        {/* Subtle gradient ring */}
         <div
-          className="
-            absolute inset-0 rounded-full
-            border-4 border-transparent
-            animate-spin
-          "
+          className="absolute inset-0 rounded-full"
           style={{
-            borderTopColor: "var(--accent)",
-            borderRightColor: "#22d3ee",
-            animationDuration: "3s",
+            background: 'conic-gradient(from 0deg, var(--accent), #22d3ee, var(--accent))',
+            animation: 'rotateGradient 3s linear infinite',
+            opacity: 0.6
           }}
-        />
-
-        {/* ================= SEGMENT RING ================= */}
-        <div
-          className="
-            absolute inset-3 rounded-full
-            border-2 border-dashed
-            opacity-70 animate-spin
-          "
-          style={{
-            borderColor: "var(--accent)",
-            animationDuration: "6s",
-            animationDirection: "reverse",
-          }}
-        />
-
-        {/* ================= ENERGY SCAN ================= */}
-        <div className="absolute inset-6 overflow-hidden rounded-full">
+        >
           <div
-            className="absolute inset-0 animate-pulse"
+            className="absolute inset-1 rounded-full"
             style={{
-              background:
-                "linear-gradient(180deg, transparent, var(--accent), transparent)",
-              opacity: 0.5,
+              background: 'var(--background)'
             }}
           />
         </div>
 
-        {/* ================= CORE ================= */}
-        <div className="absolute inset-10 flex items-center justify-center">
-          {/* Glow */}
+        {/* Breathing circle */}
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{
+            animation: 'breathe 2s ease-in-out infinite'
+          }}
+        >
           <div
-            className="
-              absolute inset-0 rounded-full blur-xl opacity-70 animate-pulse
-            "
+            className="w-32 h-32 rounded-full flex items-center justify-center"
             style={{
-              background:
-                "radial-gradient(circle, var(--accent), transparent 70%)",
-            }}
-          />
-
-          {/* Core */}
-          <div
-            className="
-              relative w-16 h-16 rounded-full
-              flex items-center justify-center
-              shadow-2xl
-            "
-            style={{
-              background:
-                "linear-gradient(135deg, var(--accent), #22d3ee)",
+              background: 'linear-gradient(135deg, var(--accent), #22d3ee)',
+              boxShadow: '0 8px 32px rgba(34, 211, 238, 0.3)'
             }}
           >
             <span
-              className="text-xl font-extrabold tracking-tight"
+              className="text-4xl font-bold tracking-tight"
               style={{
-                color: "var(--foreground)",
-                textShadow: "0 2px 12px rgba(0,0,0,.6)",
+                color: 'var(--foreground)',
+                textShadow: '0 2px 8px rgba(0,0,0,0.3)'
               }}
             >
               yJ
@@ -87,36 +52,80 @@ export default function BlueBuffCoreLoader() {
           </div>
         </div>
 
-        {/* ================= ORBIT DOTS ================= */}
-        {[0, 120, 240].map((deg, i) => (
+        {/* Minimal orbit dots */}
+        {[0, 120, 240].map((angle, i) => (
           <div
             key={i}
-            className="absolute inset-0 animate-spin"
+            className="absolute inset-0"
             style={{
-              animationDuration: `${2.5 + i}s`,
+              animation: `orbit ${3 + i * 0.2}s linear infinite`,
+              animationDelay: `${i * -1}s`
             }}
           >
             <div
               className="absolute w-2 h-2 rounded-full"
               style={{
-                top: "50%",
-                left: "50%",
-                transform: `rotate(${deg}deg) translateX(58px) translateY(-50%)`,
-                background: "var(--accent)",
-                boxShadow: "0 0 10px var(--accent)",
+                top: '50%',
+                left: '50%',
+                transform: `rotate(${angle}deg) translateX(72px) translateY(-50%)`,
+                background: 'var(--accent)',
+                boxShadow: '0 0 8px var(--accent)',
+                opacity: 0.8
               }}
             />
           </div>
         ))}
       </div>
 
-      {/* ================= LOADING TEXT ================= */}
-      <div className="absolute bottom-24 text-center">
-        <p className="text-sm tracking-wide text-[var(--muted)]">
-          Charging Blue Buff
+      {/* Clean loading text */}
+      <div className="absolute bottom-32 text-center">
+        <p
+          className="text-sm tracking-wider text-[var(--muted)] font-medium"
+          style={{
+            animation: 'fadeInOut 2s ease-in-out infinite'
+          }}
+        >
+          Loading
         </p>
-        <p className="text-xs opacity-60 mt-1">Please wait…</p>
       </div>
+
+      <style>{`
+        @keyframes rotateGradient {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes breathe {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+        }
+
+        @keyframes orbit {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes fadeInOut {
+          0%, 100% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }
