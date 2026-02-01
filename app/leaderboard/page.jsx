@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import AuthGuard from "@/components/AuthGuard";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaCrown, FaMedal, FaTrophy, FaUserCircle } from "react-icons/fa";
 
 export default function LeaderboardPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [range, setRange] = useState("all"); // all | weekly | monthly
+  const [range, setRange] = useState("monthly"); // weekly | monthly
 
   const limit = 10;
 
@@ -28,111 +30,193 @@ export default function LeaderboardPage() {
       .finally(() => setLoading(false));
   }, [range]);
 
-  const rankBadge = (rank) => {
-    if (rank === 1)
-      return "bg-yellow-400/20 text-yellow-400 border-yellow-400";
-    if (rank === 2)
-      return "bg-gray-400/20 text-gray-300 border-gray-400";
-    if (rank === 3)
-      return "bg-orange-400/20 text-orange-400 border-orange-400";
-    return "bg-gray-800 text-gray-400 border-gray-700";
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
   };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 },
+  };
+
+  const topThree = data.slice(0, 3);
+  const rest = data.slice(3);
 
   return (
     <AuthGuard>
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <h1 className="text-2xl font-bold mb-2 text-center">
-          🏆 Top 10 Spenders
-        </h1>
-        <p className="text-center text-gray-400 mb-6">
-          Climb the leaderboard by making purchases
-        </p>
+      <div className="min-h-screen bg-[var(--background)] px-4 py-20 pb-20">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-4xl mx-auto text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic">
+            Elite <span className="text-[var(--accent)]">Spendors</span>
+          </h1>
+          <p className="mt-2 text-[var(--muted)] text-xs md:text-sm font-black uppercase tracking-widest opacity-80">
+            Top Spenders ascending to the digital throne
+          </p>
 
-        {/* Range Toggle */}
-        <div className="flex justify-center gap-2 mb-6">
-          {["all", "weekly", "monthly"].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              className={`px-4 py-2 rounded text-sm font-semibold ${
-                range === r
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-              }`}
-            >
-              {r === "all"
-                ? "All Time"
-                : r === "weekly"
-                ? "This Week"
-                : "This Month"}
-            </button>
-          ))}
-        </div>
+          {/* Range Toggle */}
+          <div className="flex justify-center mt-8 p-1 bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl w-fit mx-auto">
+            {["weekly", "monthly"].map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${range === r
+                    ? "bg-[var(--accent)] text-black shadow-lg"
+                    : "text-[var(--muted)] hover:text-white"
+                  }`}
+              >
+                {r === "weekly" ? "This Week" : "This Month"}
+              </button>
+            ))}
+          </div>
+        </motion.div>
 
         {loading ? (
-          <p className="text-center text-gray-400">
-            Loading leaderboard...
-          </p>
-        ) : data.length === 0 ? (
-          /* EMPTY STATE */
-          <div className="text-center py-16 border border-dashed border-gray-700 rounded-lg">
-            <p className="text-xl font-semibold mb-2">
-              🚀 Be the first to purchase!
-            </p>
-            <p className="text-gray-400 mb-4">
-              No players on the leaderboard yet.
-            </p>
-            <p className="text-sm text-gray-500">
-              Make a purchase and secure the #1 spot 🥇
-            </p>
+          <div className="flex justify-center items-center py-20">
+            <div className="w-10 h-10 border-4 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
           </div>
+        ) : data.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl mx-auto text-center py-20 bg-[var(--card)]/20 border border-dashed border-white/10 rounded-[2.5rem] backdrop-blur-sm"
+          >
+            <FaTrophy className="text-5xl text-white/10 mx-auto mb-6" />
+            <h3 className="text-2xl font-black uppercase tracking-tighter italic">No Legends Found</h3>
+            <p className="mt-2 text-sm text-[var(--muted)] font-medium max-w-xs mx-auto">
+              The podium is empty. Be the first to secure your name in history.
+            </p>
+          </motion.div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border border-gray-700 rounded-lg">
-              <thead className="bg-gray-900">
-                <tr>
-                  <th className="p-3 text-left">Rank</th>
-                  <th className="p-3 text-left">Name</th>
-                  <th className="p-3 text-left">Orders</th>
-                  <th className="p-3 text-left">Total Spent</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item, index) => {
-                  const rank = index + 1;
+          <div className="max-w-4xl mx-auto space-y-12">
+            {/* ================= PODIUM ================= */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-end pb-10">
+              {/* Rank 2 */}
+              <PodiumItem
+                user={topThree[1]}
+                rank={2}
+                color="text-gray-300"
+                icon={<FaMedal />}
+                delay={0.2}
+              />
+              {/* Rank 1 */}
+              <PodiumItem
+                user={topThree[0]}
+                rank={1}
+                color="text-yellow-400"
+                icon={<FaCrown />}
+                delay={0.1}
+                isLarge
+              />
+              {/* Rank 3 */}
+              <PodiumItem
+                user={topThree[2]}
+                rank={3}
+                color="text-orange-400"
+                icon={<FaMedal />}
+                delay={0.3}
+              />
+            </div>
 
-                  return (
-                    <tr
-                      key={index}
-                      className="border-t border-gray-700 hover:bg-gray-800"
-                    >
-                      <td className="p-3">
-                        <span
-                          className={`px-3 py-1 rounded-full border text-sm font-bold ${rankBadge(
-                            rank
-                          )}`}
-                        >
-                          #{rank}
-                        </span>
-                      </td>
-                 
-                      <td className="p-3">
-                        {item.user?.name || "Anonymous"}
-                      </td>
-                      <td className="p-3">
-                        {item.totalOrders}
-                      </td>
-                      <td className="p-3 font-semibold text-green-400">
-                        ₹{item.totalSpent}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {/* ================= LIST ================= */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="space-y-3"
+            >
+              {rest.map((item, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="group flex items-center justify-between p-4 px-6 bg-[var(--card)]/40 backdrop-blur-xl border border-white/5 rounded-2xl hover:border-[var(--accent)]/30 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="w-8 text-sm font-black text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors">
+                      #{index + 4}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white/5 overflow-hidden flex items-center justify-center border border-white/10">
+                        <FaUserCircle className="text-2xl text-white/20" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white uppercase tracking-tight">
+                          {item.user?.name || "Anonymous User"}
+                        </p>
+                        <p className="text-[10px] text-[var(--muted)] font-black uppercase tracking-widest leading-none">
+                          {item.totalOrders} Global Orders
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-black text-[var(--accent)] tracking-tighter">
+                      ₹{item.totalSpent.toLocaleString()}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         )}
       </div>
     </AuthGuard>
   );
 }
+
+/* ================= SUB COMPONENTS ================= */
+
+function PodiumItem({ user, rank, color, icon, delay, isLarge }) {
+  if (!user) return <div className="hidden sm:block" />;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.8, type: "spring" }}
+      className={`relative flex flex-col items-center p-6 bg-[var(--card)]/50 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] ${isLarge
+          ? "sm:scale-110 sm:z-10 bg-gradient-to-t from-[var(--accent)]/10 to-transparent border-[var(--accent)]/20 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)]"
+          : "scale-95"
+        }`}
+    >
+      <div className={`absolute -top-6 text-4xl ${color} drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]`}>
+        {icon}
+      </div>
+
+      <div className={`relative rounded-full border-2 p-1 overflow-hidden mb-4 ${rank === 1 ? "w-24 h-24 border-[var(--accent)]" : "w-20 h-20 border-white/10"
+        }`}>
+        <div className="w-full h-full rounded-full bg-white/5 flex items-center justify-center">
+          <FaUserCircle className={`text-4xl ${rank === 1 ? "text-[var(--accent)]/50" : "text-white/10"}`} />
+        </div>
+      </div>
+
+      <div className="text-center">
+        <p className={`text-sm font-black uppercase tracking-tighter truncate max-w-[120px] ${rank === 1 ? "text-white" : "text-white/80"
+          }`}>
+          {user.user?.name || "Digital Legend"}
+        </p>
+        <p className={`text-xl font-black mt-1 ${color} tracking-tighter`}>
+          ₹{user.totalSpent.toLocaleString()}
+        </p>
+        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+          <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)]">#{rank} Rank</span>
+        </div>
+      </div>
+
+      {rank === 1 && (
+        <div className="absolute inset-0 rounded-[2.5rem] bg-[var(--accent)]/5 animate-pulse -z-10" />
+      )}
+    </motion.div>
+  );
+}
+
