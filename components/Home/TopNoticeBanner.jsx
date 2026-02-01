@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 const STORAGE_KEY = "hide_whatsapp_banner";
 
@@ -35,13 +36,13 @@ export default function TopNoticeBanner() {
     if (!hidden && WHATSAPP_CHANNEL_URL) setVisible(true);
   }, []);
 
-  // 🔁 Rotate message every 3 seconds
+  // 🔁 Rotate message every 4 seconds
   useEffect(() => {
     if (!visible) return;
 
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % MESSAGES.length);
-    }, 3000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [visible]);
@@ -52,11 +53,17 @@ export default function TopNoticeBanner() {
   const current = MESSAGES[index];
 
   return (
-    <div
-      onClick={() =>
-        window.open(WHATSAPP_CHANNEL_URL, "_blank", "noopener,noreferrer")
-      }
-      className="
+    <>
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -100, opacity: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        onClick={() =>
+          window.open(WHATSAPP_CHANNEL_URL, "_blank", "noopener,noreferrer")
+        }
+        className="
+        group
         w-full cursor-pointer
         bg-gradient-to-r
         from-[var(--accent)]
@@ -65,53 +72,95 @@ export default function TopNoticeBanner() {
         text-[var(--foreground)]
         shadow-md
         border-b border-[var(--border)]
+        relative overflow-hidden
       "
-    >
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-
-        {/* LEFT */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="rounded-full p-2 bg-green-500/90 text-white shadow shrink-0">
-            <FaWhatsapp size={18} />
-          </div>
-
-          <div className="leading-tight truncate">
-            <p className="font-semibold text-sm md:text-base truncate">
-              {current.title}
-            </p>
-            <p className="text-xs md:text-sm text-[var(--muted)] truncate">
-              {current.subtitle}
-            </p>
-          </div>
+        whileHover={{ scale: 1.01 }}
+      >
+        {/* Shimmer effect */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent shimmer-animation"
+          />
         </div>
 
-        {/* RIGHT */}
-        <div className="flex items-center gap-3 shrink-0">
-          <span
-            className="
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 relative z-10">
+
+          {/* LEFT */}
+          <div className="flex items-center gap-3 min-w-0">
+            <motion.div
+              className="rounded-full p-2 bg-green-500/90 text-white shadow shrink-0"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <FaWhatsapp size={18} />
+            </motion.div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+                className="leading-tight truncate"
+              >
+                <p className="font-semibold text-sm md:text-base truncate">
+                  {current.title}
+                </p>
+                <p className="text-xs md:text-sm text-[var(--muted)] truncate">
+                  {current.subtitle}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* RIGHT */}
+          <div className="flex items-center gap-3 shrink-0">
+            <motion.span
+              className="
               hidden sm:inline-flex items-center
               bg-white/90 text-black
               px-4 py-1.5 rounded-full
               text-sm font-semibold
               shadow-sm
             "
-          >
-            Chat on WhatsApp
-          </span>
+              whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Chat on WhatsApp
+            </motion.span>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              sessionStorage.setItem(STORAGE_KEY, "true");
-              setVisible(false);
-            }}
-            className="rounded-full p-1 hover:bg-black/10 transition"
-            aria-label="Close"
-          >
-            <FiX size={18} />
-          </button>
+            <motion.button
+              onClick={(e) => {
+                e.stopPropagation();
+                sessionStorage.setItem(STORAGE_KEY, "true");
+                setVisible(false);
+              }}
+              className="rounded-full p-1 hover:bg-black/10 transition"
+              aria-label="Close"
+              whileHover={{ scale: 1.2, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <FiX size={18} />
+            </motion.button>
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+
+      <style jsx>{`
+      .shimmer-animation {
+        animation: shimmer 3s infinite linear;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(200%);
+        }
+      }
+    `}</style>
+    </>
   );
 }

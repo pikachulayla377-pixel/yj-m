@@ -152,7 +152,7 @@ export default function Header() {
                 <div className="p-4">
                   <Link
                     href="/login"
-                    className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-[var(--accent)] to-[#22d3ee] text-white rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[var(--accent)]/30 hover:scale-[1.02]"
+                    className="flex items-center justify-center gap-2 w-full py-3 px-4 text-white rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[var(--accent)]/30 hover:scale-[1.02]"
                     onClick={() => setUserMenuOpen(false)}
                   >
                     <FaUser size={16} />
