@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import QRCode from "qrcode";
+import { Mail, Phone, User, Hash } from "lucide-react";
 
 export default function ReviewAndPaymentStep({
   step,
@@ -66,13 +67,13 @@ export default function ReviewAndPaymentStep({
         currency: "INR",
         zoneId: "N/A", // BGMI has no zone
       };
-const token = sessionStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const res = await fetch("/api/order/create-gateway-order", {
         method: "POST",
-   headers: {
-        Authorization: `Bearer ${token}`,
-      },        body: JSON.stringify(orderPayload),
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }, body: JSON.stringify(orderPayload),
       });
 
       const data = await res.json();
@@ -115,10 +116,9 @@ const token = sessionStorage.getItem("token");
               <button
                 onClick={handleUPI}
                 className={`w-full p-4 rounded-xl border transition-all flex justify-between
-                  ${
-                    paymentMethod === "upi"
-                      ? "border-[var(--accent)] bg-[var(--accent)]/15"
-                      : "border-gray-700 hover:border-gray-500"
+                  ${paymentMethod === "upi"
+                    ? "border-[var(--accent)] bg-[var(--accent)]/15"
+                    : "border-gray-700 hover:border-gray-500"
                   }`}
               >
                 <span className="font-medium">UPI / QR Payment</span>
@@ -128,35 +128,57 @@ const token = sessionStorage.getItem("token");
           </div>
 
           {/* USER DETAILS */}
-          <div className="border border-gray-700/60 rounded-xl bg-black/20 px-4 py-3">
-            <h3 className="text-sm font-semibold mb-2">Your Details</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Email</span>
-                <span>{userEmail || "Not provided"}</span>
+          <div className="bg-[var(--card)]/40 p-5 rounded-2xl border border-[var(--border)] shadow-sm group">
+            <h3 className="font-bold text-base mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-4 bg-[var(--accent)] rounded-full" />
+              Your Details
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-black/30 border border-white/5 group-hover:border-[var(--accent)]/30 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[var(--accent)]">
+                  <Mail size={18} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-[var(--muted)] uppercase font-bold tracking-wider">Email</span>
+                  <span className="font-semibold text-sm truncate">{userEmail || "Not provided"}</span>
+                </div>
               </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-400">Phone</span>
-                <span>{userPhone || "Not provided"}</span>
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-black/30 border border-white/5 group-hover:border-[var(--accent)]/30 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[var(--accent)]">
+                  <Phone size={18} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-[var(--muted)] uppercase font-bold tracking-wider">Phone</span>
+                  <span className="font-semibold text-sm">{userPhone || "Not provided"}</span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* GAME ACCOUNT (BGMI) */}
-          <div className="border border-gray-700/60 rounded-xl bg-black/20 px-4 py-3">
-            <h3 className="text-sm font-semibold mb-2">Game Account</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Username</span>
-                <span>{reviewData.userName}</span>
+          <div className="bg-[var(--card)]/40 p-5 rounded-2xl border border-[var(--border)] shadow-sm group">
+            <h3 className="font-bold text-base mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-4 bg-[var(--accent)] rounded-full" />
+              Game Account
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-black/30 border border-white/5 group-hover:border-[var(--accent)]/30 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[var(--accent)]">
+                  <User size={18} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-[var(--muted)] uppercase font-bold tracking-wider">Username</span>
+                  <span className="font-semibold text-sm truncate">{reviewData.userName}</span>
+                </div>
               </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-400">Character ID</span>
-                <span>{reviewData.playerId}</span>
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-black/30 border border-white/5 group-hover:border-[var(--accent)]/30 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[var(--accent)]">
+                  <Hash size={18} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-[var(--muted)] uppercase font-bold tracking-wider">Character ID</span>
+                  <span className="font-semibold text-sm truncate">{reviewData.playerId}</span>
+                </div>
               </div>
             </div>
           </div>

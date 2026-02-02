@@ -176,14 +176,7 @@ export default function Header() {
                   </div>
 
                   <div className="p-2">
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[var(--accent)]/10 hover:text-[var(--accent)] group"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <HiHome size={18} className="transition-transform duration-300 group-hover:scale-110" />
-                      <span className="font-medium">Dashboard</span>
-                    </Link>
+
 
                     <Link
                       href="/dashboard"
@@ -200,7 +193,7 @@ export default function Header() {
                       onClick={() => setUserMenuOpen(false)}
                     >
                       <FiSettings size={18} className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90" />
-                      <span className="font-medium">Account Settings</span>
+                      <span className="font-medium">Orders</span>
                     </Link>
 
                     <Link
