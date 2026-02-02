@@ -99,8 +99,8 @@ export default function BuyFlowPage() {
 
     const data = await res.json();
 
-    if (data?.success !== 200) {
-      alert("Invalid Player ID / Zone ID");
+    if (data?.success !== 200 || !data?.data?.username || !data?.data?.region) {
+      alert("Invalid Player ID / Zone ID. Please put correct ID");
       setLoading(false);
       return;
     }
@@ -142,8 +142,8 @@ export default function BuyFlowPage() {
               style={{
                 width:
                   step === 1 ? "0%" :
-                  step === 2 ? "50%" :
-                  step === 3 ? "100%" : "0%",
+                    step === 2 ? "50%" :
+                      step === 3 ? "100%" : "0%",
               }}
             />
           </div>
@@ -153,8 +153,8 @@ export default function BuyFlowPage() {
               <div
                 className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-semibold text-sm
                 ${step >= num
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-black"
-                  : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-black"
+                    : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
               >
                 {num}
               </div>

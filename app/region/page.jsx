@@ -26,7 +26,7 @@ export default function RegionPage() {
     setResult(data);
     setLoading(false);
 
-    if (data?.success === 200) {
+    if (data?.success === 200 && data?.data?.username && data?.data?.region) {
       saveVerifiedPlayer({
         playerId: id,
         zoneId: zone,
@@ -117,14 +117,13 @@ export default function RegionPage() {
           <div
             className={`
               mt-6 rounded-2xl p-4 border
-              ${
-                result.success === 200
-                  ? "bg-emerald-500/10 border-emerald-500/30"
-                  : "bg-red-500/10 border-red-500/30"
+              ${result.success === 200 && result.data?.username && result.data?.region
+                ? "bg-emerald-500/10 border-emerald-500/30"
+                : "bg-red-500/10 border-red-500/30"
               }
             `}
           >
-            {result.success === 200 ? (
+            {result.success === 200 && result.data?.username && result.data?.region ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-emerald-400 font-semibold">
                   <CheckCircle size={18} />
@@ -144,7 +143,7 @@ export default function RegionPage() {
             ) : (
               <div className="flex items-center gap-2 text-red-400 font-semibold">
                 <XCircle size={18} />
-                ID not found
+                ID not found or invalid
               </div>
             )}
           </div>
