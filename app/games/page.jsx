@@ -6,10 +6,12 @@ import Link from "next/link";
 import { FiFilter, FiX } from "react-icons/fi";
 import logo from "@/public/logo.png";
 import GamesFilterModal from "@/components/Games/GamesFilterModal";
+import Loader from "@/components/Loader/Loader";
 
 export default function GamesPage() {
   const [category, setCategory] = useState([]);
   const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [otts, setOtts] = useState(null);
 
   const [memberships, setMemberships] = useState(null);
@@ -40,11 +42,11 @@ export default function GamesPage() {
       .then((res) => res.json())
       .then((data) => {
         setCategory(data?.data?.category || []);
-              const fetchedOtts = data?.data?.otts || null;
+        const fetchedOtts = data?.data?.otts || null;
 
-                    const fetchedMemberships = data?.data?.memberships || null;
-                      setOtts(fetchedOtts);
-            setMemberships(fetchedMemberships);
+        const fetchedMemberships = data?.data?.memberships || null;
+        setOtts(fetchedOtts);
+        setMemberships(fetchedMemberships);
 
         setGames(
           (data?.data?.games || []).map((g) =>
@@ -53,8 +55,11 @@ export default function GamesPage() {
               : g
           )
         );
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) return <Loader />;
 
   /* ================= ACTIVE FILTER COUNT ================= */
   const activeFilterCount =
@@ -120,11 +125,10 @@ export default function GamesPage() {
         href={disabled ? "#" : `/games/${game.gameSlug}`}
         className={`group relative rounded-2xl overflow-hidden
         bg-[var(--card)] border transition-all duration-300
-        ${
-          disabled
+        ${disabled
             ? "opacity-40 pointer-events-none"
             : "hover:-translate-y-1 hover:shadow-2xl hover:border-[var(--accent)]"
-        }`}
+          }`}
       >
         <div className="relative aspect-[4/5]">
           <Image
@@ -229,11 +233,10 @@ export default function GamesPage() {
             onClick={() => setShowFilter(true)}
             className={`relative flex items-center gap-2 px-4 py-2 rounded-xl border
             transition-all
-            ${
-              activeFilterCount > 0
+            ${activeFilterCount > 0
                 ? "bg-[var(--accent)] text-black border-[var(--accent)]"
                 : "bg-[var(--card)] hover:border-[var(--accent)]"
-            }`}
+              }`}
           >
             <FiFilter className="text-lg" />
             <span className="text-sm font-medium">Filter</span>
@@ -262,7 +265,7 @@ export default function GamesPage() {
                 {cat.categoryTitle}
               </h2>
 
-<div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {filtered.map((game, index) => (
                   <GameCard key={index} game={game} />
                 ))}
@@ -277,7 +280,7 @@ export default function GamesPage() {
             All Games
           </h2>
 
-<div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {processGames(games).map((game, i) => (
               <GameCard key={i} game={game} />
             ))}
@@ -286,49 +289,49 @@ export default function GamesPage() {
       </div>
 
       {memberships?.items?.length > 0 && (
-  <div className="max-w-7xl mx-auto mb-14">
-    <div className="flex items-center gap-3 mb-6">
-      <h2 className="text-2xl font-bold text-[var(--foreground)]">
-        {memberships.title}
-      </h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
-      <span className="text-sm text-[var(--muted)]">
-        {memberships.total} plans
-      </span>
-    </div>
+        <div className="max-w-7xl mx-auto mb-14">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-[var(--foreground)]">
+              {memberships.title}
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-[var(--border)] to-transparent" />
+            <span className="text-sm text-[var(--muted)]">
+              {memberships.total} plans
+            </span>
+          </div>
 
-<div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-5">
-      {memberships.items.map((plan) => (
-        <Link
-          key={plan.slug}
-          href={`/games/membership/${plan.slug}`}
-          className="group rounded-2xl bg-[var(--card)]
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-5">
+            {memberships.items.map((plan) => (
+              <Link
+                key={plan.slug}
+                href={`/games/membership/${plan.slug}`}
+                className="group rounded-2xl bg-[var(--card)]
                      border border-[var(--border)]
                      hover:border-[var(--accent)]
                      transition-all duration-300
                      p-5 flex flex-col items-center text-center"
-        >
-          <div className="relative w-20 h-20 mb-4">
-            <Image
-              src={plan.image}
-              alt={plan.name}
-              fill
-              className="object-contain"
-            />
+              >
+                <div className="relative w-20 h-20 mb-4">
+                  <Image
+                    src={plan.image}
+                    alt={plan.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+
+                <h3 className="font-semibold text-[var(--foreground)]">
+                  {plan.name}
+                </h3>
+
+                <span className="mt-1 text-xs text-[var(--muted)]">
+                  {plan.duration}
+                </span>
+              </Link>
+            ))}
           </div>
-
-          <h3 className="font-semibold text-[var(--foreground)]">
-            {plan.name}
-          </h3>
-
-          <span className="mt-1 text-xs text-[var(--muted)]">
-            {plan.duration}
-          </span>
-        </Link>
-      ))}
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
 
       {/* ================= FILTER MODAL ================= */}
