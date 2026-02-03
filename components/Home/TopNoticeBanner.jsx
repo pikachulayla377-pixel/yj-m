@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { FaWhatsapp } from "react-icons/fa";
-import { FiX } from "react-icons/fi";
+import { FiX, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STORAGE_KEY = "hide_whatsapp_banner";
+const MESSAGE_DURATION = 5000; // 5 seconds per message
 
 // ✅ Read from env
 const WHATSAPP_CHANNEL_URL =
@@ -16,14 +17,17 @@ const MESSAGES = [
   {
     title: "Join our WhatsApp Channel",
     subtitle: "Get instant offers, updates & announcements",
+    badge: "VIP ACCESS"
   },
   {
-    title: "For more IDs buy / rent",
-    subtitle: "DM us directly on WhatsApp",
+    title: "Account Support Available",
+    subtitle: "Get help with your game accounts & top-ups",
+    badge: "24/7 LIVE"
   },
   {
-    title: "Got MLBB updated",
-    subtitle: "Latest offers & top-up updates available",
+    title: "Latest MLBB Top-up Updates",
+    subtitle: "New skins and exclusive rewards ready",
+    badge: "NEW OFFERS"
   },
 ];
 
@@ -36,18 +40,17 @@ export default function TopNoticeBanner() {
     if (!hidden && WHATSAPP_CHANNEL_URL) setVisible(true);
   }, []);
 
-  // 🔁 Rotate message every 4 seconds
+  // 🔁 Rotate message every 5 seconds
   useEffect(() => {
     if (!visible) return;
 
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % MESSAGES.length);
-    }, 4000);
+    }, MESSAGE_DURATION);
 
     return () => clearInterval(interval);
   }, [visible]);
 
-  // ✅ Fail safely
   if (!visible || !WHATSAPP_CHANNEL_URL) return null;
 
   const current = MESSAGES[index];
@@ -55,112 +58,112 @@ export default function TopNoticeBanner() {
   return (
     <>
       <motion.div
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -100, opacity: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        onClick={() =>
-          window.open(WHATSAPP_CHANNEL_URL, "_blank", "noopener,noreferrer")
-        }
-        className="
-        group
-        w-full cursor-pointer
-        bg-gradient-to-r
-        from-[var(--accent)]
-        via-[var(--accent-secondary)]
-        to-[var(--accent)]
-        text-[var(--foreground)]
-        shadow-md
-        border-b border-[var(--border)]
-        relative overflow-hidden
-      "
-        whileHover={{ scale: 1.01 }}
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full overflow-hidden border-b border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-xl group"
       >
-        {/* Shimmer effect */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent shimmer-animation"
+        {/* Animated Accent Background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/5 via-transparent to-[var(--accent)]/5 pointer-events-none" />
+
+        {/* Scanline Effect */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[length:100%_2px] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)]" />
+
+        {/* Global Progress Line (Top) */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-[var(--accent)]/20" />
+
+        <div
+          className="max-w-7xl mx-auto px-4 py-3 cursor-pointer relative z-10"
+          onClick={() => window.open(WHATSAPP_CHANNEL_URL, "_blank", "noopener,noreferrer")}
+        >
+          <div className="flex items-center justify-between gap-4">
+
+            {/* Left Section: Icon & Content */}
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              <motion.div
+                className="relative shrink-0"
+                animate={{
+                  scale: [1, 1.05, 1],
+                  filter: ["drop-shadow(0 0 0px var(--accent))", "drop-shadow(0 0 8px var(--accent))", "drop-shadow(0 0 0px var(--accent))"]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <div className="p-2 rounded-xl bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)]">
+                  <FaWhatsapp size={20} />
+                </div>
+              </motion.div>
+
+              <div className="flex flex-col min-w-0">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 20, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, x: -20, filter: "blur(4px)" }}
+                    transition={{ duration: 0.4 }}
+                    className="flex flex-col"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-[9px] font-black tracking-[0.2em] text-[var(--accent)] uppercase hidden sm:inline">
+                        {current.badge}
+                      </span>
+                      <h3 className="text-xs md:text-sm font-bold text-[var(--foreground)] uppercase tracking-wider truncate">
+                        {current.title}
+                      </h3>
+                    </div>
+                    <p className="text-[10px] md:text-xs text-[var(--muted)] truncate font-medium">
+                      {current.subtitle}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Right Section: Action & Close */}
+            <div className="flex items-center gap-3 shrink-0">
+              <motion.div
+                className="hidden md:flex items-center gap-2 bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 text-[var(--accent)] px-4 py-1.5 rounded-lg text-[10px] font-black tracking-widest uppercase transition-all border border-[var(--accent)]/20"
+                whileHover={{ scale: 1.05, x: 2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Connect Panel
+                <FiChevronRight />
+              </motion.div>
+
+              <div className="w-[1px] h-6 bg-[var(--border)] mx-1" />
+
+              <motion.button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sessionStorage.setItem(STORAGE_KEY, "true");
+                  setVisible(false);
+                }}
+                className="p-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-lg hover:bg-[var(--accent)]/10"
+                aria-label="Close"
+                whileHover={{ rotate: 90 }}
+              >
+                <FiX size={18} />
+              </motion.button>
+            </div>
+          </div>
+        </div>
+
+        {/* Tactical Progress Bar (Bottom) */}
+        <div className="absolute bottom-0 left-0 h-[2px] bg-[var(--accent)]/10 w-full overflow-hidden">
+          <motion.div
+            key={index}
+            initial={{ scaleX: 0, originX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: MESSAGE_DURATION / 1000, ease: "linear" }}
+            className="h-full bg-[var(--accent)] shadow-[0_0_10px_var(--accent)]"
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 relative z-10">
-
-          {/* LEFT */}
-          <div className="flex items-center gap-3 min-w-0">
-            <motion.div
-              className="rounded-full p-2 bg-green-500/90 text-white shadow shrink-0"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <FaWhatsapp size={18} />
-            </motion.div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="leading-tight truncate"
-              >
-                <p className="font-semibold text-sm md:text-base truncate">
-                  {current.title}
-                </p>
-                <p className="text-xs md:text-sm text-[var(--muted)] truncate">
-                  {current.subtitle}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* RIGHT */}
-          <div className="flex items-center gap-3 shrink-0">
-            <motion.span
-              className="
-              hidden sm:inline-flex items-center
-              bg-white/90 text-black
-              px-4 py-1.5 rounded-full
-              text-sm font-semibold
-              shadow-sm
-            "
-              whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Chat on WhatsApp
-            </motion.span>
-
-            <motion.button
-              onClick={(e) => {
-                e.stopPropagation();
-                sessionStorage.setItem(STORAGE_KEY, "true");
-                setVisible(false);
-              }}
-              className="rounded-full p-1 hover:bg-black/10 transition"
-              aria-label="Close"
-              whileHover={{ scale: 1.2, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <FiX size={18} />
-            </motion.button>
-          </div>
-        </div>
+        {/* Corner Accents */}
+        <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-[var(--accent)]/40" />
+        <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-[var(--accent)]/40" />
       </motion.div>
-
-      <style jsx>{`
-      .shimmer-animation {
-        animation: shimmer 3s infinite linear;
-      }
-
-      @keyframes shimmer {
-        0% {
-          transform: translateX(-100%);
-        }
-        100% {
-          transform: translateX(200%);
-        }
-      }
-    `}</style>
     </>
   );
 }

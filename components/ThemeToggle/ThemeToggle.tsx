@@ -120,11 +120,10 @@ export default function ThemeToggle() {
               <button
                 key={t.id}
                 onClick={() => changeTheme(t.id)}
-                className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-xs transition-all ${
-                  theme === t.id
+                className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-xs transition-all ${theme === t.id
                     ? "bg-[var(--accent)] text-white font-semibold"
                     : "hover:bg-[var(--accent)] hover:text-white text-[var(--foreground)]"
-                }`}
+                  }`}
               >
                 <span className="text-base emoji-icon">{t.icon}</span>
                 <span>{t.label}</span>

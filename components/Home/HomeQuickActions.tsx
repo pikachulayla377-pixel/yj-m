@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Trophy, Gamepad2, LayoutGrid } from "lucide-react";
+import { Globe, Trophy, Gamepad2, LayoutGrid, Crown } from "lucide-react";
 
 export default function HomeQuickActions() {
   const actions = [
@@ -16,7 +16,7 @@ export default function HomeQuickActions() {
     },
     {
       name: "Region",
-      href: "/check-region",
+      href: "/region",
       icon: Globe,
       delay: "0.2s",
       color: "text-blue-500",
@@ -24,10 +24,19 @@ export default function HomeQuickActions() {
       hover: "hover:bg-blue-500/10",
     },
     {
+      name: "Membership",
+      href: "/games/membership/silver-membership",
+      icon: Crown,
+      delay: "0.3s",
+      color: "text-amber-500",
+      bg: "bg-amber-500/10",
+      hover: "hover:bg-amber-500/10",
+    },
+    {
       name: "Services",
       href: "/services",
       icon: LayoutGrid,
-      delay: "0.3s",
+      delay: "0.4s",
       color: "text-violet-500",
       bg: "bg-violet-500/10",
       hover: "hover:bg-violet-500/10",
@@ -36,7 +45,7 @@ export default function HomeQuickActions() {
       name: "Games",
       href: "/games",
       icon: Gamepad2,
-      delay: "0.4s",
+      delay: "0.5s",
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
       hover: "hover:bg-emerald-500/10",
@@ -44,18 +53,18 @@ export default function HomeQuickActions() {
   ];
 
   return (
-    <section className="w-full px-4 py-6">
-      <div className="max-w-6xl mx-auto grid grid-cols-4 gap-3">
+    <section className="w-full px-2 py-4">
+      <div className="max-w-6xl mx-auto grid grid-cols-5 gap-1.5 sm:gap-3">
         {actions.map((action, index) => (
           <Link
             key={action.name}
             href={action.href}
             className={`
               group
-              flex flex-col items-center justify-center gap-2
-              rounded-2xl
+              flex flex-col items-center justify-center gap-1.5
+              rounded-xl sm:rounded-2xl
               bg-[var(--card)]/30 backdrop-blur-sm
-              p-3
+              p-2 sm:p-3
               transition-all duration-300
               ${action.hover}
               hover:-translate-y-1
