@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { QRCodeCanvas } from "qrcode.react";
-import { FaInstagram, FaWhatsapp, FaHeart } from "react-icons/fa6";
+import {
+  FiInstagram,
+  FiHeart,
+  FiMail,
+  FiShield,
+  FiGlobe,
+  FiExternalLink
+} from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa6";
 import { motion } from "framer-motion";
 
 /* ===================== CONFIG ===================== */
@@ -12,15 +20,13 @@ const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "MewJi";
 const BRAND = {
   name: BRAND_NAME,
   description:
-    "Fast, secure MLBB top-ups with instant delivery and 24×7 support.",
+    "Fast and secure Mobile Legends top-ups with instant delivery and reliable 24/7 support.",
 };
 
 /* ===================== ENV LINKS ===================== */
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "";
 const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "";
-const INSTAGRAM_USERNAME =
-  process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME || "instagram";
 const WHATSAPP_STORE_LINK =
   process.env.NEXT_PUBLIC_WHATSAPP_STORE_LINK || "#";
 
@@ -36,19 +42,19 @@ const WHATSAPP_CHAT_LINK = WHATSAPP_NUMBER
 
 const FOOTER_LINKS = [
   {
-    title: "Quick Links",
+    title: "Company",
     links: [
       { label: "Home", href: "/" },
-      { label: "Region", href: "/region" },
+      { label: "About Us", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "About", href: "/about" },
       { label: "Privacy Policy", href: "/privacy-policy" },
-      { label: "Terms & Conditions", href: "/terms-and-conditions" },
-      { label: "Contact Us", href: "/contact" },
+      { label: "Terms of Service", href: "/terms-and-conditions" },
+      { label: "Region Info", href: "/region" },
     ],
   },
 ];
@@ -59,288 +65,115 @@ const SOCIALS = [
   {
     label: "Instagram",
     href: INSTAGRAM_URL,
-    icon: FaInstagram,
-    hover: "hover:text-[var(--accent)]",
+    icon: FiInstagram,
+    color: "hover:text-pink-500",
   },
   {
     label: "WhatsApp",
     href: WHATSAPP_CHAT_LINK,
     icon: FaWhatsapp,
-    hover: "hover:text-green-500",
+    color: "hover:text-green-500",
   },
 ].filter((s) => s.href);
 
-/* ===================== ANIMATION VARIANTS ===================== */
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-/* ===================== COMPONENT ===================== */
+/* ===================== MAIN COMPONENT ===================== */
 
 export default function Footer() {
   return (
-    <footer className="mt-10 bg-[var(--card)] text-[var(--muted)] border-t border-[var(--border)]">
+    <footer className="relative mt-20 border-t border-[var(--border)] bg-[var(--card)]/30 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
 
-      {/* ================= MAIN ================= */}
-      <motion.div
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={containerVariants}
-      >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-
-          {/* Brand + Trustpilot QR */}
-          <motion.div
-            className="col-span-2 md:col-span-1 flex justify-between gap-3"
-            variants={itemVariants}
-          >
-            {/* Brand Info */}
-            <div>
-              <motion.h2
-                className="relative text-xl font-extrabold tracking-tight leading-tight"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <span
-                  className="
-                    absolute inset-0
-                    bg-gradient-to-r
-                    from-[#facc15]/15
-                    via-[var(--accent)]/15
-                    to-purple-500/15
-                    blur-md
-                    -z-10
-                  "
-                />
-                <span
-                  className="
-                    bg-gradient-to-r
-                    from-[#facc15]
-                    via-[var(--accent)]
-                    to-purple-500
-                    bg-clip-text
-                    text-transparent
-                  "
+          {/* Brand & Description */}
+          <div className="md:col-span-4 space-y-6">
+            <h2 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
+              {BRAND.name}<span className="text-[var(--accent)]">.</span>
+            </h2>
+            <p className="text-base text-[var(--muted)] leading-relaxed max-w-sm">
+              {BRAND.description}
+            </p>
+            <div className="flex items-center gap-4">
+              {SOCIALS.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-2 rounded-full border border-[var(--border)] bg-[var(--background)]/50 transition-all duration-300 ${social.color} hover:border-[var(--accent)] hover:scale-110`}
+                  aria-label={social.label}
                 >
-                  {BRAND.name}
-                </span>
-              </motion.h2>
-
-              <motion.p
-                className="text-[11px] leading-snug max-w-[190px] mt-1"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                {BRAND.description}
-              </motion.p>
-
-              <motion.p
-                className="text-[10px] mt-1 opacity-60"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 0.6 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-              >
-                @{INSTAGRAM_USERNAME}
-              </motion.p>
-            </div>
-
-            {/* Trustpilot QR (Right side) */}
-            <motion.a
-              href={TRUSTPILOT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Give us a review on Trustpilot"
-              className="flex flex-col items-center gap-0.5 hover:opacity-90 transition"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="bg-white p-[2px] rounded border border-[var(--border)]">
-                <QRCodeCanvas
-                  value={TRUSTPILOT_URL}
-                  size={42}
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                  level="Q"
-                />
-              </div>
-
-              <span className="text-[9px] opacity-70 text-center">
-                Give us a<br />review here
-              </span>
-            </motion.a>
-          </motion.div>
-
-          {/* Link Sections */}
-          {FOOTER_LINKS.map((section, sectionIndex) => (
-            <motion.div
-              key={section.title}
-              className="flex flex-col gap-1"
-              variants={itemVariants}
-            >
-              <h3 className="text-[var(--accent)] font-semibold text-xs">
-                {section.title}
-              </h3>
-
-              {section.links.map((link, linkIndex) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + sectionIndex * 0.1 + linkIndex * 0.05, duration: 0.3 }}
-                >
-                  <Link
-                    href={link.href}
-                    className="text-[11px] hover:text-[var(--accent)] transition inline-block"
-                  >
-                    <motion.span
-                      whileHover={{ x: 5 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {link.label}
-                    </motion.span>
-                  </Link>
-                </motion.div>
+                  <social.icon className="w-5 h-5" />
+                </a>
               ))}
-            </motion.div>
-          ))}
+            </div>
+          </div>
 
-          {/* Desktop Socials */}
-          {SOCIALS.length > 0 && (
-            <motion.div
-              className="hidden md:flex flex-col gap-2"
-              variants={itemVariants}
-            >
-              <h3 className="text-[var(--accent)] font-semibold text-xs">
-                Connect
-              </h3>
+          {/* Links Grid */}
+          <div className="md:col-span-1" /> {/* Spacer */}
 
-              <div className="flex gap-3">
-                {SOCIALS.map(({ label, href, icon: Icon, hover }, index) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className={`${hover} transition-colors`}
-                    whileHover={{ scale: 1.2, rotate: 10 }}
-                    whileTap={{ scale: 0.9 }}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + index * 0.1, duration: 0.3 }}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </motion.a>
-                ))}
+          <div className="md:col-span-4 grid grid-cols-2 gap-8">
+            {FOOTER_LINKS.map((section) => (
+              <div key={section.title} className="space-y-6">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] opacity-80">
+                  {section.title}
+                </h3>
+                <ul className="space-y-4">
+                  {section.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-sm font-medium text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </motion.div>
-          )}
+            ))}
+          </div>
+
+          {/* QR / Trust Section */}
+          <div className="md:col-span-3 flex flex-col items-center md:items-end space-y-6 text-center md:text-right">
+            <div className="p-4 bg-white rounded-2xl shadow-sm border border-[var(--border)]">
+              <QRCodeCanvas
+                value={TRUSTPILOT_URL}
+                size={80}
+                bgColor="#ffffff"
+                fgColor="#000000"
+                level="M"
+              />
+            </div>
+            <div className="space-y-2">
+              <h4 className="text-sm font-bold flex items-center justify-center md:justify-end gap-2 text-[var(--foreground)]">
+                <FiShield className="text-green-500" /> Professional Service
+              </h4>
+              <p className="text-xs text-[var(--muted)]">
+                Scan to verify our<br />customer reviews
+              </p>
+            </div>
+          </div>
+
         </div>
-      </motion.div>
 
-      {/* ================= BOTTOM ================= */}
-      <motion.div
-        className="border-t border-[var(--border)] py-2"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.6, duration: 0.5 }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-
-            {/* Mobile Socials */}
-            {SOCIALS.length > 0 && (
-              <div className="flex md:hidden gap-4">
-                {SOCIALS.map(({ label, href, icon: Icon, hover }, index) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className={`${hover} transition-colors`}
-                    whileHover={{ scale: 1.2, rotate: 10 }}
-                    whileTap={{ scale: 0.9 }}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.7 + index * 0.1, duration: 0.3 }}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </motion.a>
-                ))}
-              </div>
-            )}
-
-            {/* Made By */}
-            <motion.p
-              className="text-[10px] text-center"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-            >
-              Made with{" "}
-              <motion.span
-                className="inline-block"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
-              >
-                <FaHeart className="inline w-3 h-3 text-[var(--accent)] mx-0.5" />
-              </motion.span>{" "}
-              by{" "}
+        {/* Divider */}
+        <div className="mt-16 pt-8 border-t border-[var(--border)]/50 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-sm font-medium text-[var(--muted)]">
+            © {new Date().getFullYear()} {BRAND_NAME}. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2 text-[var(--muted)]">
+              Made with <FiHeart className="text-red-500" /> by
               <a
                 href={WHATSAPP_STORE_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[var(--accent)] font-medium hover:underline"
+                className="font-bold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
               >
                 Blue Buff
               </a>
-            </motion.p>
-
-            {/* Copyright */}
-            <motion.p
-              className="text-[10px] opacity-60"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 0.6, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-            >
-              © {new Date().getFullYear()} {BRAND_NAME}
-            </motion.p>
+            </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 }
