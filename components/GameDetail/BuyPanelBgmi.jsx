@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import logo from "@/public/logo.png";
+import { motion } from "framer-motion";
+import { FiArrowRight } from "react-icons/fi";
 
-export default function BuyPanel({
+export default function BuyPanelBgmi({
   activeItem,
   onBuy,
   redirecting,
@@ -11,14 +13,20 @@ export default function BuyPanel({
 }) {
   if (!activeItem) return null;
 
+  const discount = activeItem?.dummyPrice
+    ? Math.round(((activeItem.dummyPrice - activeItem.sellingPrice) / activeItem.dummyPrice) * 100)
+    : 0;
+
   return (
-    <div
+    <motion.div
       ref={buyPanelRef}
-      className="max-w-6xl mx-auto bg-[var(--card)] border border-[var(--border)]
-      rounded-xl p-4 flex flex-col gap-4"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-6xl mx-auto bg-[var(--card)]/50 border border-[var(--border)]
+      rounded-2xl p-4 md:p-5 flex flex-col gap-4 backdrop-blur-md"
     >
       <div className="flex gap-4 items-center">
-        <div className="relative w-[110px] h-[110px] rounded-xl overflow-hidden">
+        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border border-white/5">
           <Image
             src={activeItem?.itemImageId?.image || logo}
             alt={activeItem?.itemName || "Item"}
@@ -28,19 +36,26 @@ export default function BuyPanel({
         </div>
 
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold">
+          <h2 className="text-xl font-bold text-[var(--foreground)] truncate">
             {activeItem?.itemName}
           </h2>
 
-          <div className="flex items-center gap-2 mt-1.5">
-            <p className="text-2xl font-extrabold text-[var(--accent)]">
+          <div className="flex items-center gap-2.5 mt-1">
+            <p className="text-2xl font-black text-[var(--accent)]">
               ₹{activeItem?.sellingPrice}
             </p>
 
             {activeItem?.dummyPrice && (
-              <p className="text-xs line-through text-[var(--muted)]">
-                ₹{activeItem?.dummyPrice}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs line-through text-[var(--muted)] opacity-50 font-bold">
+                  ₹{activeItem?.dummyPrice}
+                </p>
+                {discount > 0 && (
+                  <span className="text-[10px] font-bold text-green-500">
+                    {discount}% off
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -49,14 +64,25 @@ export default function BuyPanel({
       <button
         onClick={() => onBuy(activeItem)}
         disabled={redirecting}
-        className={`w-full py-3 rounded-xl font-bold text-base transition
+        className={`w-full h-12 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2
           ${redirecting
             ? "bg-[var(--border)] text-[var(--muted)] cursor-not-allowed"
-            : "bg-[var(--accent)] text-black hover:opacity-90"
+            : "bg-[var(--accent)] text-black hover:opacity-90 active:scale-[0.98]"
           }`}
       >
-        {redirecting ? "Redirecting…" : "Buy Now →"}
+        {redirecting ? (
+          "Processing order..."
+        ) : (
+          <>
+            Buy Now
+            <FiArrowRight />
+          </>
+        )}
       </button>
-    </div>
+
+      <p className="text-center text-[10px] font-medium text-[var(--muted)] opacity-60">
+        Secure checkout & instant delivery
+      </p>
+    </motion.div>
   );
 }
