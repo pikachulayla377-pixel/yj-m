@@ -124,7 +124,14 @@ export default function Header() {
 
           {/* USER AVATAR */}
           <button
-            onClick={() => !loading && setUserMenuOpen(!userMenuOpen)}
+            onClick={() => {
+              if (loading) return;
+              if (!user) {
+                window.location.href = "/login";
+              } else {
+                setUserMenuOpen(!userMenuOpen);
+              }
+            }}
             className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-[#22d3ee] flex items-center justify-center overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[var(--accent)]/30 ring-2 ring-transparent hover:ring-[var(--accent)]/50"
           >
             {!loading && user?.avatar ? (

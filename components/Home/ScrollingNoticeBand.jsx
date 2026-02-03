@@ -1,84 +1,101 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { FiZap, FiActivity, FiShield, FiClock, FiStar } from "react-icons/fi";
+
 /* ================= NOTICE CONFIG (EDIT HERE) ================= */
 const NOTICE_CONFIG = {
-  brandFallback: "Meowji",
   items: [
     {
-      type: "brand",
-      prefix: "Welcome to",
-      suffix: "Store",
+      type: "status",
+      label: "SYSTEM ACTIVE",
+      icon: FiActivity,
+      color: "#22c55e",
     },
     {
-      type: "text",
-      highlight: "Instant",
-      text: "Instant & Safe Top-Ups",
+      icon: FiStar,
+      highlight: "PREMIUM",
+      text: "FAST & RELIABLE SERVICE",
     },
     {
-      type: "text",
-      highlight: "24×7",
-      text: "24×7 Automated Delivery",
+      icon: FiZap,
+      highlight: "INSTANT",
+      text: "AUTOMATIC DELIVERY",
+    },
+    {
+      icon: FiClock,
+      highlight: "24/7",
+      text: "CUSTOMER SUPPORT",
+    },
+    {
+      icon: FiShield,
+      highlight: "SECURE",
+      text: "SAFE & PROTECTED",
     },
   ],
-  animationDuration: "23s",
+  duration: 30, // Updated speed: Lower is faster
 };
 /* ============================================================= */
 
 export default function ScrollingNoticeBand() {
-  const BRAND_NAME =
-    process.env.NEXT_PUBLIC_BRAND_NAME || NOTICE_CONFIG.brandFallback;
+  // Triple items to ensure it covers even the widest screens for seamless scrolling
+  const scrollingItems = [...NOTICE_CONFIG.items, ...NOTICE_CONFIG.items, ...NOTICE_CONFIG.items];
 
   return (
-    <div className="w-full overflow-hidden bg-[var(--card)] border-b border-[var(--border)] mt-2">
-      <div
-        className="scroll-track py-2 text-sm font-medium whitespace-nowrap text-[var(--foreground)]"
-        style={{ animationDuration: NOTICE_CONFIG.animationDuration }}
+    <div className="relative w-full overflow-hidden bg-[var(--card)]/40 backdrop-blur-xl border-y border-[var(--border)] py-3 group">
+      {/* Subtle Glow & Masking */}
+      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[var(--background)] to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[var(--background)] to-transparent z-10 pointer-events-none" />
+
+      {/* Top Accent Line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-20" />
+
+      <motion.div
+        className="flex whitespace-nowrap items-center"
+        animate={{
+          x: ["0%", "-33.33%"],
+        }}
+        transition={{
+          x: {
+            repeat: Infinity,
+            repeatType: "loop",
+            duration: NOTICE_CONFIG.duration,
+            ease: "linear",
+          },
+        }}
       >
-        {/* Render twice for seamless scrolling */}
-        {[...NOTICE_CONFIG.items, ...NOTICE_CONFIG.items].map(
-          (item, index) => {
-            if (item.type === "brand") {
-              return (
-                <span key={index} className="mx-8">
-                  {item.prefix}{" "}
-                  <b className="text-[var(--accent)]">
-                    {BRAND_NAME} {item.suffix}
-                  </b>
-                </span>
-              );
-            }
+        {scrollingItems.map((item, idx) => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={idx}
+              className="flex items-center gap-10 px-10 shrink-0 border-r border-[var(--border)]/50 last:border-r-0"
+            >
+              {item.type === "status" ? (
+                <div className="flex items-center gap-3">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: item.color }}></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: item.color }}></span>
+                  </span>
+                  <span className="text-[11px] font-black tracking-[0.2em] text-[#22c55e]">
+                    {item.label}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Icon className="text-[var(--accent)] text-sm" />
+                  <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[var(--foreground)]/60">
+                    <span className="text-[var(--accent)] shadow-[0_0_10px_rgba(var(--accent-rgb),0.3)]">{item.highlight}</span> {item.text}
+                  </p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </motion.div>
 
-            if (item.type === "text") {
-              return (
-                <span key={index} className="mx-8">
-                  <b className="text-[var(--accent)]">
-                    {item.highlight}
-                  </b>{" "}
-                  {item.text.replace(item.highlight, "")}
-                </span>
-              );
-            }
-
-            return null;
-          }
-        )}
-      </div>
-
-      <style jsx>{`
-        .scroll-track {
-          display: inline-block;
-          animation: scroll-left linear infinite;
-        }
-
-        @keyframes scroll-left {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      `}</style>
+      {/* Subtle Scanline Effect */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[length:100%_4px] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)]" />
     </div>
   );
 }

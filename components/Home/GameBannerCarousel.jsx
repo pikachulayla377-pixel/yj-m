@@ -168,43 +168,7 @@ export default function GameBannerCarousel() {
           </>
         )}
 
-        {/* Progress Timeline */}
-        {banners.length > 1 && (
-          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/10 z-20 flex gap-0.5">
-            {banners.map((_, i) => (
-              <div key={i} className="relative flex-1 h-full overflow-hidden">
-                {current === i && (
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 6, ease: "linear" }}
-                    className="absolute inset-0 bg-[var(--accent)] origin-left"
-                  />
-                )}
-                {current > i && <div className="absolute inset-0 bg-[var(--accent)]/40" />}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-
-      {/* Pagination Indicators - Premium Style */}
-      {banners.length > 1 && (
-        <div className="flex justify-center items-center gap-3 mt-6">
-          {banners.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); resetTimer(); }}
-              className="relative py-2 group"
-            >
-              <div className={`h-1.5 transition-all duration-500 rounded-full ${current === i
-                ? "w-8 bg-[var(--accent)] shadow-[0_0_15px_var(--accent)]"
-                : "w-4 bg-[var(--muted)]/30 group-hover:bg-[var(--muted)]/50"
-                }`} />
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
