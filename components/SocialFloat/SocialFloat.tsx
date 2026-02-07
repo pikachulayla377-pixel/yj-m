@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Instagram,
@@ -68,6 +69,10 @@ export default function SocialFloat() {
     }
   };
 
+  const pathname = usePathname();
+
+  if (pathname !== "/") return null;
+
   return (
     <div ref={containerRef} className="fixed bottom-6 right-6 z-[100] sm:bottom-8 sm:right-8">
       <div className="relative flex flex-col items-center">
@@ -90,11 +95,8 @@ export default function SocialFloat() {
                 whileHover={{ scale: 1.1, x: -5 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleShare}
-                className="group relative w-12 h-12 rounded-2xl bg-black/60 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--accent)]/50 overflow-hidden"
+                className="group relative w-11 h-11 rounded-full bg-black/60 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--accent)]/50 overflow-hidden"
               >
-                {/* Tactical HUD Corners */}
-                <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-1 right-1 w-2 h-2 border-b border-r border-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <Share2 size={20} className="group-hover:text-[var(--accent)] transition-colors" />
 
@@ -129,12 +131,12 @@ export default function SocialFloat() {
                       <motion.div
                         whileHover={{ scale: 1.1, x: -5 }}
                         whileTap={{ scale: 0.9 }}
-                        className={`w-12 h-12 rounded-2xl bg-black/60 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--accent)]/50 overflow-hidden`}
+                        className={`w-11 h-11 rounded-full bg-black/60 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-white shadow-2xl transition-all hover:border-[var(--accent)]/50 hover:bg-black/80 overflow-hidden`}
                       >
                         {/* Static Gradient Glow */}
                         <div className={`absolute -inset-1 bg-gradient-to-br ${social.color} opacity-0 group-hover:opacity-10 transition-opacity blur-md`} />
 
-                        <Icon size={20} className="group-hover:scale-110 transition-transform" style={{ color: social.accent }} />
+                        <Icon size={20} className="group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" style={{ color: social.accent }} />
 
                         {/* Tactical Label */}
                         <span className="absolute right-16 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-xl border border-white/10 text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 transition-all pointer-events-none whitespace-nowrap shadow-2xl uppercase tracking-[0.2em] translate-x-4 group-hover:translate-x-0">
@@ -157,48 +159,44 @@ export default function SocialFloat() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={`
-            relative w-14 h-14 rounded-[1.25rem] 
-            bg-black/40 backdrop-blur-3xl
+            relative w-11 h-11 rounded-full 
+            bg-black/40 backdrop-blur-md
             flex items-center justify-center text-white
-            shadow-[0_0_30px_-5px_rgba(0,0,0,0.5)] border border-white/10 z-10
+            shadow-[0_0_20px_-5px_rgba(0,0,0,0.5)] border border-white/10 z-10
             group/main overflow-hidden
           `}
         >
           {/* Animated Glow Core */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)]/20 to-transparent opacity-50" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)]/10 to-transparent opacity-50" />
 
           <motion.div
             animate={{
               rotate: isOpen ? 135 : 0,
-              scale: isOpen ? 1.1 : 1
             }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
             className="relative z-10"
           >
-            <Plus size={24} className={isOpen ? "text-[var(--accent)]" : "text-white"} />
+            <Plus size={20} className="text-white" />
           </motion.div>
-
-          {/* HUD Scanline inside button */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#fff_3px)]" style={{ backgroundSize: '100% 4px' }} />
 
           {/* Pulse Effect */}
           {!isOpen && (
             <motion.div
               animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0, 0.3]
+                scale: [1, 1.1, 1],
+                opacity: [0.2, 0, 0.2]
               }}
               transition={{
                 duration: 3,
                 repeat: Infinity,
                 ease: "linear"
               }}
-              className="absolute inset-0 rounded-[1.25rem] border border-[var(--accent)]/30"
+              className="absolute inset-0 rounded-full border border-[var(--accent)]/30"
             />
           )}
 
           {/* Hover Border Glow */}
-          <div className="absolute inset-0 border border-[var(--accent)]/0 group-hover/main:border-[var(--accent)]/40 rounded-[1.25rem] transition-colors duration-500" />
+          <div className="absolute inset-0 border border-[var(--accent)]/0 group-hover/main:border-[var(--accent)]/40 rounded-full transition-colors duration-500" />
         </motion.button>
       </div>
     </div>

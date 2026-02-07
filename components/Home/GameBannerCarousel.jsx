@@ -6,12 +6,12 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import logo from "@/public/logo.png";
-import Loader from "@/components/Loader/Loader";
+
 
 export default function GameBannerCarousel() {
   const [banners, setBanners] = useState([]);
   const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(true);
+
   const [direction, setDirection] = useState(0); // -1 for left, 1 for right
   const timerRef = useRef(null);
 
@@ -35,8 +35,7 @@ export default function GameBannerCarousel() {
         setBanners(json?.data || []);
       } catch {
         if (active) setBanners([]);
-      } finally {
-        if (active) setLoading(false);
+
       }
     })();
     return () => { active = false; if (timerRef.current) clearInterval(timerRef.current); };
@@ -53,11 +52,7 @@ export default function GameBannerCarousel() {
     resetTimer();
   };
 
-  if (loading) return (
-    <div className="w-full max-w-6xl mx-auto mt-6 md:mt-8 h-[240px] sm:h-[280px] md:h-[340px] bg-[var(--card)] rounded-3xl animate-pulse flex items-center justify-center">
-      <Loader />
-    </div>
-  );
+
   if (!banners.length) return null;
 
   const currentBanner = banners[current];
