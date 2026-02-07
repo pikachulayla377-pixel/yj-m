@@ -15,7 +15,7 @@ export default function Chatbot() {
     // We'll use a generic email or assume one doesn't exist in env and provide a placeholder or instructions.
     // Since the user said "take from env", and I found no email env, I will use a placeholder that encourages checking the .env file or manually updating.
     // However, I can try to infer or use the brand name to construct one if needed, but safer to just state it's from env (even if missing).
-    const supportEmail = process.env.GMAIL_USER || "support@yuji.com"; // Fallback to a generic one if env is missing, or maybe undefined.
+    const supportEmail = process.env.GMAIL_USER || "hackerrai035@gmail.com"; // Fallback to a generic one if env is missing, or maybe undefined.
 
     // Close when clicking outside
     useEffect(() => {
