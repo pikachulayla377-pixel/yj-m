@@ -47,7 +47,7 @@ export default function HomeServices() {
               </span>
 
               <motion.a
-                href="https://wa.me/916372305866"
+                href="https://wa.me/919178521537"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}

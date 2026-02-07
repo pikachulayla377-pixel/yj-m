@@ -17,7 +17,7 @@ export default function Loader() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[var(--background)]"
+      className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-[var(--background)]"
     >
       <div className="relative flex items-center justify-center h-64 w-64">
         {/* Subtle Ambient Background Glow */}
