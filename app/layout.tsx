@@ -4,8 +4,10 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import SocialFloat from "@/components/SocialFloat/SocialFloat";
 import Chatbot from "@/components/Chatbot/Chatbot";
+import Maintenance from "@/components/Maintenance/Maintenance";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { FEATURE_FLAGS } from "@/lib/config";
 
 
 export const metadata: Metadata = {
@@ -23,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-black text-white">
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-
+          {FEATURE_FLAGS.MAINTENANCE_MODE && <Maintenance />}
           <Header />
           <main className="pt-20">{children}</main>
           <Footer />
