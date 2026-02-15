@@ -42,7 +42,27 @@ const socialLinks = [
 
 export default function SocialFloat() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+
+  // Scroll handling
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // Scrolling down
+        setIsVisible(true);
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up
+        setIsVisible(false);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -74,7 +94,17 @@ export default function SocialFloat() {
   if (pathname !== "/") return null;
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-6 z-[100] sm:bottom-8 sm:right-8">
+    <motion.div
+      ref={containerRef}
+      initial={false}
+      animate={{
+        y: isVisible ? 0 : 100,
+        opacity: isVisible ? 1 : 0,
+        scale: isVisible ? 1 : 0.8
+      }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className="fixed bottom-6 right-6 z-[100] sm:bottom-8 sm:right-8"
+    >
       <div className="relative flex flex-col items-center">
 
         {/* ================= TACTICAL MENU ================= */}
@@ -199,7 +229,7 @@ export default function SocialFloat() {
           <div className="absolute inset-0 border border-[var(--accent)]/0 group-hover/main:border-[var(--accent)]/40 rounded-full transition-colors duration-500" />
         </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

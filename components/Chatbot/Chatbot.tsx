@@ -3,11 +3,36 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Chatbot() {
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
     const [inputValue, setInputValue] = useState("");
+    const [isVisible, setIsVisible] = useState(true);
+    const lastScrollY = useRef(0);
+
+    // Don't show in games section
+    const isHidden = pathname?.startsWith("/games");
+
+    // Scroll handling
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+                // Scrolling down
+                setIsVisible(true);
+            } else if (currentScrollY < lastScrollY.current) {
+                // Scrolling up
+                setIsVisible(false);
+            }
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
     const containerRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -56,8 +81,20 @@ export default function Chatbot() {
         }, 600);
     };
 
+    if (isHidden) return null;
+
     return (
-        <div ref={containerRef} className="fixed bottom-6 left-6 z-[100] sm:bottom-8 sm:left-8 font-sans">
+        <motion.div
+            ref={containerRef}
+            initial={false}
+            animate={{
+                y: isVisible ? 0 : 100,
+                opacity: isVisible ? 1 : 0,
+                scale: isVisible ? 1 : 0.8
+            }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="fixed bottom-6 left-6 z-[100] sm:bottom-8 sm:left-8 font-sans"
+        >
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -176,6 +213,6 @@ export default function Chatbot() {
                     <span className="absolute -inset-1 rounded-full border border-[var(--accent)] opacity-40 animate-ping pointer-events-none" />
                 )}
             </motion.button>
-        </div>
+        </motion.div>
     );
 }

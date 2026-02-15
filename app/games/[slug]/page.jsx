@@ -13,6 +13,7 @@ import ItemGrid from "@/components/GameDetail/ItemGrid";
 import BuyPanel from "@/components/GameDetail/BuyPanel";
 import ItemGridBgmi from "@/components/GameDetail/ItemGridBgmi";
 import BuyPanelBgmi from "@/components/GameDetail/BuyPanelBgmi";
+import GameSwitcher from "@/components/GameDetail/GameSwitcher";
 
 export default function GameDetailPage() {
   const { slug } = useParams();
@@ -117,6 +118,8 @@ export default function GameDetailPage() {
 
   return (
     <section className="min-h-screen bg-[var(--background)] text-[var(--foreground)] px-4 py-6">
+
+      <GameSwitcher />
 
       {/* ================= HEADER ================= */}
       <div className="max-w-6xl mx-auto mb-6 flex items-center gap-4">
