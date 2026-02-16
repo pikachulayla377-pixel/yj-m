@@ -1,12 +1,26 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Banner from "@/models/Banner";
+import jwt from "jsonwebtoken";
 
-export async function GET() {
+export async function GET(req) {
   try {
     await connectDB();
 
-    const banners = await Banner.find() // 👈 FILTER HERE
+    /* ================= AUTH ================= */
+    const auth = req.headers.get("authorization");
+    if (!auth?.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = auth.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.userType !== "owner") {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+    }
+
+    const banners = await Banner.find()
       .sort({ bannerDate: -1 })
       .lean();
 

@@ -18,11 +18,11 @@ import BannersTab from "@/components/admin/BannersTab";
 
 export default function AdminPanalPage() {
   const [activeTab, setActiveTab] = useState("users");
-
   const [queries, setQueries] = useState([]);
-
   const [balance, setBalance] = useState(null);
   const [banners, setBanners] = useState([]);
+  const [isOwner, setIsOwner] = useState(false);
+  const [checkingRole, setCheckingRole] = useState(true);
 
 
   /* ================= TABLE CONTROLS ================= */
@@ -49,7 +49,10 @@ export default function AdminPanalPage() {
   /* ================= FETCH BALANCE ================= */
   const fetchBalance = async () => {
     try {
-      const res = await fetch("/api/game/balance");
+      const token = sessionStorage.getItem("token");
+      const res = await fetch("/api/game/balance", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       if (data.success) {
         setBalance(data?.balance?.data?.balance ?? data.balance);
@@ -61,13 +64,13 @@ export default function AdminPanalPage() {
 
 
   const fetchBanners = async () => {
-  const token = sessionStorage.getItem("token");
-  const res = await fetch("/api/admin/banners/game-banners", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const data = await res.json();
-  setBanners(data.data || []);
-};
+    const token = sessionStorage.getItem("token");
+    const res = await fetch("/api/admin/banners/game-banners", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setBanners(data.data || []);
+  };
 
 
 
@@ -124,45 +127,77 @@ export default function AdminPanalPage() {
 
   /* ================= EFFECTS ================= */
   useEffect(() => {
-    fetchBalance();
+    const checkRole = async () => {
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success && data.user.userType === "owner") {
+          setIsOwner(true);
+          fetchBalance();
+        } else {
+          window.location.href = "/";
+        }
+      } catch (err) {
+        window.location.href = "/";
+      } finally {
+        setCheckingRole(false);
+      }
+    };
+
+    checkRole();
   }, []);
 
   useEffect(() => {
     resetControls();
   }, [activeTab]);
-  useEffect(() => {
-  if (activeTab === "banners") fetchBanners();
-}, [activeTab]);
-
 
   useEffect(() => {
+    if (activeTab === "banners" && isOwner) fetchBanners();
+  }, [activeTab, isOwner]);
 
-    if (activeTab === "pricing") fetchPricing(pricingType);
-  }, [activeTab, pricingType, page, search]);
+  useEffect(() => {
+    if (activeTab === "pricing" && isOwner) fetchPricing(pricingType);
+  }, [activeTab, pricingType, page, search, isOwner]);
+
+  if (checkingRole) return (
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent)]"></div>
+    </div>
+  );
+
+  if (!isOwner) return null;
 
   return (
     <AuthGuard>
       <section className="min-h-screen bg-[var(--background)] px-6 py-3">
         <div className="max-w-6xl mx-auto">
-{/* HEADER */}
-<div className="mb-4">
-  <div className="flex items-center gap-2">
-    <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-[var(--foreground)]">
-      Admin Panel
-    </h1>
+          {/* HEADER */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-[var(--foreground)]">
+                Admin Panel
+              </h1>
 
-    {/* Accent status dot */}
-    <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-  </div>
+              {/* Accent status dot */}
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+            </div>
 
-  <p className="mt-0.5 text-xs md:text-sm text-[var(--muted)] max-w-lg leading-snug">
-    Manage users, orders, transactions, queries & pricing
-  </p>
-</div>
+            <p className="mt-0.5 text-xs md:text-sm text-[var(--muted)] max-w-lg leading-snug">
+              Manage users, orders, transactions, queries & pricing
+            </p>
+          </div>
 
 
-{/* BALANCE */}
-<div className="
+          {/* BALANCE */}
+          <div className="
   mb-6
   relative
   rounded-xl
@@ -171,36 +206,36 @@ export default function AdminPanalPage() {
   px-5 py-4
 ">
 
-  {/* Top accent bar */}
-  <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-[var(--accent)] to-purple-500 rounded-t-xl" />
+            {/* Top accent bar */}
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-[var(--accent)] to-purple-500 rounded-t-xl" />
 
-  <p className="text-xs uppercase tracking-wide text-[var(--muted)]">
-    Account Balance
-  </p>
+            <p className="text-xs uppercase tracking-wide text-[var(--muted)]">
+              Account Balance
+            </p>
 
-  <div className="mt-1 flex items-end gap-2">
-    <p className="text-2xl font-bold text-[var(--foreground)]">
-      {balance !== null ? balance : "Loading…"}
-    </p>
+            <div className="mt-1 flex items-end gap-2">
+              <p className="text-2xl font-bold text-[var(--foreground)]">
+                {balance !== null ? balance : "Loading…"}
+              </p>
 
-    <span className="text-sm font-medium text-green-500">
-      Available
-    </span>
-  </div>
-</div>
+              <span className="text-sm font-medium text-green-500">
+                Available
+              </span>
+            </div>
+          </div>
 
 
-    {/* TABS */}
-<div className="mb-5 flex flex-wrap gap-2">
-  {["users", "orders", "transactions", "queries", "pricing", "banners"].map(
-    (tab) => {
-      const isActive = activeTab === tab;
+          {/* TABS */}
+          <div className="mb-5 flex flex-wrap gap-2">
+            {["users", "orders", "transactions", "queries", "pricing", "banners"].map(
+              (tab) => {
+                const isActive = activeTab === tab;
 
-      return (
-        <button
-          key={tab}
-          onClick={() => setActiveTab(tab)}
-          className={`
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`
             relative
             px-3.5 py-1.5
             rounded-lg
@@ -209,28 +244,27 @@ export default function AdminPanalPage() {
             border
             transition-all duration-200
             focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/40
-            ${
-              isActive
-                ? `
+            ${isActive
+                        ? `
                   bg-[var(--accent)]/15
                   text-[var(--accent)]
                   border-[var(--accent)]/40
                 `
-                : `
+                        : `
                   bg-[var(--card)]
                   text-[var(--muted)]
                   border-[var(--border)]
                   hover:text-[var(--foreground)]
                   hover:border-[var(--accent)]/30
                 `
-            }
+                      }
           `}
-        >
-          {tab.toUpperCase()}
+                  >
+                    {tab.toUpperCase()}
 
-          {/* Active underline */}
-          {isActive && (
-            <span className="
+                    {/* Active underline */}
+                    {isActive && (
+                      <span className="
               absolute left-1/2 -bottom-1
               h-0.5 w-6
               -translate-x-1/2
@@ -239,12 +273,12 @@ export default function AdminPanalPage() {
               from-[var(--accent)]
               to-purple-500
             " />
-          )}
-        </button>
-      );
-    }
-  )}
-</div>
+                    )}
+                  </button>
+                );
+              }
+            )}
+          </div>
 
 
 
@@ -252,13 +286,13 @@ export default function AdminPanalPage() {
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6">
             {activeTab === "users" && (
               <UsersTab
-              
+
               />
             )}
 
             {activeTab === "orders" && (
               <OrdersTab
-             
+
               />
             )}
 
@@ -268,12 +302,12 @@ export default function AdminPanalPage() {
 
             {activeTab === "queries" && (
               <SupportQueriesTab
-               
+
               />
             )}
             {activeTab === "banners" && (
-  <BannersTab banners={banners} onRefresh={fetchBanners} />
-)}
+              <BannersTab banners={banners} onRefresh={fetchBanners} />
+            )}
 
 
             {activeTab === "pricing" && (
@@ -290,7 +324,7 @@ export default function AdminPanalPage() {
             )}
           </div>
 
-        
+
         </div>
       </section>
     </AuthGuard>

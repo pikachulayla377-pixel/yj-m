@@ -12,11 +12,11 @@ import logo from "@/public/logo.png";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [imgError, setImgError] = useState(false);
 
   const dropdownRef = useRef(null);
 
@@ -37,6 +37,7 @@ export default function Header() {
       .then((data) => {
         if (data.success) {
           setUser(data.user);
+          setImgError(false); // Reset error on new user
         } else {
           sessionStorage.removeItem("token");
         }
@@ -48,6 +49,7 @@ export default function Header() {
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     setUser(null);
+    setImgError(false);
     window.location.href = "/";
   };
 
@@ -96,13 +98,6 @@ export default function Header() {
         {/* DESKTOP NAV */}
         <nav className="hidden md:flex items-center space-x-1 text-[var(--muted)]">
           <Link
-            href="/"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:text-[var(--foreground)] hover:bg-[var(--accent)]/10"
-          >
-            <HiHome size={18} />
-            <span>Home</span>
-          </Link>
-          <Link
             href="/region"
             className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:text-[var(--foreground)] hover:bg-[var(--accent)]/10"
           >
@@ -134,13 +129,14 @@ export default function Header() {
             }}
             className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-[#22d3ee] flex items-center justify-center overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[var(--accent)]/30 ring-2 ring-transparent hover:ring-[var(--accent)]/50"
           >
-            {!loading && user?.avatar ? (
+            {!loading && user?.avatar && !imgError ? (
               <Image
                 src={user.avatar}
                 alt="User Avatar"
                 width={40}
                 height={40}
                 className="object-cover w-full h-full"
+                onError={() => setImgError(true)}
               />
             ) : (
               <FaUser className="text-white" />
@@ -251,50 +247,11 @@ export default function Header() {
             </div>
           )}
 
-          {/* MOBILE MENU ICON */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-[var(--foreground)] text-2xl w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-300 hover:bg-[var(--accent)]/10"
-          >
-            <span className="transition-transform duration-300" style={{ display: 'inline-block', transform: menuOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>
-              {menuOpen ? "✕" : "☰"}
-            </span>
-          </button>
+          {/* LOGOUT BUTTON OR LOGIN (Handled in dropdown) */}
         </div>
       </div>
 
-      {/* MOBILE NAV */}
-      <div
-        className={`md:hidden transition-all duration-500 overflow-hidden ${menuOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
-          } bg-[var(--card)]/95 backdrop-blur-xl border-t border-[var(--border)]`}
-      >
-        <nav className="flex flex-col px-4 py-4 space-y-2 text-[var(--muted)]">
-          <Link
-            href="/"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[var(--accent)]/10 hover:text-[var(--foreground)]"
-          >
-            <HiHome size={20} />
-            <span className="font-medium">Home</span>
-          </Link>
-          <Link
-            href="/region"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[var(--accent)]/10 hover:text-[var(--foreground)]"
-          >
-            <HiGlobeAlt size={20} />
-            <span className="font-medium">Region</span>
-          </Link>
-          <Link
-            href="/services"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[var(--accent)]/10 hover:text-[var(--foreground)]"
-          >
-            <HiCube size={20} />
-            <span className="font-medium">Services</span>
-          </Link>
-        </nav>
-      </div>
+
 
       <style jsx>{`
         @keyframes slideDown {
