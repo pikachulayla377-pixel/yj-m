@@ -164,18 +164,34 @@ export default function Header() {
                 </div>
               ) : (
                 <>
-                  {/* WALLET */}
-                  <div className="p-4 bg-gradient-to-br from-[var(--accent)]/10 to-[#22d3ee]/10 border-b border-[var(--border)]">
-                    <Link href="/dashboard" onClick={() => setUserMenuOpen(false)}>
-                      <div className="flex items-center justify-between bg-[var(--background)] px-4 py-3 rounded-xl border border-[var(--border)] transition-all duration-300 hover:border-[var(--accent)] hover:shadow-md group">
-                        <span className="text-[var(--accent)] font-bold text-lg">
-                          ₹{user.wallet}
-                        </span>
-                        <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90">
-                          <FiPlus size={18} className="text-white" />
+                  {/* USER PROFILE */}
+                  <div className="p-5 bg-gradient-to-br from-[var(--accent)]/5 to-transparent border-b border-[var(--border)]">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[#22d3ee] p-[2px] shadow-lg">
+                        <div className="w-full h-full rounded-[0.9rem] bg-[var(--card)] overflow-hidden flex items-center justify-center">
+                          {user?.avatar && !imgError ? (
+                            <Image
+                              src={user.avatar}
+                              alt={user.name}
+                              width={56}
+                              height={56}
+                              className="object-cover w-full h-full"
+                              onError={() => setImgError(true)}
+                            />
+                          ) : (
+                            <FaUser className="text-[var(--accent)] text-xl" />
+                          )}
                         </div>
                       </div>
-                    </Link>
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-bold text-[var(--foreground)] truncate text-base leading-tight">
+                          {user.name}
+                        </span>
+                        <span className="text-[11px] text-[var(--muted)] truncate mt-0.5">
+                          {user.email}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="p-2">
@@ -236,10 +252,10 @@ export default function Header() {
 
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-300 hover:bg-red-500/10 hover:text-red-500 group"
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-300 bg-rose-500/5 text-rose-500 hover:bg-rose-500/15 group"
                     >
                       <FiLogOut size={18} className="transition-transform duration-300 group-hover:scale-110 group-hover:translate-x-1" />
-                      <span className="font-medium">Logout</span>
+                      <span className="font-bold">Logout</span>
                     </button>
                   </div>
                 </>
