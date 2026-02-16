@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GoogleLogin } from "@react-oauth/google";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, Lock, Globe, ArrowRight, Activity, Cpu, Shield, Zap } from "lucide-react";
+import { ShieldCheck, Lock, ArrowRight, UserCheck } from "lucide-react";
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);
@@ -54,113 +54,68 @@ export default function AuthPage() {
   if (!mounted) return null;
 
   return (
-    <section className="min-h-screen relative flex items-center justify-center bg-[var(--background)] overflow-hidden px-4 font-sans selection:bg-[var(--accent)]/30">
+    <section className="min-h-screen relative flex items-center justify-center bg-[var(--background)] overflow-hidden px-4 py-20 font-sans selection:bg-[var(--accent)]/30">
 
-      {/* --- Tactical Background System --- */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Dynamic Gradient Orbs */}
+      {/* --- Premium Background System --- */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Cinematic Orbs */}
         <motion.div
           animate={{
-            scale: [1, 1.1, 1],
-            x: [0, 30, 0],
-            y: [0, 20, 0],
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+            opacity: [0.15, 0.2, 0.15],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-1/4 -left-1/4 w-full h-full bg-gradient-to-br from-[var(--accent)] to-transparent blur-[160px] rounded-full"
+        />
+        <motion.div
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [0, -90, 0],
             opacity: [0.1, 0.15, 0.1],
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-[5%] -left-[5%] w-[50%] h-[50%] bg-[var(--accent)] blur-[120px] rounded-full"
-        />
-        <motion.div
-          animate={{
-            scale: [1.1, 1, 1.1],
-            x: [0, -30, 0],
-            y: [0, -20, 0],
-            opacity: [0.08, 0.12, 0.08],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-[5%] -right-[5%] w-[40%] h-[40%] bg-[#06b6d4] blur-[100px] rounded-full"
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -bottom-1/4 -right-1/4 w-full h-full bg-gradient-to-tl from-[#7dd3fc] to-transparent blur-[140px] rounded-full"
         />
 
-        {/* Scanline Effect */}
-        <div className="absolute inset-0 z-10 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, var(--foreground) 3px)`,
-            backgroundSize: '100% 4px'
-          }}
-        />
-
-        {/* Tactical Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, var(--accent) 1px, transparent 1px),
-              linear-gradient(to bottom, var(--accent) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px'
-          }}
-        />
-
-        {/* Small Data Points Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.1]"
-          style={{
-            backgroundImage: `radial-gradient(var(--accent) 0.5px, transparent 0.5px)`,
-            backgroundSize: '20px 20px'
-          }}
+        {/* Subtle Noise/Grain Overlay */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
         />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-        className="relative w-full max-w-[400px] z-10"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full max-w-[420px] z-10"
       >
         {/* --- Card Container --- */}
-        <div className="relative group">
-          {/* Outer Glow & Border Pulse */}
-          <div className="absolute -inset-[2px] bg-gradient-to-tr from-[var(--accent)]/40 via-transparent to-[var(--accent)]/30 rounded-[2rem] blur-[8px] opacity-40 group-hover:opacity-70 transition-opacity duration-500" />
+        <div className="relative">
+          {/* Subtle Outer Glow */}
+          <div className="absolute -inset-4 bg-[var(--accent)]/10 blur-3xl rounded-[2.5rem] opacity-50 pointer-events-none" />
 
-          <div className="relative rounded-[2rem] bg-black/40 backdrop-blur-3xl border border-white/10 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden p-8 sm:p-10">
-
-            {/* Corner Markers */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent)]/40 rounded-tl-xl m-4" />
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent)]/40 rounded-tr-xl m-4" />
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent)]/40 rounded-bl-xl m-4" />
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent)]/40 rounded-br-xl m-4" />
-
-            {/* Top Indicator */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 flex gap-1 pt-4">
-              <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/30 animate-pulse" />
-              <div className="w-8 h-1 rounded-full bg-[var(--accent)]/10 overflow-hidden">
-                <motion.div
-                  animate={{ x: ["-100%", "100%"] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  className="w-full h-full bg-[var(--accent)]/50"
-                />
-              </div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/30 animate-pulse" />
-            </div>
+          <div className="relative rounded-[2.5rem] bg-[var(--card)]/40 backdrop-blur-2xl border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] overflow-hidden p-8 sm:p-12">
 
             {/* BRANDING SECTION */}
-            <div className="mb-8 text-center relative pt-4">
+            <div className="mb-10 text-center">
               <motion.div
-                initial={{ rotateY: 180, opacity: 0 }}
-                animate={{ rotateY: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="mx-auto mb-6 h-20 w-20 relative flex items-center justify-center"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="mx-auto mb-6 h-20 w-20 relative"
               >
-                {/* Logo Backdrop */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/20 to-transparent blur-2xl rounded-full" />
+                {/* Logo Halo */}
+                <div className="absolute inset-0 bg-[var(--accent)]/20 blur-2xl rounded-full animate-pulse" />
 
-                <div className="relative h-full w-full rounded-2xl bg-gradient-to-br from-[var(--accent)]/50 to-transparent p-[1.5px] group-hover:p-[2px] transition-all duration-300">
-                  <div className="h-full w-full rounded-[0.9rem] bg-[#0a0a0a] flex items-center justify-center overflow-hidden border border-white/5 shadow-inner">
+                <div className="relative h-full w-full rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-[1px]">
+                  <div className="h-full w-full rounded-2xl bg-[#0a0a0a]/80 backdrop-blur-md flex items-center justify-center border border-white/5 shadow-inner">
                     <Image
                       src="/logo.png"
                       alt="yuji Logo"
-                      width={48}
-                      height={48}
-                      className="object-contain filter brightness-110 contrast-110"
+                      width={44}
+                      height={44}
+                      className="object-contain"
                       priority
                     />
                   </div>
@@ -171,12 +126,13 @@ export default function AuthPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
+                className="space-y-1"
               >
-                <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
+                <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
                   Welcome back
                 </h1>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  Please sign in to continue
+                <p className="text-sm text-[var(--muted)] font-medium">
+                  Login to your account to continue
                 </p>
               </motion.div>
             </div>
@@ -185,10 +141,10 @@ export default function AuthPage() {
             <AnimatePresence mode="wait">
               {error && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0, x: -10 }}
-                  animate={{ opacity: 1, height: "auto", x: 0 }}
-                  exit={{ opacity: 0, height: 0, x: 10 }}
-                  className="mb-4 rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs text-red-500 flex items-center gap-3 overflow-hidden font-medium"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="mb-6 rounded-2xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-500 flex items-center gap-3 font-semibold"
                 >
                   <Lock size={14} className="flex-shrink-0" />
                   {error}
@@ -196,12 +152,12 @@ export default function AuthPage() {
               )}
               {success && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0, x: -10 }}
-                  animate={{ opacity: 1, height: "auto", x: 0 }}
-                  exit={{ opacity: 0, height: 0, x: 10 }}
-                  className="mb-4 rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3 text-xs text-green-500 flex items-center gap-3 overflow-hidden font-medium"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="mb-6 rounded-2xl border border-green-500/10 bg-green-500/5 px-4 py-3 text-xs text-green-500 flex items-center gap-3 font-semibold"
                 >
-                  <ShieldCheck size={14} className="flex-shrink-0" />
+                  <UserCheck size={14} className="flex-shrink-0" />
                   {success}
                 </motion.div>
               )}
@@ -209,61 +165,62 @@ export default function AuthPage() {
 
             {/* AUTH ACTIONS */}
             <div className="space-y-6">
-              <div className="relative group/btn">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--accent)]/50 to-transparent rounded-xl opacity-0 group-hover/btn:opacity-50 transition-opacity blur-sm" />
-                <div className="relative bg-white/5 rounded-xl border border-white/10 hover:border-[var(--accent)]/50 transition-colors">
-                  <GoogleLogin
-                    onSuccess={(res) => res.credential && handleGoogleLogin(res.credential)}
-                    onError={() => setError("Google login error")}
-                    theme="filled_black"
-                    size="large"
-                    shape="square"
-                    width="100%"
-                  />
-                </div>
+              <div className="relative group/btn overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/5 transition-all duration-300 hover:border-[var(--accent)]/50 hover:bg-white/[0.08]">
+                <GoogleLogin
+                  onSuccess={(res) => res.credential && handleGoogleLogin(res.credential)}
+                  onError={() => setError("Google protocol failed")}
+                  theme="filled_black"
+                  size="large"
+                  shape="pill"
+                  width="100%"
+                />
               </div>
 
-              {/* PROGRESS INDICATOR */}
+              {/* LOADING STATE INDICATOR */}
               <AnimatePresence>
                 {loading && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="pt-2 flex flex-col gap-2"
+                    className="flex flex-col items-center gap-3 pt-2"
                   >
-                    <div className="flex justify-between items-center px-1">
-                      <span className="text-[10px] text-[var(--accent)] uppercase tracking-tighter">Authenticating...</span>
+                    <div className="flex gap-1.5">
+                      {[0, 1, 2].map((i) => (
+                        <motion.div
+                          key={i}
+                          animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                          className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"
+                        />
+                      ))}
                     </div>
-                    <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                      <motion.div
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "0%" }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                        className="w-full h-full bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"
-                      />
-                    </div>
+                    <span className="text-[10px] text-[var(--accent)] font-bold uppercase tracking-widest">Securing Connection</span>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* LEGAL FOOTER */}
-            <div className="mt-8 pt-6 border-t border-white/5 text-center flex flex-col gap-4">
-              <p className="text-[10px] text-[var(--muted)] leading-relaxed">
-                By continuing, you agree to our{" "}
-                <button className="text-[var(--accent)] font-medium hover:underline">Terms</button>
-                {" "}&{" "}
-                <button className="text-[var(--accent)] font-medium hover:underline">Privacy Policy</button>
-              </p>
+            {/* FOOTER */}
+            <div className="mt-12 space-y-6">
+              <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center gap-2 text-[11px] font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-all group/home"
-              >
-                <ArrowRight size={14} className="rotate-180 group-hover/home:-translate-x-1 transition-transform" />
-                Back to Home
-              </Link>
+              <div className="flex flex-col items-center gap-5">
+                <p className="text-[10px] text-[var(--muted)] tracking-wide leading-relaxed text-center px-4">
+                  By signing in, you agree to our{" "}
+                  <button className="text-[var(--foreground)] font-bold hover:text-[var(--accent)] transition-colors underline underline-offset-4 decoration-white/20">Terms of Service</button>
+                  {" "}and{" "}
+                  <button className="text-[var(--foreground)] font-bold hover:text-[var(--accent)] transition-colors underline underline-offset-4 decoration-white/20">Privacy Policy</button>
+                </p>
+
+                <Link
+                  href="/"
+                  className="group inline-flex items-center gap-2 text-xs font-bold text-[var(--muted)] hover:text-[var(--foreground)] transition-all"
+                >
+                  <ArrowRight size={14} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
+                  Back to homepage
+                </Link>
+              </div>
             </div>
           </div>
         </div>

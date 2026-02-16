@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const themes = [
   // 🌍 Core
@@ -100,66 +101,71 @@ export default function ThemeToggle() {
 
   return (
     <div className="relative inline-block text-left theme-toggle-container">
-      {/* 🎨 Current Theme Button */}
+      {/* 🎨 Current Theme Button (Icon Only) */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1 border border-[var(--border)] rounded-full bg-[var(--card)] hover:bg-[var(--accent)] hover:text-white text-xs font-medium transition-all shadow-md hover:shadow-lg"
+        className="w-10 h-10 flex items-center justify-center border border-[var(--border)] rounded-full bg-[var(--card)]/40 backdrop-blur-md hover:bg-[var(--accent)] hover:border-[var(--accent)] group transition-all duration-300 shadow-lg hover:shadow-[var(--accent)]/40 outline-none"
         aria-label="Select Theme"
       >
-        <span className="text-base inline-block animate-sway">
+        <span className={`text-xl transition-transform duration-500 ${open ? 'rotate-180 scale-110' : 'group-hover:scale-120'}`}>
           {currentTheme?.icon || "🎨"}
         </span>
-        <span>{currentTheme?.label || "Theme"}</span>
       </button>
 
-      {/* 🪄 Dropdown Menu */}
-      {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-md max-h-56 overflow-y-auto">
-          <div className="py-1">
-            {themes.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => changeTheme(t.id)}
-                className={`flex items-center gap-2 w-full text-left px-3 py-1.5 text-xs transition-all ${theme === t.id
-                    ? "bg-[var(--accent)] text-white font-semibold"
-                    : "hover:bg-[var(--accent)] hover:text-white text-[var(--foreground)]"
-                  }`}
-              >
-                <span className="text-base emoji-icon">{t.icon}</span>
-                <span>{t.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* 🪄 Premium Grid Dropdown */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 10, rotateX: -15 }}
+            animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 10, rotateX: -15 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            className="absolute right-0 mt-3 w-64 bg-[var(--card)]/80 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[100] p-4 origin-top-right overflow-hidden shadow-[var(--accent)]/10"
+          >
+            <div className="grid grid-cols-4 gap-2 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+              {themes.map((t) => (
+                <button
+                  key={t.id}
+                  title={t.label}
+                  onClick={() => changeTheme(t.id)}
+                  className={`
+                    flex flex-col items-center justify-center p-2 rounded-2xl transition-all duration-300
+                    ${theme === t.id
+                      ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/30 scale-105"
+                      : "hover:bg-white/10 text-[var(--foreground)] hover:scale-110"
+                    }
+                  `}
+                >
+                  <span className="text-xl mb-1">{t.icon}</span>
+                  <span className="text-[8px] font-bold uppercase tracking-tighter opacity-70 truncate w-full text-center">{t.id}</span>
+                </button>
+              ))}
+            </div>
 
-      {/* 💫 Animations */}
-      <style jsx>{`
-        /* Gentle 45° sway animation */
-        @keyframes sway {
-          0%, 100% {
-            transform: rotate(0deg);
-          }
-          25% {
-            transform: rotate(15deg);
-          }
-          75% {
-            transform: rotate(-15deg);
-          }
+            {/* Visual Indicator */}
+            <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-center">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)] opacity-50">Studio Themes</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
         }
-
-        .animate-sway {
-          animation: sway 4s ease-in-out infinite;
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
         }
-
-        .emoji-icon {
-          transition: transform 0.4s ease;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
         }
-
-        .emoji-icon:hover {
-          transform: rotate(360deg);
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: var(--accent);
         }
       `}</style>
     </div>
   );
 }
+
