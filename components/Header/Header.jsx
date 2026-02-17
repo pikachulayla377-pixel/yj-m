@@ -198,7 +198,7 @@ export default function Header() {
 
 
                     <Link
-                      href="/dashboard"
+                      href="/dashboard/support"
                       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[var(--accent)]/10 hover:text-[var(--accent)] group"
                       onClick={() => setUserMenuOpen(false)}
                     >
@@ -207,7 +207,7 @@ export default function Header() {
                     </Link>
 
                     <Link
-                      href="/dashboard"
+                      href="/dashboard/order"
                       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[var(--accent)]/10 hover:text-[var(--accent)] group"
                       onClick={() => setUserMenuOpen(false)}
                     >

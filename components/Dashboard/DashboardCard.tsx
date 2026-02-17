@@ -18,7 +18,12 @@ interface DashboardCardProps {
 
 /* ================= ICON MAP ================= */
 const ICON_MAP: Record<string, JSX.Element> = {
+  order: <FiShoppingBag />,
   orders: <FiShoppingBag />,
+  support: <FiActivity />,
+  query: <FiActivity />,
+  wallet: <FiDollarSign />,
+  account: <FiUsers />,
   users: <FiUsers />,
   revenue: <FiDollarSign />,
   activity: <FiActivity />,
@@ -41,10 +46,9 @@ export default function DashboardCard({
                   transition-all duration-300
                   active:scale-[0.98]
                   shadow-sm hover:shadow-lg
-        ${
-          isActive
-            ? "border-[var(--accent)] bg-[var(--card)]"
-            : "border-[var(--border)] bg-[var(--card)]/60 hover:bg-[var(--card)]"
+        ${isActive
+          ? "border-[var(--accent)] bg-[var(--card)]"
+          : "border-[var(--border)] bg-[var(--card)]/60 hover:bg-[var(--card)]"
         }`}
     >
       {/* ================= HEADER ================= */}
@@ -55,10 +59,9 @@ export default function DashboardCard({
 
         <div
           className={`p-2 rounded-xl text-lg transition
-            ${
-              isActive
-                ? "bg-[var(--accent)]/15 text-[var(--accent)]"
-                : "bg-black/10 text-[var(--muted)] group-hover:text-[var(--accent)]"
+            ${isActive
+              ? "bg-[var(--accent)]/15 text-[var(--accent)]"
+              : "bg-black/10 text-[var(--muted)] group-hover:text-[var(--accent)]"
             }`}
         >
           {ICON_MAP[tab.key] || <FiActivity />}

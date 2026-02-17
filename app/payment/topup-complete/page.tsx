@@ -24,11 +24,11 @@ export default function TopupComplete() {
       try {
         const token = sessionStorage.getItem("token");
 
-       const res = await fetch("/api/order/verify-topup-payment", {
+        const res = await fetch("/api/order/verify-topup-payment", {
           method: "POST",
-  headers: {
-        Authorization: `Bearer ${token}`,
-      },          body: JSON.stringify({ orderId }),
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }, body: JSON.stringify({ orderId }),
         });
 
         const data = await res.json();
@@ -88,7 +88,7 @@ export default function TopupComplete() {
         {status === "success" ? (
           <div className="mt-6 flex flex-col gap-3">
             <a
-              href="/dashboard"
+              href="/dashboard/order"
               className="w-full rounded-xl bg-[var(--accent)] py-3 font-semibold text-black text-center hover:opacity-90 transition"
             >
               Check Order
