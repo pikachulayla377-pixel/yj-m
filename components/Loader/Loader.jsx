@@ -19,54 +19,68 @@ export default function Loader() {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-[var(--background)]"
     >
-      <div className="relative flex items-center justify-center h-64 w-64">
-        {/* Subtle Ambient Background Glow */}
+      <div className="relative flex flex-col items-center">
+        {/* Minimal Logo with Subtle Shimmer */}
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.15, 0.1]
-          }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0 blur-[100px] rounded-full"
-          style={{ background: 'var(--accent)' }}
-        />
-
-        {/* Minimal Rotating Ring */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-4 border-2 border-t-[var(--accent)] border-r-transparent border-b-transparent border-l-transparent rounded-full shadow-[0_0_15px_var(--accent)]/20"
-        />
-
-        {/* Static Inner Ring for depth */}
-        <div className="absolute inset-10 border border-[var(--accent)]/10 rounded-full" />
-
-        {/* Main Logo Container */}
-        <motion.div
-          animate={{
-            y: [0, -8, 0],
-          }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="relative z-10 w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-[var(--accent)] to-transparent p-[1px] shadow-2xl"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative group"
         >
-          <div className="w-full h-full rounded-[2.4rem] bg-[var(--background)] flex items-center justify-center overflow-hidden">
-            <motion.span
-              animate={{
-                opacity: [0.7, 1, 0.7],
-                scale: [0.98, 1.02, 0.98]
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="text-5xl font-black tracking-tighter text-[var(--foreground)]"
-              style={{
-                textShadow: '0 0 20px color-mix(in srgb, var(--accent), transparent 70%)'
-              }}
-            >
-              yJ
-            </motion.span>
-          </div>
-        </motion.div>
-      </div>
+          {/* Soft background essence */}
+          <div className="absolute inset-0 -m-8 blur-3xl bg-[var(--accent)]/5 rounded-full" />
 
+          <motion.span
+            animate={{
+              opacity: [0.7, 1, 0.7],
+            }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="text-6xl font-black tracking-tighter text-[var(--foreground)] relative z-10"
+            style={{
+              textShadow: '0 0 40px color-mix(in srgb, var(--accent), transparent 90%)'
+            }}
+          >
+            yJ
+          </motion.span>
+
+          {/* Elegant Shimmer Line */}
+          <motion.div
+            initial={{ x: "-150%" }}
+            animate={{ x: "150%" }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              repeatDelay: 0.5
+            }}
+            className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[var(--foreground)]/10 to-transparent skew-x-12"
+          />
+        </motion.div>
+
+        {/* High-End Progress Tracker */}
+        <div className="mt-12 w-32 h-[1px] bg-[var(--border)]/20 relative overflow-hidden rounded-full">
+          <motion.div
+            initial={{ left: "-100%" }}
+            animate={{ left: "100%" }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"
+          />
+        </div>
+
+        {/* Subtle Loading Text */}
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.3 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="mt-4 text-[9px] uppercase tracking-[0.4em] font-medium text-[var(--foreground)]"
+        >
+          Elevating Stay
+        </motion.span>
+      </div>
     </motion.div>
   );
 }

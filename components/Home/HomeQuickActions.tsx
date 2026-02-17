@@ -6,46 +6,46 @@ import { Globe, Trophy, Gamepad2, LayoutGrid, Crown } from "lucide-react";
 export default function HomeQuickActions() {
   const actions = [
     {
-      name: "Leaderboard",
+      name: "Trophy",
       href: "/leaderboard",
       icon: Trophy,
-      delay: "0.1s",
+      delay: "0.05s",
       color: "text-yellow-500",
       bg: "bg-yellow-500/10",
       hover: "hover:bg-yellow-500/10",
     },
     {
-      name: "Region",
+      name: "Global",
       href: "/region",
       icon: Globe,
-      delay: "0.2s",
+      delay: "0.1s",
       color: "text-blue-500",
       bg: "bg-blue-500/10",
       hover: "hover:bg-blue-500/10",
     },
     {
-      name: "Membership",
+      name: "Pass",
       href: "/games/membership/silver-membership",
       icon: Crown,
-      delay: "0.3s",
+      delay: "0.15s",
       color: "text-amber-500",
       bg: "bg-amber-500/10",
       hover: "hover:bg-amber-500/10",
     },
     {
-      name: "Services",
+      name: "More",
       href: "/services",
       icon: LayoutGrid,
-      delay: "0.4s",
+      delay: "0.2s",
       color: "text-violet-500",
       bg: "bg-violet-500/10",
       hover: "hover:bg-violet-500/10",
     },
     {
-      name: "Games",
+      name: "Play",
       href: "/games",
       icon: Gamepad2,
-      delay: "0.5s",
+      delay: "0.25s",
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
       hover: "hover:bg-emerald-500/10",
@@ -70,14 +70,14 @@ export default function HomeQuickActions() {
               hover:-translate-y-1
             `}
             style={{
-              animation: `fadeInUp 0.6s ease-out ${action.delay} both`
+              animation: `fadeInUp 0.4s ease-out ${action.delay} both`
             }}
           >
             <div className={`h-10 w-10 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 ${action.bg} ${action.color}`}>
-              <action.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+              <action.icon className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:scale-110" />
             </div>
 
-            <span className="text-xs sm:text-sm font-medium text-[var(--foreground)] text-center transition-all duration-300 group-hover:text-[var(--foreground)]/80">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center transition-all duration-300 group-hover:text-[var(--foreground)]">
               {action.name}
             </span>
           </Link>
@@ -88,7 +88,7 @@ export default function HomeQuickActions() {
         @keyframes fadeInUp {
           from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(10px);
           }
           to {
             opacity: 1;

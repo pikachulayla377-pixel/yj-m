@@ -62,16 +62,13 @@ export default function TopNoticeBanner() {
         animate={{ height: "auto", opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full overflow-hidden border-b border-[var(--border)] bg-[var(--card)]/40 backdrop-blur-xl group"
+        className="relative w-full overflow-hidden border-b border-[var(--border)] bg-gradient-to-r from-[var(--card)]/40 via-[var(--card)]/80 to-[var(--card)]/40 backdrop-blur-xl group"
       >
-        {/* Animated Accent Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/5 via-transparent to-[var(--accent)]/5 pointer-events-none" />
+        {/* Enhanced Animated Accent Background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/10 via-transparent to-[var(--accent)]/10 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
 
-        {/* Scanline Effect */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[length:100%_2px] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)]" />
-
-        {/* Global Progress Line (Top) */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-[var(--accent)]/20" />
+        {/* Subtle radial glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,var(--accent)/5,transparent_70%)] pointer-events-none" />
 
         <div
           className="max-w-7xl mx-auto px-4 py-3 cursor-pointer relative z-10"
@@ -105,10 +102,10 @@ export default function TopNoticeBanner() {
                     className="flex flex-col"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-black tracking-[0.2em] text-[var(--accent)] uppercase hidden sm:inline">
+                      <span className="text-[9px] font-black tracking-[0.2em] text-[var(--accent)] uppercase hidden sm:inline px-2 py-0.5 rounded-md bg-[var(--accent)]/5 border border-[var(--accent)]/10">
                         {current.badge}
                       </span>
-                      <h3 className="text-xs md:text-sm font-bold text-[var(--foreground)] uppercase tracking-wider truncate">
+                      <h3 className="text-xs md:text-sm font-bold bg-gradient-to-r from-[var(--foreground)] to-[var(--foreground)]/60 bg-clip-text text-transparent uppercase tracking-wider truncate">
                         {current.title}
                       </h3>
                     </div>
@@ -147,17 +144,6 @@ export default function TopNoticeBanner() {
               </motion.button>
             </div>
           </div>
-        </div>
-
-        {/* Tactical Progress Bar (Bottom) */}
-        <div className="absolute bottom-0 left-0 h-[2px] bg-[var(--accent)]/10 w-full overflow-hidden">
-          <motion.div
-            key={index}
-            initial={{ scaleX: 0, originX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: MESSAGE_DURATION / 1000, ease: "linear" }}
-            className="h-full bg-[var(--accent)] shadow-[0_0_10px_var(--accent)]"
-          />
         </div>
 
         {/* Corner Accents */}

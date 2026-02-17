@@ -6,63 +6,67 @@ import { RiRocketLine } from "react-icons/ri";
 
 export default function HomeServices() {
   return (
-    <section className="py-6 px-6 bg-[var(--background)] overflow-hidden">
+    <section className="py-12 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          whileHover={{ y: -3 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="relative group overflow-hidden rounded-3xl border border-white/5 bg-[var(--card)]/50 backdrop-blur-2xl shadow-xl transition-all duration-500 hover:border-[var(--accent)]/20"
+          className="relative overflow-hidden rounded-[2rem] bg-[var(--card)]/40 border border-[var(--border)] backdrop-blur-xl group"
         >
-          {/* Subtle Glow */}
-          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[300px] h-[300px] bg-[var(--accent)]/5 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          {/* Elegant Ambient Background Gradient */}
+          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[400px] h-[400px] bg-[var(--accent)]/5 blur-[120px] rounded-full pointer-events-none" />
 
+          {/* Signature Accent Line */}
           <div className="absolute inset-y-0 left-0 w-1 bg-[var(--accent)]" />
 
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8">
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-10 p-10 md:p-12">
 
-            {/* Left content */}
-            <div className="flex-1 space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[var(--accent)] text-[9px] font-black uppercase tracking-widest">
-                <RiRocketLine className="text-xs" />
-                <span>Expert Development</span>
+            {/* Left Section: Professional Identity */}
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--accent)]/20 to-transparent flex items-center justify-center border border-[var(--accent)]/20 group-hover:scale-105 transition-transform duration-500">
+                  <RiRocketLine className="text-3xl text-[var(--accent)]" />
+                </div>
+                {/* Subtle dot accent */}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--card)] shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
               </div>
 
-              <div>
-                <h3 className="text-xl md:text-2xl font-black text-white leading-tight tracking-tighter uppercase italic">
-                  Developed & Maintained By <span className="text-[var(--accent)]">Experts</span>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)]">
+                    Identity
+                  </span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-[var(--foreground)] uppercase tracking-tighter italic">
+                  Developed by <span className="text-[var(--accent)]">Experts</span>
                 </h3>
-                <p className="max-w-xl text-xs md:text-sm text-[var(--muted)] font-medium">
-                  Premium end-to-end web solutions for your business.
+                <p className="text-xs text-[var(--muted)] font-bold uppercase tracking-widest max-w-[200px] leading-relaxed opacity-60">
+                  Next-Gen Digital Solutions & Maintenance
                 </p>
               </div>
             </div>
 
-            {/* Right CTA */}
-            <div className="flex flex-col items-center md:items-end gap-3 shrink-0">
-              <span className="text-lg font-black text-white tracking-tighter">
-                +91&nbsp;63723&nbsp;05866
-              </span>
+            {/* Right Section: Premium Inquiry */}
+            <div className="flex flex-col items-center md:items-end gap-2 shrink-0">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-500">
+                  <FaWhatsapp size={22} />
+                </div>
+                <div className="h-px w-8 bg-[var(--border)] hidden md:block" />
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--muted)]">
+                  Available 24/7
+                </span>
+              </div>
 
-              <motion.a
-                href="https://wa.me/919178521537"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="
-                  group/btn inline-flex items-center gap-2
-                  px-6 py-3 rounded-xl
-                  bg-gradient-to-r from-[var(--accent)] to-[var(--accent-secondary)]
-                  text-black font-black text-xs uppercase tracking-wider
-                  shadow-lg transition-all duration-300
-                "
-              >
-                <FaWhatsapp className="text-lg" />
-                <span>Get Service</span>
-              </motion.a>
+              <div className="text-center md:text-right">
+                <span className="block text-[11px] font-black uppercase tracking-[0.2em] text-[var(--muted)] mb-1">
+                  Connect Directly
+                </span>
+                <span className="text-2xl md:text-3xl font-black text-[var(--foreground)] tracking-tight hover:text-[var(--accent)] transition-colors cursor-pointer">
+                  +91 9178521537
+                </span>
+              </div>
             </div>
 
           </div>
