@@ -14,6 +14,9 @@ import HomeQuickActions from "./HomeQuickActions";
 import StorySlider from "./StorySlider";
 
 
+import FlashSale from "./FlashSale";
+
+
 export default function HeroSection() {
   const [search, setSearch] = useState("");
   const pathname = usePathname();
@@ -33,6 +36,8 @@ export default function HeroSection() {
       <TopNoticeBanner />
       <GameBannerCarousel />
       {/* <StorySlider/> */}
+
+      <FlashSale />
 
       <HomeQuickActions />
       {/* <ScrollingNoticeBand/> */}

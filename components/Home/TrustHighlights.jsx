@@ -59,7 +59,7 @@ export default function TrustHighlights() {
   return (
     <section className="py-12 px-6 bg-[var(--background)]">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {ITEMS.map((item, i) => (
             <motion.div
               key={i}
@@ -76,9 +76,9 @@ export default function TrustHighlights() {
               <h3 className="text-[13px] font-bold text-[var(--foreground)] text-center leading-tight">
                 {item.title}
               </h3>
-              <p className="text-[11px] text-[var(--muted)] text-center mt-1.5 font-medium">
+              {/* <p className="text-[11px] text-[var(--muted)] text-center mt-1.5 font-medium">
                 {item.subtitle}
-              </p>
+              </p> */}
             </motion.div>
           ))}
         </div>

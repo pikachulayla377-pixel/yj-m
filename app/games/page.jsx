@@ -49,7 +49,7 @@ export default function GamesPage() {
 
   /* ================= CONFIG ================= */
   const SPECIAL_MLBB_GAME = "MLBB SMALL";
-  const outOfStockGames = ["Genshin Impact", "Honor Of Kings", "TEST 1", "Wuthering of Waves", "Where Winds Meet", "Mobile Legends Backup"];
+  const outOfStockGames = ["Genshin Impact", "Honor Of Kings", "TEST 1", "Wuthering of Waves", "Mobile Legends Backup"];
 
   const isOutOfStock = (name) => outOfStockGames.includes(name);
 

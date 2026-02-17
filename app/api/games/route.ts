@@ -6,7 +6,7 @@ const BLOCKED_GAME_SLUGS = [
   "honor-of-kings57",
   "mobile-legends-backup826",
   "wuthering-of-waves464",
-  "where-winds-meet280",
+  // "where-winds-meet280",
 ];
 
 /* ================= IMAGES ================= */
@@ -16,16 +16,16 @@ const MLBB_MAIN_IMAGE =
 const MLBB_SMALL_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.53_1_de6vcj.jpg";
 
-  const MLBB_SVALUE_IND_IMAGE =
+const MLBB_SVALUE_IND_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.52_gos46h.jpg";
-    const MLBB_SVALUE_PHP_IMAGE =
+const MLBB_SVALUE_PHP_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676622/WhatsApp_Image_2026-01-18_at_00.27.51_yszdai.jpg";
 
-    const MLBB_RUSIA_IMAGE =
+const MLBB_RUSIA_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.52_2_cgdxxe.jpg";
-    const MLBB_INDO_IMAGE =
+const MLBB_INDO_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676621/WhatsApp_Image_2026-01-18_at_00.27.53_kgofz5.jpg";
-    const MLBB_MY_SING_IMAGE =
+const MLBB_MY_SING_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.52_1_eilk1y.jpg";
 /* ================= OTT SECTION ================= */
 const OTTS = [
@@ -119,32 +119,32 @@ export async function GET() {
           image: MLBB_SMALL_IMAGE,
         };
       }
-       if (updatedGame.gameName === "MLBB RUSSIA") {
+      if (updatedGame.gameName === "MLBB RUSSIA") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_RUSIA_IMAGE,
         };
       }
-         if (updatedGame.gameName === "SG/MY Mlbb") {
+      if (updatedGame.gameName === "SG/MY Mlbb") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_MY_SING_IMAGE,
         };
       }
-       if (updatedGame.gameName === "MLBB INDO") {
+      if (updatedGame.gameName === "MLBB INDO") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_INDO_IMAGE,
         };
       }
 
-       if (updatedGame.gameName === "PH VALUE PASS") {
+      if (updatedGame.gameName === "PH VALUE PASS") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_SVALUE_PHP_IMAGE,
         };
       }
-          if (updatedGame.gameName === "Value pass ml") {
+      if (updatedGame.gameName === "Value pass ml") {
         updatedGame.gameImageId = {
           ...updatedGame.gameImageId,
           image: MLBB_SVALUE_IND_IMAGE,
@@ -154,12 +154,12 @@ export async function GET() {
     };
 
     /* ================= FILTER GAMES ================= */
-const filteredGames =
-  data?.data?.games
-    ?.filter(
-      (game: any) => !BLOCKED_GAME_SLUGS.includes(game.gameSlug)
-    )
-    ?.map(normalizeGame) || [];
+    const filteredGames =
+      data?.data?.games
+        ?.filter(
+          (game: any) => !BLOCKED_GAME_SLUGS.includes(game.gameSlug)
+        )
+        ?.map(normalizeGame) || [];
 
     /* ================= FILTER CATEGORY GAMES ================= */
     const filteredCategories =
@@ -232,11 +232,11 @@ const filteredGames =
           total: OTTS.filter((o) => o.available).length,
         },
         // 🔥 MEMBERSHIP SECTION
-memberships: {
-  title: "Memberships & Passes",
-  items: MEMBERSHIPS.filter((m) => m.available),
-  total: MEMBERSHIPS.filter((m) => m.available).length,
-},
+        memberships: {
+          title: "Memberships & Passes",
+          items: MEMBERSHIPS.filter((m) => m.available),
+          total: MEMBERSHIPS.filter((m) => m.available).length,
+        },
 
       },
     });
