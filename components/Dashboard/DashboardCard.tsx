@@ -5,11 +5,13 @@ import {
   FiDollarSign,
   FiActivity,
 } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 interface DashboardCardProps {
   tab: {
     key: string;
     label: string;
+    label_alt?: string;
     value: string | number;
   };
   activeTab: string;
@@ -37,46 +39,64 @@ export default function DashboardCard({
   const isActive = activeTab === tab.key;
 
   return (
-    <div
+    <motion.div
+      whileHover={{ y: -4, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       role="button"
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === "Enter" && onClick()}
-      className={`group p-5 rounded-2xl cursor-pointer border
+      className={`group relative p-4 md:p-5 rounded-2xl cursor-pointer border
                   transition-all duration-300
-                  active:scale-[0.98]
-                  shadow-sm hover:shadow-lg
+                  shadow-sm hover:shadow-xl
         ${isActive
-          ? "border-[var(--accent)] bg-[var(--card)]"
-          : "border-[var(--border)] bg-[var(--card)]/60 hover:bg-[var(--card)]"
+          ? "border-[var(--accent)] bg-[var(--card)] shadow-[var(--accent)]/10"
+          : "border-[var(--border)] bg-[var(--card)]/40 hover:bg-[var(--card)] hover:border-[var(--accent)]/30"
         }`}
     >
+      {/* GLOW EFFECT FOR ACTIVE */}
+      {isActive && (
+        <div className="absolute inset-0 bg-[var(--accent)]/5 rounded-2xl blur-xl -z-10" />
+      )}
+
       {/* ================= HEADER ================= */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[var(--muted)]">
-          {tab.label}
-        </p>
+        <div className="flex flex-col">
+          <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
+            {tab.label_alt || tab.label}
+          </p>
+          <h2 className={`text-lg md:text-xl font-bold mt-1 tracking-tight transition-colors
+            ${isActive ? "text-[var(--foreground)]" : "text-[var(--foreground)]/80 group-hover:text-[var(--foreground)]"}`}>
+            {tab.value}
+          </h2>
+        </div>
 
         <div
-          className={`p-2 rounded-xl text-lg transition
+          className={`p-2.5 rounded-xl text-xl transition-all duration-300
             ${isActive
-              ? "bg-[var(--accent)]/15 text-[var(--accent)]"
-              : "bg-black/10 text-[var(--muted)] group-hover:text-[var(--accent)]"
+              ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
+              : "bg-black/5 text-[var(--muted)] group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)]"
             }`}
         >
           {ICON_MAP[tab.key] || <FiActivity />}
         </div>
       </div>
 
-      {/* ================= VALUE ================= */}
-      <h2 className="text-2xl font-bold mt-3 tracking-tight">
-        {/* {tab.value} */}
-      </h2>
-
       {/* ================= ACTIVE INDICATOR ================= */}
-      {isActive && (
-        <div className="mt-3 h-1 w-10 rounded-full bg-[var(--accent)]" />
-      )}
-    </div>
+      <div className="mt-4 flex items-center gap-1.5">
+        <div className={`h-1 rounded-full transition-all duration-500
+          ${isActive ? "w-10 bg-[var(--accent)]" : "w-4 bg-[var(--border)] group-hover:w-8 group-hover:bg-[var(--accent)]/30"}`}
+        />
+        {isActive && (
+          <motion.span
+            initial={{ opacity: 0, x: -5 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-[10px] font-bold text-[var(--accent)] uppercase"
+          >
+            Active
+          </motion.span>
+        )}
+      </div>
+    </motion.div>
   );
 }

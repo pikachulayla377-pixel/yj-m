@@ -45,29 +45,49 @@ export async function POST(req) {
     const page = Math.max(1, Number(body.page) || 1);
     const limit = Math.max(1, Number(body.limit) || 10);
     const search = body.search?.trim();
+    const status = body.status?.trim();
 
     const skip = (page - 1) * limit;
 
-    /* ================= EMAIL-ONLY FILTER ================= */
-    const userFilter = { email: user.email };
+    /* ================= BASE FILTER ================= */
+    const finalFilter = { email: user.email };
 
     /* ================= SEARCH FILTER ================= */
-    let finalFilter = userFilter;
-
     if (search) {
-      finalFilter = {
-        $and: [
-          userFilter,
-          {
-            $or: [
-              { orderId: { $regex: search, $options: "i" } },
-              { gameSlug: { $regex: search, $options: "i" } },
-              { itemName: { $regex: search, $options: "i" } },
-              { status: { $regex: search, $options: "i" } },
-            ],
-          },
-        ],
-      };
+      finalFilter.$or = [
+        { orderId: { $regex: search, $options: "i" } },
+        { gameSlug: { $regex: search, $options: "i" } },
+        { itemName: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    /* ================= STATUS FILTER ================= */
+    if (status) {
+      // Some orders use topupStatus, some use status
+      finalFilter.$or = [
+        { status: { $regex: `^${status}$`, $options: "i" } },
+        { topupStatus: { $regex: `^${status}$`, $options: "i" } }
+      ];
+    }
+
+    // If both search and status are present, we need to handle $and
+    if (search && status) {
+      delete finalFilter.$or;
+      finalFilter.$and = [
+        {
+          $or: [
+            { orderId: { $regex: search, $options: "i" } },
+            { gameSlug: { $regex: search, $options: "i" } },
+            { itemName: { $regex: search, $options: "i" } },
+          ]
+        },
+        {
+          $or: [
+            { status: { $regex: `^${status}$`, $options: "i" } },
+            { topupStatus: { $regex: `^${status}$`, $options: "i" } }
+          ]
+        }
+      ];
     }
 
     /* ================= FETCH ORDERS ================= */

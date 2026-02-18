@@ -70,8 +70,8 @@ export default function LeaderboardPage() {
                 key={r}
                 onClick={() => setRange(r)}
                 className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${range === r
-                    ? "bg-[var(--accent)] text-black shadow-lg"
-                    : "text-[var(--muted)] hover:text-white"
+                  ? "bg-[var(--accent)] text-black shadow-lg"
+                  : "text-[var(--muted)] hover:text-white"
                   }`}
               >
                 {r === "weekly" ? "This Week" : "This Month"}
@@ -99,15 +99,7 @@ export default function LeaderboardPage() {
         ) : (
           <div className="max-w-4xl mx-auto space-y-12">
             {/* ================= PODIUM ================= */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-end pb-10">
-              {/* Rank 2 */}
-              <PodiumItem
-                user={topThree[1]}
-                rank={2}
-                color="text-gray-300"
-                icon={<FaMedal />}
-                delay={0.2}
-              />
+            <div className="grid grid-cols-3 gap-2 md:gap-6 items-end pb-10">
               {/* Rank 1 */}
               <PodiumItem
                 user={topThree[0]}
@@ -116,6 +108,14 @@ export default function LeaderboardPage() {
                 icon={<FaCrown />}
                 delay={0.1}
                 isLarge
+              />
+              {/* Rank 2 */}
+              <PodiumItem
+                user={topThree[1]}
+                rank={2}
+                color="text-gray-300"
+                icon={<FaMedal />}
+                delay={0.2}
               />
               {/* Rank 3 */}
               <PodiumItem
@@ -177,44 +177,44 @@ export default function LeaderboardPage() {
 /* ================= SUB COMPONENTS ================= */
 
 function PodiumItem({ user, rank, color, icon, delay, isLarge }) {
-  if (!user) return <div className="hidden sm:block" />;
+  if (!user) return <div className="invisible" />;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.8, type: "spring" }}
-      className={`relative flex flex-col items-center p-6 bg-[var(--card)]/50 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] ${isLarge
-          ? "sm:scale-110 sm:z-10 bg-gradient-to-t from-[var(--accent)]/10 to-transparent border-[var(--accent)]/20 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)]"
-          : "scale-95"
+      className={`relative flex flex-col items-center p-3 md:p-6 bg-[var(--card)]/50 backdrop-blur-2xl border border-white/5 rounded-2xl md:rounded-[2.5rem] ${isLarge
+        ? "scale-105 md:scale-110 z-10 bg-gradient-to-t from-[var(--accent)]/10 to-transparent border-[var(--accent)]/20 shadow-2xl"
+        : "scale-90 md:scale-95 opacity-80"
         }`}
     >
-      <div className={`absolute -top-6 text-4xl ${color} drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]`}>
+      <div className={`absolute -top-4 md:-top-6 text-2xl md:text-4xl ${color} drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]`}>
         {icon}
       </div>
 
-      <div className={`relative rounded-full border-2 p-1 overflow-hidden mb-4 ${rank === 1 ? "w-24 h-24 border-[var(--accent)]" : "w-20 h-20 border-white/10"
+      <div className={`relative rounded-full border-2 p-0.5 md:p-1 overflow-hidden mb-2 md:mb-4 ${rank === 1 ? "w-16 h-16 md:w-24 md:h-24 border-[var(--accent)]" : "w-12 h-12 md:w-20 md:h-20 border-white/10"
         }`}>
         <div className="w-full h-full rounded-full bg-white/5 flex items-center justify-center">
-          <FaUserCircle className={`text-4xl ${rank === 1 ? "text-[var(--accent)]/50" : "text-white/10"}`} />
+          <FaUserCircle className={`text-2xl md:text-4xl ${rank === 1 ? "text-[var(--accent)]/50" : "text-white/10"}`} />
         </div>
       </div>
 
-      <div className="text-center">
-        <p className={`text-sm font-black uppercase tracking-tighter truncate max-w-[120px] ${rank === 1 ? "text-white" : "text-white/80"
+      <div className="text-center w-full">
+        <p className={`text-[10px] md:text-sm font-black uppercase tracking-tighter truncate px-1 ${rank === 1 ? "text-white" : "text-white/80"
           }`}>
-          {user.user?.name || "Digital Legend"}
+          {user.user?.name || "Legend"}
         </p>
-        <p className={`text-xl font-black mt-1 ${color} tracking-tighter`}>
+        <p className={`text-xs md:text-xl font-black mt-0.5 md:mt-1 ${color} tracking-tighter text-center`}>
           ₹{user.totalSpent.toLocaleString()}
         </p>
-        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-          <span className="text-[9px] font-black uppercase tracking-widest text-[var(--muted)]">#{rank} Rank</span>
+        <div className="mt-2 md:mt-3 inline-flex items-center gap-1.5 px-2 py-0.5 md:px-3 md:py-1 rounded-full bg-white/5 border border-white/10">
+          <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-[var(--muted)]">#{rank}</span>
         </div>
       </div>
 
       {rank === 1 && (
-        <div className="absolute inset-0 rounded-[2.5rem] bg-[var(--accent)]/5 animate-pulse -z-10" />
+        <div className="absolute inset-0 rounded-2xl md:rounded-[2.5rem] bg-[var(--accent)]/5 animate-pulse -z-10" />
       )}
     </motion.div>
   );

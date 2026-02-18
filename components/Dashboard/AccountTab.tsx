@@ -1,7 +1,9 @@
 "use client";
 
 import { JSX, useState } from "react";
-import { FaUser, FaEnvelope, FaPhone, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhone, FaLock, FaCalendarAlt, FaShieldAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { FiEdit2, FiCamera } from "react-icons/fi";
 
 interface UserDetails {
   name: string;
@@ -55,136 +57,146 @@ export default function AccountTab({ userDetails }: AccountTabProps) {
   };
 
   return (
-    <div className="space-y-10 max-w-4xl mx-auto">
-
-      {/* ================= HEADER ================= */}
-      <div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-          Account Settings
-        </h2>
-        <p className="text-[var(--muted)] text-sm sm:text-base mt-1">
-          Manage your personal information and security
-        </p>
-      </div>
-
-      {/* ================= USER INFO ================= */}
-      <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Personal Information
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <InfoRow icon={<FaUser />} label="Name" value={userDetails.name} />
-          <InfoRow icon={<FaEnvelope />} label="Email" value={userDetails.email} />
-          <InfoRow icon={<FaPhone />} label="Phone" value={userDetails.phone} />
-        </div>
-      </section>
-
-      {/* ================= PASSWORD SECTION ================= */}
-      <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <FaLock className="text-[var(--accent)]" />
-          <h3 className="text-lg sm:text-xl font-semibold">
-            Security
-          </h3>
-        </div>
-
-        {/* Status */}
-        {passSuccess && (
-          <div className="mb-4 rounded-xl bg-green-500/10 text-green-500 px-4 py-2 text-sm">
-            {passSuccess}
+    <div className="max-w-4xl mx-auto space-y-8">
+      {/* ================= PROFILE HEADER ================= */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row items-center gap-6 p-8 rounded-[2.5rem] bg-[var(--background)] border border-[var(--border)] shadow-xl relative overflow-hidden"
+      >
+        <div className="relative group">
+          <div className="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] bg-gradient-to-br from-[var(--accent)] to-[#4f46e5] flex items-center justify-center text-white text-4xl md:text-5xl font-black shadow-2xl">
+            {userDetails.name?.charAt(0).toUpperCase() || "P"}
           </div>
-        )}
-        {passError && (
-          <div className="mb-4 rounded-xl bg-red-500/10 text-red-500 px-4 py-2 text-sm">
-            {passError}
-          </div>
-        )}
-
-        <div className="space-y-4 max-w-md">
-          <div>
-            <label className="text-sm font-medium block mb-1">
-              New Password
-            </label>
-
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={newPass}
-              onChange={(e) => {
-                setNewPass(e.target.value);
-                setPassError("");
-              }}
-              className="
-                w-full p-4 rounded-xl
-                border border-[var(--border)]
-                bg-transparent
-                focus:outline-none
-                focus:ring-2 focus:ring-[var(--accent)]
-                transition
-              "
-            />
-
-            <p className="text-xs text-[var(--muted)] mt-1">
-              Use at least 6 characters for better security
-            </p>
-          </div>
-
-          <button
-            disabled={true}
-            onClick={handlePasswordUpdate}
-            className="
-              w-full sm:w-auto min-w-[220px]
-              py-3 rounded-xl
-              text-white font-medium
-              bg-[var(--accent)]
-              transition
-              hover:opacity-90
-              disabled:opacity-50
-              disabled:cursor-not-allowed
-            "
-          >
-            {loadingPass ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Updating...
-              </span>
-            ) : (
-              "Update Password"
-            )}
+          <button className="absolute -bottom-2 -right-2 p-2.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] text-[var(--accent)] shadow-lg hover:scale-110 transition-transform">
+            <FiCamera size={18} />
           </button>
         </div>
-      </section>
+
+        <div className="text-center md:text-left">
+          <h2 className="text-3xl font-black tracking-tight">{userDetails.name || "Player"}</h2>
+          <p className="text-[var(--muted)] font-medium mt-1">{userDetails.email || userDetails.phone}</p>
+          <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+            <span className="px-4 py-1.5 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] text-xs font-bold uppercase tracking-widest border border-[var(--accent)]/10">Verified User</span>
+            <span className="px-4 py-1.5 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-widest border border-green-500/10">Active Member</span>
+          </div>
+        </div>
+
+        {/* Decor */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-3xl -z-10" />
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* ================= PERSONAL INFO ================= */}
+        <motion.section
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <FaUser className="text-[var(--accent)]" /> Profile Info
+            </h3>
+            <button className="text-[var(--accent)] text-sm font-bold flex items-center gap-1 hover:underline">
+              <FiEdit2 size={14} /> Edit
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <InfoCard icon={<FaUser />} label="Full Name" value={userDetails.name || "N/A"} />
+            <InfoCard icon={<FaEnvelope />} label="Email Address" value={userDetails.email || "N/A"} />
+            <InfoCard icon={<FaPhone />} label="Phone Number" value={userDetails.phone || "N/A"} />
+          </div>
+        </motion.section>
+
+        {/* ================= SECURITY ================= */}
+        <motion.section
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-6"
+        >
+          <h3 className="text-xl font-bold flex items-center gap-2 px-2">
+            <FaShieldAlt className="text-[var(--accent)]" /> Security
+          </h3>
+
+          <div className="p-8 rounded-[2.5rem] bg-[var(--card)] border border-[var(--border)] shadow-inner space-y-6">
+            {passSuccess && (
+              <div className="rounded-2xl bg-green-500/10 text-green-500 p-4 text-sm font-bold border border-green-500/10 flex items-center gap-2">
+                <FaShieldAlt /> {passSuccess}
+              </div>
+            )}
+            {passError && (
+              <div className="rounded-2xl bg-red-500/10 text-red-500 p-4 text-sm font-bold border border-red-500/10 flex items-center gap-2">
+                ● {passError}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest block mb-2">New Password</label>
+                <div className="relative group">
+                  <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] group-focus-within:text-[var(--accent)] transition-colors" />
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={newPass}
+                    onChange={(e) => {
+                      setNewPass(e.target.value);
+                      setPassError("");
+                    }}
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--background)] border border-[var(--border)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10 outline-none transition-all font-mono"
+                  />
+                </div>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handlePasswordUpdate}
+                disabled={loadingPass || !newPass}
+                className="w-full py-4 rounded-2xl bg-[var(--accent)] text-white font-bold shadow-xl shadow-[var(--accent)]/20 hover:shadow-[var(--accent)]/40 transition-all disabled:opacity-50"
+              >
+                {loadingPass ? "Updating Security..." : "Update Password"}
+              </motion.button>
+            </div>
+          </div>
+        </motion.section>
+      </div>
+
+      {/* ================= FOOTER STATS ================= */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        <StatItem icon={<FaCalendarAlt />} label="Joined" value="Feb 2026" />
+        <StatItem icon={<FaShieldAlt />} label="Status" value="Verified" />
+        <StatItem icon={<FaUser />} label="Level" value="Gold Player" />
+        <StatItem icon={<FaShieldAlt />} label="Security" value="Strong" />
+      </div>
     </div>
   );
 }
 
-/* ================= INFO ROW ================= */
-
-function InfoRow({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value: string;
-  icon: JSX.Element;
-}) {
+function InfoCard({ icon, label, value }: { icon: JSX.Element; label: string; value: string }) {
   return (
-    <div
-      className="
-        flex items-center gap-4
-        rounded-xl border border-[var(--border)]
-        p-4 bg-[var(--background)]
-      "
-    >
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--accent)]/10 text-[var(--accent)]">
+    <div className="group p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all flex items-center gap-4">
+      <div className="w-12 h-12 rounded-xl bg-[var(--background)] flex items-center justify-center text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-white transition-all shadow-sm">
         {icon}
       </div>
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest">{label}</p>
+        <p className="font-bold text-[var(--foreground)] truncate">{value}</p>
+      </div>
+    </div>
+  );
+}
 
-      <div className="min-w-0">
-        <p className="text-xs text-[var(--muted)]">{label}</p>
-        <p className="font-medium truncate">{value}</p>
+function StatItem({ icon, label, value }: { icon: JSX.Element; label: string; value: string }) {
+  return (
+    <div className="flex items-center gap-3 px-2">
+      <div className="text-[var(--muted)]">{icon}</div>
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">{label}</p>
+        <p className="text-xs font-black">{value}</p>
       </div>
     </div>
   );

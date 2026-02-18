@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { FaWallet, FaGooglePay, FaBitcoin } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiPlus, FiArrowRight, FiCheckCircle } from "react-icons/fi";
 
 interface WalletTabProps {
   walletBalance: number;
@@ -14,9 +16,11 @@ export default function WalletTab({
 }: WalletTabProps) {
   const [amount, setAmount] = useState("");
   const [amountError, setAmountError] = useState("");
-  const [method, setMethod] = useState("");
+  const [method, setMethod] = useState("upi");
   const [loading, setLoading] = useState(false);
   const [storedPhone, setStoredPhone] = useState("");
+
+  const quickAmounts = ["100", "500", "1000", "2000", "5000"];
 
   useEffect(() => {
     const phone = sessionStorage.getItem("phone");
@@ -42,128 +46,181 @@ export default function WalletTab({
     setLoading(true);
     const userId = sessionStorage.getItem("userId");
 
-    const res = await fetch("/api/wallet/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        amount: Number(amount),
-        mobile: storedPhone,
-        userId,
-      }),
-    });
+    try {
+      const res = await fetch("/api/wallet/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: Number(amount),
+          mobile: storedPhone,
+          userId,
+        }),
+      });
 
-    const data = await res.json();
-    setLoading(false);
+      const data = await res.json();
+      setLoading(false);
 
-    if (!data.success) {
-      alert(data.message);
-      return;
+      if (!data.success) {
+        alert(data.message);
+        return;
+      }
+
+      sessionStorage.setItem("pending_order", data.orderId);
+      window.location.href = data.paymentUrl;
+    } catch (err) {
+      setLoading(false);
+      alert("Failed to create order");
     }
-
-    sessionStorage.setItem("pending_order", data.orderId);
-    window.location.href = data.paymentUrl;
   };
 
   return (
-    <>
+    <div className="max-w-3xl mx-auto space-y-8">
       {/* ================= HEADER ================= */}
-      <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-        <FaWallet />
-        Wallet
-      </h2>
-
-      {/* ================= BALANCE ================= */}
-      <div className="p-5 rounded-xl border border-[var(--border)]
-                      bg-[var(--card)] shadow-sm mb-6">
-        <p className="text-sm text-[var(--muted)]">Current Balance</p>
-        <p className="text-2xl font-bold mt-1">
-          ₹{walletBalance}
-        </p>
-      </div>
-
-      {/* ================= ADD MONEY ================= */}
-      <div className="p-6 rounded-2xl bg-[var(--background)]
-                      border border-[var(--border)] shadow-lg">
-        <div className="space-y-5">
-
-          {/* Amount */}
-          <div>
-            <label className="font-semibold text-sm">Enter Amount</label>
-            <input
-              type="number"
-              value={amount}
-              placeholder="Minimum ₹1"
-              onChange={(e) => {
-                setAmount(e.target.value);
-                setAmountError("");
-              }}
-              className="w-full p-3 mt-1 rounded-xl
-                         border bg-[var(--card)]
-                         border-[var(--border)]"
-            />
-            {amountError && (
-              <p className="text-red-500 text-sm mt-1">
-                {amountError}
-              </p>
-            )}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)]">
+            <FaWallet size={20} />
           </div>
-
-          {/* Payment Method */}
-          <div>
-            <label className="font-semibold text-sm">
-              Select Payment Method
-            </label>
-
-            <div className="grid grid-cols-2 gap-3 mt-2">
-              {/* UPI */}
-              <button
-                onClick={() => setMethod("upi")}
-                className={`p-4 rounded-xl border transition
-                            flex items-center gap-2 justify-center
-                  ${
-                    method === "upi"
-                      ? "border-[var(--accent)] bg-[var(--accent)]/10"
-                      : "border-[var(--border)] hover:bg-[var(--card)]"
-                  }`}
-              >
-                <FaGooglePay />
-                UPI
-              </button>
-
-              {/* USDT (disabled) */}
-              <button
-                disabled
-                className="p-4 rounded-xl border
-                           flex items-center gap-2 justify-center
-                           border-[var(--border)]
-                           opacity-50 cursor-not-allowed"
-              >
-                <FaBitcoin />
-                USDT (TRC20)
-              </button>
-            </div>
-          </div>
-
-          {/* Proceed */}
-          <button
-            onClick={handleProceed}
-            disabled={loading || !method}
-            className="w-full p-3 mt-2 rounded-xl
-                       bg-[var(--accent)] text-white
-                       font-medium transition
-                       disabled:opacity-50
-                       disabled:cursor-not-allowed"
-          >
-            {loading ? "Processing..." : "Proceed to Pay"}
-          </button>
-
-          {!method && (
-            <p className="text-xs text-[var(--muted)] text-center">
-              Select a payment method to continue
-            </p>
-          )}
+          My Wallet
+        </h2>
+        <div className="hidden md:flex items-center gap-2 text-xs font-bold text-[var(--muted)] uppercase tracking-widest">
+          <FiCheckCircle className="text-green-500" /> Secure Payments
         </div>
       </div>
-    </>
+
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        {/* ================= LEFT SIDE: BALANCE & QUICK ADD ================= */}
+        <div className="md:col-span-2 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative overflow-hidden p-8 rounded-[2rem] bg-gradient-to-br from-[var(--accent)] to-[#4f46e5] text-white shadow-2xl shadow-[var(--accent)]/30"
+          >
+            <div className="relative z-10">
+              <p className="text-sm font-bold opacity-80 uppercase tracking-widest">Current Balance</p>
+              <h3 className="text-4xl md:text-5xl font-black mt-2 tracking-tighter">
+                ₹{walletBalance.toLocaleString("en-IN")}
+              </h3>
+              <div className="mt-8 flex items-center gap-2 text-xs font-bold bg-black/20 w-fit px-3 py-1.5 rounded-full backdrop-blur-md">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                Live Wallet
+              </div>
+            </div>
+
+            {/* Decals */}
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
+          </motion.div>
+
+          <div className="p-6 rounded-3xl bg-[var(--card)] border border-[var(--border)] space-y-4">
+            <p className="text-sm font-bold text-[var(--muted)] uppercase tracking-wider">Quick Top-up</p>
+            <div className="flex flex-wrap gap-2">
+              {quickAmounts.map((amt) => (
+                <button
+                  key={amt}
+                  onClick={() => setAmount(amt)}
+                  className={`px-4 py-2 rounded-xl text-sm font-bold transition-all
+                    ${amount === amt
+                      ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20"
+                      : "bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--accent)]"}`}
+                >
+                  +₹{amt}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ================= RIGHT SIDE: INPUT & METHODS ================= */}
+        <div className="md:col-span-3 space-y-6">
+          <div className="p-8 rounded-[2rem] bg-[var(--card)] border border-[var(--border)] shadow-xl space-y-8">
+            {/* Amount Input */}
+            <div>
+              <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest block mb-3">
+                Enter Custom Amount
+              </label>
+              <div className="relative group">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-[var(--muted)] group-focus-within:text-[var(--accent)] transition-colors">₹</span>
+                <input
+                  type="number"
+                  value={amount}
+                  placeholder="0.00"
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                    setAmountError("");
+                  }}
+                  className="w-full pl-10 pr-4 py-4 rounded-2xl
+                             bg-[var(--background)]/50 border border-[var(--border)]
+                             text-2xl font-bold focus:ring-4 focus:ring-[var(--accent)]/10
+                             focus:border-[var(--accent)] outline-none transition-all"
+                />
+              </div>
+              <AnimatePresence>
+                {amountError && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-red-500 text-xs font-bold mt-2 flex items-center gap-1"
+                  >
+                    ● {amountError}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Methods */}
+            <div>
+              <label className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest block mb-3">
+                Select Method
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => setMethod("upi")}
+                  className={`p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3
+                    ${method === "upi"
+                      ? "border-[var(--accent)] bg-[var(--accent)]/5"
+                      : "border-[var(--border)] hover:border-[var(--muted)]"}`}
+                >
+                  <div className={`p-3 rounded-xl transition-colors ${method === "upi" ? "bg-[var(--accent)] text-white" : "bg-[var(--background)] text-[var(--muted)]"}`}>
+                    <FaGooglePay size={24} />
+                  </div>
+                  <span className="text-sm font-bold">UPI / QR</span>
+                </button>
+
+                <button
+                  disabled
+                  className="p-5 rounded-2xl border-2 border-[var(--border)] opacity-40 cursor-not-allowed flex flex-col items-center gap-3"
+                >
+                  <div className="p-3 rounded-xl bg-[var(--background)] text-[var(--muted)]">
+                    <FaBitcoin size={24} />
+                  </div>
+                  <span className="text-sm font-bold">USDT</span>
+                </button>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleProceed}
+              disabled={loading || !amount || Number(amount) < 1}
+              className="w-full py-5 rounded-2xl bg-[var(--accent)] text-white font-black text-lg
+                         shadow-xl shadow-[var(--accent)]/20 hover:shadow-[var(--accent)]/40
+                         transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:grayscale"
+            >
+              {loading ? (
+                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  Top-up Securely <FiArrowRight />
+                </>
+              )}
+            </motion.button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -7,6 +7,8 @@ import {
   FaYoutube,
   FaWhatsapp,
 } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiSend, FiMessageSquare, FiExternalLink } from "react-icons/fi";
 
 /* ===================== ENV ===================== */
 
@@ -25,7 +27,7 @@ const SUPPORT_CONFIG = {
   },
 
   contacts: {
-    title: "Contact Us Directly",
+    title: "Direct Channels",
     items: [
       {
         id: "phone",
@@ -34,6 +36,7 @@ const SUPPORT_CONFIG = {
         href: SUPPORT_WHATSAPP ? `tel:${SUPPORT_WHATSAPP}` : "#",
         icon: "phone",
         external: false,
+        desc: "Instant voice assistance"
       },
       {
         id: "instagram",
@@ -42,14 +45,16 @@ const SUPPORT_CONFIG = {
         href: INSTAGRAM_URL,
         icon: "instagram",
         external: true,
+        desc: "DM for updates"
       },
       {
         id: "whatsapp",
         title: "WhatsApp Group",
-        value: "Join Support Group",
+        value: "Join Support",
         href: WHATSAPP_STORE_LINK,
         icon: "whatsapp",
         external: true,
+        desc: "Community & Support"
       },
     ],
   },
@@ -113,106 +118,133 @@ export default function QueryTab() {
       setQuerySuccess("Failed to submit query. Please try again.");
     } finally {
       setIsSubmitting(false);
+      setTimeout(() => setQuerySuccess(""), 5000);
     }
   };
 
   return (
-    <div className="space-y-10">
+    <div className="max-w-4xl mx-auto space-y-10">
 
       {/* ================= HEADER ================= */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-2">
-          {SUPPORT_CONFIG.header.title}
-        </h2>
-        <p className="text-sm text-[var(--muted)] max-w-lg">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h2 className="text-3xl font-black tracking-tight">{SUPPORT_CONFIG.header.title}</h2>
+        <p className="text-[var(--muted)] font-medium mt-2 max-w-2xl">
           {SUPPORT_CONFIG.header.subtitle}
         </p>
-      </div>
+      </motion.div>
 
-      {/* ================= CONTACT SECTION ================= */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h3 className="text-lg font-semibold mb-4">
-          {SUPPORT_CONFIG.contacts.title}
-        </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* ================= CONTACT SECTION ================= */}
+        <div className="lg:col-span-5 space-y-6">
+          <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--muted)] px-1">
+            {SUPPORT_CONFIG.contacts.title}
+          </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {SUPPORT_CONFIG.contacts.items
-            .filter((item) => item.href && item.value)
-            .map((item) => (
-              <a
-                key={item.id}
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noopener noreferrer" : undefined}
-                className="
-                  flex items-center gap-4
-                  rounded-xl border border-[var(--border)]
-                  p-4 transition
-                  hover:border-[var(--accent)]
-                "
-              >
-                <div className="p-3 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] text-lg">
-                  {ICON_MAP[item.icon]}
-                </div>
+          <div className="space-y-3">
+            {SUPPORT_CONFIG.contacts.items
+              .filter((item) => item.href && item.value)
+              .map((item, idx) => (
+                <motion.a
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  key={item.id}
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  className="group flex items-center gap-4 p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 hover:bg-[var(--background)]/50 transition-all shadow-sm"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-[var(--background)] flex items-center justify-center text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-white transition-all">
+                    {ICON_MAP[item.icon]}
+                  </div>
 
-                <div>
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-xs text-[var(--muted)]">
-                    {item.value}
-                  </p>
-                </div>
-              </a>
-            ))}
-        </div>
-      </div>
-
-      {/* ================= QUERY FORM ================= */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-        <h3 className="text-lg font-semibold mb-5">
-          Submit a Query
-        </h3>
-
-        {querySuccess && (
-          <div className="mb-4 rounded-xl bg-green-500/10 text-green-500 px-4 py-2 text-sm">
-            {querySuccess}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm flex items-center gap-1.5">
+                      {item.title}
+                      {item.external && <FiExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />}
+                    </p>
+                    <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-tight truncate">
+                      {item.desc}
+                    </p>
+                  </div>
+                </motion.a>
+              ))}
           </div>
-        )}
+        </div>
 
-        <select
-          value={queryType}
-          onChange={(e) => setQueryType(e.target.value)}
-          className="w-full mb-4 p-3 rounded-xl
-          bg-[var(--background)] border border-[var(--border)]
-          focus:border-[var(--accent)] outline-none"
+        {/* ================= QUERY FORM ================= */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="lg:col-span-7 p-8 rounded-[2rem] bg-[var(--card)] border border-[var(--border)] shadow-xl space-y-6"
         >
-          <option value="">Select Query Type</option>
-          {SUPPORT_CONFIG.queryTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-2.5 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)]">
+              <FiMessageSquare />
+            </div>
+            <h3 className="text-xl font-bold">Submit a Query</h3>
+          </div>
 
-        <textarea
-          className="w-full mb-4 p-3 rounded-xl h-32
-          bg-[var(--background)] border border-[var(--border)]
-          focus:border-[var(--accent)] outline-none resize-none"
-          placeholder="Describe your issue in detail..."
-          value={queryMessage}
-          onChange={(e) => setQueryMessage(e.target.value)}
-        />
+          <AnimatePresence>
+            {querySuccess && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="rounded-2xl bg-green-500/10 text-green-500 p-4 text-sm font-bold border border-green-500/10 flex items-center gap-2"
+              >
+                {querySuccess}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <button
-          disabled={!queryType || isSubmitting}
-          onClick={handleSubmit}
-          className={`w-full py-3 rounded-xl font-medium transition ${
-            !queryType || isSubmitting
-              ? "bg-gray-500 cursor-not-allowed"
-              : "bg-[var(--accent)] hover:opacity-90"
-          }`}
-        >
-          {isSubmitting ? "Submitting..." : "Submit Query"}
-        </button>
+          <div className="space-y-4">
+            <div>
+              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] block mb-2 px-1">Issue Category</label>
+              <select
+                value={queryType}
+                onChange={(e) => setQueryType(e.target.value)}
+                className="w-full p-4 rounded-2xl bg-[var(--background)] border border-[var(--border)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10 outline-none transition-all font-bold text-sm appearance-none cursor-pointer"
+              >
+                <option value="">Select Category</option>
+                {SUPPORT_CONFIG.queryTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)] block mb-2 px-1">Detailed Message</label>
+              <textarea
+                className="w-full p-4 rounded-2xl h-40 bg-[var(--background)] border border-[var(--border)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10 outline-none transition-all resize-none text-sm placeholder:text-[var(--muted)]/50"
+                placeholder="How can we help you today? Please include any relevant order IDs..."
+                value={queryMessage}
+                onChange={(e) => setQueryMessage(e.target.value)}
+              />
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              disabled={!queryType || isSubmitting}
+              onClick={handleSubmit}
+              className="w-full py-4 rounded-2xl bg-[var(--accent)] text-white font-black shadow-xl shadow-[var(--accent)]/20 hover:shadow-[var(--accent)]/40 transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <FiSend /> Send Message
+                </>
+              )}
+            </motion.button>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
