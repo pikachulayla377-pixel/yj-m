@@ -44,6 +44,10 @@ export async function POST(req: Request) {
       });
     }
 
+    /* ================= UPDATE LAST LOGIN ================= */
+    user.lastLoginAt = new Date();
+    await user.save();
+
     /* ================= JWT ================= */
     const jwtToken = jwt.sign(
       { userId: user._id, userType: user.userType },

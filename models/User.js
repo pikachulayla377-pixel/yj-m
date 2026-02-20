@@ -71,6 +71,12 @@ const UserSchema = new mongoose.Schema(
     /* ================= FORGOT PASSWORD ================= */
     resetOtp: String,
     resetOtpExpiry: Date,
+
+    /* ================= ACTIVITY TRACKING ================= */
+    lastLoginAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );

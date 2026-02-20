@@ -47,9 +47,31 @@ export default function OrdersTab() {
     totalPages: 1,
   });
 
+  const [stats, setStats] = useState({
+    "1d": { count: 0, revenue: 0, pending: 0 },
+    "7d": { count: 0, revenue: 0, pending: 0 },
+    "30d": { count: 0, revenue: 0, pending: 0 },
+  });
+
   useEffect(() => {
     fetchOrders();
+    fetchStats();
   }, [page, limit, search, filters]);
+
+  const fetchStats = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const res = await fetch("/api/admin/orders/stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStats(data.stats);
+      }
+    } catch (err) {
+      console.error("Fetch order stats failed", err);
+    }
+  };
 
   /* ================= FETCH ORDERS ================= */
   const fetchOrders = async () => {
@@ -150,12 +172,39 @@ export default function OrdersTab() {
             </span>
           </div>
           <button
-            onClick={fetchOrders}
+            onClick={() => {
+              fetchOrders();
+              fetchStats();
+            }}
             className="p-2.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] active:scale-95 transition-all"
           >
             <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
+      </div>
+
+      {/* ================= STATS CARDS ================= */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <OrderStatCard
+          period="Volume"
+          items={[
+            { label: "1D", value: stats["1d"].count },
+            { label: "7D", value: stats["7d"].count },
+            { label: "30D", value: stats["30d"].count },
+          ]}
+          icon={<ShoppingBag size={14} />}
+          color="text-[var(--accent)]"
+        />
+        <OrderStatCard
+          period="Revenue"
+          items={[
+            { label: "1D", value: `₹${stats["1d"].revenue}` },
+            { label: "7D", value: `₹${stats["7d"].revenue}` },
+            { label: "30D", value: `₹${stats["30d"].revenue}` },
+          ]}
+          icon={<IndianRupee size={14} />}
+          color="text-emerald-500"
+        />
       </div>
 
       {/* ================= FILTERS & SEARCH ================= */}
@@ -595,3 +644,25 @@ function DrawerDetail({ label, value, emphasize }) {
     </div>
   );
 }
+
+function OrderStatCard({ period, items, icon, color }) {
+  return (
+    <div className="p-5 rounded-[1.8rem] border border-[var(--border)] bg-[var(--card)]/50 backdrop-blur-sm space-y-4">
+      <div className={`flex items-center gap-2 ${color}`}>
+        <div className={`w-8 h-8 rounded-lg bg-current/10 flex items-center justify-center`}>
+          {icon}
+        </div>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em]">{period}</span>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {items.map((item, i) => (
+          <div key={i} className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center">
+            <span className="text-[9px] font-bold text-[var(--muted)]/40 uppercase mb-1">{item.label}</span>
+            <span className="text-sm font-black text-[var(--foreground)] tracking-tight tabular-nums">{item.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

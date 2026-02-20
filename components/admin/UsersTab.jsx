@@ -14,13 +14,11 @@ import {
   Calendar,
   Filter,
   X,
-  ChevronRight,
   ChevronDown,
   Loader2,
   Users,
   IdCard,
   Crown,
-  Type
 } from "lucide-react";
 
 export default function UsersTab() {
@@ -47,9 +45,30 @@ export default function UsersTab() {
     totalPages: 1,
   });
 
+  const [stats, setStats] = useState({
+    active: { "1d": 0, "7d": 0, "30d": 0 },
+    new: { "1d": 0, "7d": 0, "30d": 0 },
+  });
+
   useEffect(() => {
     fetchUsers();
+    fetchStats();
   }, [page, limit, search, filters]);
+
+  const fetchStats = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const res = await fetch("/api/admin/users/stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStats(data.stats);
+      }
+    } catch (err) {
+      console.error("Fetch stats failed", err);
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -145,11 +164,47 @@ export default function UsersTab() {
             </span>
           </div>
           <button
-            onClick={fetchUsers}
+            onClick={() => {
+              fetchUsers();
+              fetchStats();
+            }}
             className="p-2.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] active:scale-95 transition-all outline-none"
           >
             <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
           </button>
+        </div>
+      </div>
+
+      {/* ================= STATS CARDS ================= */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Active Users Stats */}
+        <div className="p-5 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)]/50 backdrop-blur-sm space-y-4">
+          <div className="flex items-center gap-2 text-[var(--accent)]">
+            <div className="w-8 h-8 rounded-lg bg-[var(--accent)]/10 flex items-center justify-center">
+              <Users size={16} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider">Active Users</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <StatItem label="1D" value={stats.active["1d"]} />
+            <StatItem label="7D" value={stats.active["7d"]} />
+            <StatItem label="30D" value={stats.active["30d"]} />
+          </div>
+        </div>
+
+        {/* New Users Stats */}
+        <div className="p-5 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)]/50 backdrop-blur-sm space-y-4">
+          <div className="flex items-center gap-2 text-indigo-500">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+              <User size={16} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider">New Registrations</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <StatItem label="1D" value={stats.new["1d"]} />
+            <StatItem label="7D" value={stats.new["7d"]} />
+            <StatItem label="30D" value={stats.new["30d"]} />
+          </div>
         </div>
       </div>
 
@@ -202,6 +257,7 @@ export default function UsersTab() {
                     <th className="px-6 py-4">User</th>
                     <th className="px-6 py-4">Contact</th>
                     <th className="px-6 py-4">Role</th>
+                    <th className="px-6 py-4">Last Active</th>
                     <th className="px-6 py-4">Joined Date</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
@@ -236,6 +292,16 @@ export default function UsersTab() {
                           {getRoleIcon(u.userType)}
                           {u.userType}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-semibold text-[var(--foreground)]">
+                            {u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleDateString() : "Never"}
+                          </span>
+                          <span className="text-[10px] text-[var(--muted)]">
+                            {u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-xs font-medium text-[var(--muted)]">
                         {new Date(u.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
@@ -297,14 +363,18 @@ export default function UsersTab() {
                         <Calendar size={12} />
                         <span className="text-xs">{new Date(u.createdAt).toLocaleDateString()}</span>
                       </div>
-
-                      <RoleDropdown
-                        value={u.userType}
-                        compact
-                        disabled={updatingUserId === u.userId || u.userType === "owner"}
-                        onChange={(v) => changeUserRole(u.userId, v)}
-                      />
+                      <div className="flex items-center gap-2 text-[var(--accent)]/60">
+                        <RefreshCcw size={10} />
+                        <span className="text-[10px] font-medium">Active: {u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleDateString() : "Never"}</span>
+                      </div>
                     </div>
+
+                    <RoleDropdown
+                      value={u.userType}
+                      compact
+                      disabled={updatingUserId === u.userId || u.userType === "owner"}
+                      onChange={(v) => changeUserRole(u.userId, v)}
+                    />
                   </div>
                 </motion.div>
               ))}
@@ -400,6 +470,11 @@ export default function UsersTab() {
                 <DrawerSection icon={<Mail size={18} />} title="Contact Details">
                   <DrawerDetail label="Email Address" value={selectedUser.email} />
                   <DrawerDetail label="Phone Number" value={selectedUser.phone || "Not provided"} />
+                </DrawerSection>
+
+                <DrawerSection icon={<RefreshCcw size={18} />} title="Activity">
+                  <DrawerDetail label="Last Sign-in" value={selectedUser.lastLoginAt ? new Date(selectedUser.lastLoginAt).toLocaleString() : "Never"} />
+                  <DrawerDetail label="Account Created" value={new Date(selectedUser.createdAt).toLocaleString()} />
                 </DrawerSection>
 
                 <DrawerSection icon={<Shield size={18} />} title="Account Management">
@@ -652,6 +727,15 @@ function DrawerDetail({ label, value }) {
       <span className="text-sm font-medium text-[var(--foreground)]">
         {value || "Not available"}
       </span>
+    </div>
+  );
+}
+
+function StatItem({ label, value }) {
+  return (
+    <div className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center">
+      <span className="text-[10px] font-bold text-[var(--muted)] opacity-60 uppercase">{label}</span>
+      <span className="text-lg font-black text-[var(--foreground)] tracking-tight">{value}</span>
     </div>
   );
 }
