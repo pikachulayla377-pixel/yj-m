@@ -11,7 +11,7 @@ const flashSaleData = [
         id: 1,
         name: "Weekly Pass",
         game: "Mobile Legends",
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/2_ohluaw.jpg",
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771567815/y1_nzzs1m.jpg",
         slug: "mobile-legends988",
         price: "159",
         originalPrice: "190",
@@ -24,7 +24,7 @@ const flashSaleData = [
         id: 2,
         name: "Monthly Pass",
         game: "Where Winds Meet",
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/7_r90jci.jpg", // Using placeholder or similar
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771567814/y2_adehwb.jpg", // Using placeholder or similar
         slug: "where-winds-meet280",
         price: "429",
         originalPrice: "599",
@@ -50,7 +50,7 @@ const flashSaleData = [
         id: 4,
         name: "Twilight Pass",
         game: "Mobile Legends",
-        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/5_bptwwg.jpg",
+        image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771567815/y3_etcwce.jpg",
         slug: "mobile-legends988",
         price: "780",
         originalPrice: "800",
