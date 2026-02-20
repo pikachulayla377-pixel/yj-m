@@ -66,7 +66,11 @@ export async function POST(request: Request) {
     }
 
     /* ================= UPDATE LAST LOGIN ================= */
+    const forwarded = request.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(/, /)[0] : "127.0.0.1";
+
     foundUser.lastLoginAt = new Date();
+    foundUser.lastLoginIp = ip;
     await foundUser.save();
 
     /* ================= JWT GENERATION ================= */

@@ -24,6 +24,7 @@ import {
 export default function UsersTab() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [updatingUserId, setUpdatingUserId] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -52,11 +53,15 @@ export default function UsersTab() {
 
   useEffect(() => {
     fetchUsers();
-    fetchStats();
   }, [page, limit, search, filters]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const fetchStats = async () => {
     try {
+      setStatsLoading(true);
       const token = sessionStorage.getItem("token");
       const res = await fetch("/api/admin/users/stats", {
         headers: { Authorization: `Bearer ${token}` },
@@ -67,6 +72,8 @@ export default function UsersTab() {
       }
     } catch (err) {
       console.error("Fetch stats failed", err);
+    } finally {
+      setStatsLoading(false);
     }
   };
 
@@ -170,7 +177,7 @@ export default function UsersTab() {
             }}
             className="p-2.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] active:scale-95 transition-all outline-none"
           >
-            <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
+            <RefreshCcw size={16} className={(loading || statsLoading) ? "animate-spin" : ""} />
           </button>
         </div>
       </div>
@@ -186,9 +193,9 @@ export default function UsersTab() {
             <span className="text-xs font-bold uppercase tracking-wider">Active Users</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <StatItem label="1D" value={stats.active["1d"]} />
-            <StatItem label="7D" value={stats.active["7d"]} />
-            <StatItem label="30D" value={stats.active["30d"]} />
+            <StatItem label="1D" value={stats.active["1d"]} loading={statsLoading} />
+            <StatItem label="7D" value={stats.active["7d"]} loading={statsLoading} />
+            <StatItem label="30D" value={stats.active["30d"]} loading={statsLoading} />
           </div>
         </div>
 
@@ -201,9 +208,9 @@ export default function UsersTab() {
             <span className="text-xs font-bold uppercase tracking-wider">New Registrations</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <StatItem label="1D" value={stats.new["1d"]} />
-            <StatItem label="7D" value={stats.new["7d"]} />
-            <StatItem label="30D" value={stats.new["30d"]} />
+            <StatItem label="1D" value={stats.new["1d"]} loading={statsLoading} />
+            <StatItem label="7D" value={stats.new["7d"]} loading={statsLoading} />
+            <StatItem label="30D" value={stats.new["30d"]} loading={statsLoading} />
           </div>
         </div>
       </div>
@@ -474,6 +481,7 @@ export default function UsersTab() {
 
                 <DrawerSection icon={<RefreshCcw size={18} />} title="Activity">
                   <DrawerDetail label="Last Sign-in" value={selectedUser.lastLoginAt ? new Date(selectedUser.lastLoginAt).toLocaleString() : "Never"} />
+                  <DrawerDetail label="Last Network IP" value={selectedUser.lastLoginIp} />
                   <DrawerDetail label="Account Created" value={new Date(selectedUser.createdAt).toLocaleString()} />
                 </DrawerSection>
 
@@ -731,11 +739,15 @@ function DrawerDetail({ label, value }) {
   );
 }
 
-function StatItem({ label, value }) {
+function StatItem({ label, value, loading }) {
   return (
-    <div className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center">
+    <div className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden">
       <span className="text-[10px] font-bold text-[var(--muted)] opacity-60 uppercase">{label}</span>
-      <span className="text-lg font-black text-[var(--foreground)] tracking-tight">{value}</span>
+      {loading ? (
+        <div className="h-6 w-10 bg-[var(--foreground)]/[0.05] animate-pulse rounded mt-0.5" />
+      ) : (
+        <span className="text-lg font-black text-[var(--foreground)] tracking-tight">{value}</span>
+      )}
     </div>
   );
 }

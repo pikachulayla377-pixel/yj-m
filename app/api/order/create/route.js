@@ -41,6 +41,9 @@ export async function POST(req) {
     // --------------------------
     //  CREATE ORDER
     // --------------------------
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(/, /)[0] : "127.0.0.1";
+
     const newOrder = await Order.create({
       userId: userId || null,
       gameSlug,
@@ -53,6 +56,7 @@ export async function POST(req) {
       email: email || null,
       phone: phone || null,
       status: "pending",
+      ip,
       expiresAt,
     });
 

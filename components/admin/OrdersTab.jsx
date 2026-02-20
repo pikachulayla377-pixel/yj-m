@@ -29,6 +29,7 @@ export default function OrdersTab() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -55,11 +56,15 @@ export default function OrdersTab() {
 
   useEffect(() => {
     fetchOrders();
-    fetchStats();
   }, [page, limit, search, filters]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const fetchStats = async () => {
     try {
+      setStatsLoading(true);
       const token = sessionStorage.getItem("token");
       const res = await fetch("/api/admin/orders/stats", {
         headers: { Authorization: `Bearer ${token}` },
@@ -70,6 +75,8 @@ export default function OrdersTab() {
       }
     } catch (err) {
       console.error("Fetch order stats failed", err);
+    } finally {
+      setStatsLoading(false);
     }
   };
 
@@ -178,7 +185,7 @@ export default function OrdersTab() {
             }}
             className="p-2.5 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] active:scale-95 transition-all"
           >
-            <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
+            <RefreshCcw size={16} className={(loading || statsLoading) ? "animate-spin" : ""} />
           </button>
         </div>
       </div>
@@ -194,6 +201,7 @@ export default function OrdersTab() {
           ]}
           icon={<ShoppingBag size={14} />}
           color="text-[var(--accent)]"
+          loading={statsLoading}
         />
         <OrderStatCard
           period="Revenue"
@@ -204,6 +212,7 @@ export default function OrdersTab() {
           ]}
           icon={<IndianRupee size={14} />}
           color="text-emerald-500"
+          loading={statsLoading}
         />
       </div>
 
@@ -516,6 +525,7 @@ export default function OrdersTab() {
 
                 <DrawerSection icon={<Smartphone size={16} />} title="Terminal Link">
                   <DrawerDetail label="User Protocol ID" value={selectedOrder.playerId} emphasize />
+                  <DrawerDetail label="Source IP" value={selectedOrder.ip} />
                   <DrawerDetail label="Zone Sector" value={selectedOrder.zoneId || "GLOBAL"} />
                 </DrawerSection>
 
@@ -645,7 +655,7 @@ function DrawerDetail({ label, value, emphasize }) {
   );
 }
 
-function OrderStatCard({ period, items, icon, color }) {
+function OrderStatCard({ period, items, icon, color, loading }) {
   return (
     <div className="p-5 rounded-[1.8rem] border border-[var(--border)] bg-[var(--card)]/50 backdrop-blur-sm space-y-4">
       <div className={`flex items-center gap-2 ${color}`}>
@@ -656,9 +666,13 @@ function OrderStatCard({ period, items, icon, color }) {
       </div>
       <div className="grid grid-cols-3 gap-2">
         {items.map((item, i) => (
-          <div key={i} className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center">
+          <div key={i} className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden">
             <span className="text-[9px] font-bold text-[var(--muted)]/40 uppercase mb-1">{item.label}</span>
-            <span className="text-sm font-black text-[var(--foreground)] tracking-tight tabular-nums">{item.value}</span>
+            {loading ? (
+              <div className="h-5 w-12 bg-[var(--foreground)]/[0.05] animate-pulse rounded" />
+            ) : (
+              <span className="text-sm font-black text-[var(--foreground)] tracking-tight tabular-nums">{item.value}</span>
+            )}
           </div>
         ))}
       </div>

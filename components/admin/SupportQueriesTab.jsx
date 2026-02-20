@@ -23,6 +23,7 @@ export default function SupportQueriesTab() {
   const [queries, setQueries] = useState([]);
   const [activeQuery, setActiveQuery] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -43,11 +44,15 @@ export default function SupportQueriesTab() {
 
   useEffect(() => {
     fetchQueries();
-    fetchStats();
   }, [page, limit, search]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const fetchStats = async () => {
     try {
+      setStatsLoading(true);
       const token = sessionStorage.getItem("token");
       const res = await fetch("/api/admin/queries/stats", {
         headers: { Authorization: `Bearer ${token}` },
@@ -58,6 +63,8 @@ export default function SupportQueriesTab() {
       }
     } catch (err) {
       console.error("Fetch query stats failed", err);
+    } finally {
+      setStatsLoading(false);
     }
   };
 
@@ -162,7 +169,7 @@ export default function SupportQueriesTab() {
             }}
             className="p-2 rounded-xl bg-[var(--foreground)]/[0.03] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)]"
           >
-            <RefreshCcw size={16} className={loading ? "animate-spin" : ""} />
+            <RefreshCcw size={16} className={(loading || statsLoading) ? "animate-spin" : ""} />
           </button>
         </div>
       </div>
@@ -178,6 +185,7 @@ export default function SupportQueriesTab() {
           ]}
           icon={<Inbox size={14} />}
           color="text-[var(--accent)]"
+          loading={statsLoading}
         />
         <QueryStatCard
           label="Active Issues"
@@ -188,6 +196,7 @@ export default function SupportQueriesTab() {
           ]}
           icon={<AlertCircle size={14} />}
           color="text-amber-500"
+          loading={statsLoading}
         />
       </div>
 
@@ -461,7 +470,7 @@ function DetailBlock({ label, value, emphasize, icon }) {
   );
 }
 
-function QueryStatCard({ label, items, icon, color }) {
+function QueryStatCard({ label, items, icon, color, loading }) {
   return (
     <div className="p-5 rounded-[1.8rem] border border-[var(--border)] bg-[var(--card)]/50 backdrop-blur-sm space-y-4">
       <div className={`flex items-center gap-2 ${color}`}>
@@ -472,9 +481,13 @@ function QueryStatCard({ label, items, icon, color }) {
       </div>
       <div className="grid grid-cols-3 gap-2">
         {items.map((item, i) => (
-          <div key={i} className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center">
+          <div key={i} className="bg-[var(--foreground)]/[0.03] border border-[var(--border)] rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden">
             <span className="text-[9px] font-bold text-[var(--muted)]/40 uppercase mb-1">{item.label}</span>
-            <span className="text-sm font-black text-[var(--foreground)] tracking-tight tabular-nums">{item.value}</span>
+            {loading ? (
+              <div className="h-5 w-10 bg-[var(--foreground)]/[0.05] animate-pulse rounded" />
+            ) : (
+              <span className="text-sm font-black text-[var(--foreground)] tracking-tight tabular-nums">{item.value}</span>
+            )}
           </div>
         ))}
       </div>

@@ -23,34 +23,46 @@ export async function GET(req) {
         const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-        /* ================= STATS ================= */
-        const [
-            active1d, active7d, active30d,
-            new1d, new7d, new30d
-        ] = await Promise.all([
-            // Active Users (lastLoginAt)
-            User.countDocuments({ lastLoginAt: { $gte: oneDayAgo } }),
-            User.countDocuments({ lastLoginAt: { $gte: sevenDaysAgo } }),
-            User.countDocuments({ lastLoginAt: { $gte: thirtyDaysAgo } }),
-
-            // New Users (createdAt)
-            User.countDocuments({ createdAt: { $gte: oneDayAgo } }),
-            User.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
-            User.countDocuments({ createdAt: { $gte: thirtyDaysAgo } }),
+        /* ================= AGGREGATION ================= */
+        const result = await User.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { lastLoginAt: { $gte: thirtyDaysAgo } },
+                        { createdAt: { $gte: thirtyDaysAgo } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    active1d: { $sum: { $cond: [{ $and: [{ $ifNull: ["$lastLoginAt", false] }, { $gte: ["$lastLoginAt", oneDayAgo] }] }, 1, 0] } },
+                    active7d: { $sum: { $cond: [{ $and: [{ $ifNull: ["$lastLoginAt", false] }, { $gte: ["$lastLoginAt", sevenDaysAgo] }] }, 1, 0] } },
+                    active30d: { $sum: { $cond: [{ $and: [{ $ifNull: ["$lastLoginAt", false] }, { $gte: ["$lastLoginAt", thirtyDaysAgo] }] }, 1, 0] } },
+                    new1d: { $sum: { $cond: [{ $gte: ["$createdAt", oneDayAgo] }, 1, 0] } },
+                    new7d: { $sum: { $cond: [{ $gte: ["$createdAt", sevenDaysAgo] }, 1, 0] } },
+                    new30d: { $sum: { $cond: [{ $gte: ["$createdAt", thirtyDaysAgo] }, 1, 0] } }
+                }
+            }
         ]);
+
+        const stats = result[0] || {
+            active1d: 0, active7d: 0, active30d: 0,
+            new1d: 0, new7d: 0, new30d: 0
+        };
 
         return Response.json({
             success: true,
             stats: {
                 active: {
-                    "1d": active1d,
-                    "7d": active7d,
-                    "30d": active30d,
+                    "1d": stats.active1d,
+                    "7d": stats.active7d,
+                    "30d": stats.active30d,
                 },
                 new: {
-                    "1d": new1d,
-                    "7d": new7d,
-                    "30d": new30d,
+                    "1d": stats.new1d,
+                    "7d": stats.new7d,
+                    "30d": stats.new30d,
                 }
             }
         });
