@@ -35,9 +35,9 @@ export default function HeroSection() {
     <>
       <TopNoticeBanner />
       <GameBannerCarousel />
-      {/* <StorySlider/> */}
+      <StorySlider />
 
-      {/* <FlashSale /> */}
+      <FlashSale />
 
       <HomeQuickActions />
       {/* <ScrollingNoticeBand/> */}

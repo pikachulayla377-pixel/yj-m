@@ -1,94 +1,152 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 
 const storyData = [
-      {
+  {
+    id: 0,
+    title: "Weekly Pass",
+    badge: "Hot",
+    color: "from-emerald-400 to-emerald-600",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490928/d6d6183570eac037ba54558425c082b9.jpg_u6oo3i.jpg",
+    link: "/games/mobile-legends988?type=weekly-pass",
+  },
+  {
     id: 1,
-    title: "Value pass(India)",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.52_gos46h.jpg",
-    link: "/games/value-pass-ml948",
+    title: "Weekly Bundle",
+    badge: "Sale",
+    color: "from-rose-500 to-rose-700",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/7_r90jci.jpg",
+    link: "/games/weeklymonthly-bundle931",
   },
   {
     id: 2,
     title: "MLBB India",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.53_2_tgsnly.jpg",
+    badge: "Live",
+    color: "from-blue-400 to-indigo-600",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490920/63269594e10113b5c6b98f574c0b6267.jpg_gbkysa.jpg",
     link: "/games/mobile-legends988",
   },
   {
     id: 3,
-    title: "BGMI",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
-    link: "/games/pubg-mobile138",
+    title: "MLBB Double",
+    badge: "New",
+    color: "from-violet-400 to-purple-600",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490928/dc0fee8aee2fd07f24456671078f5a8f.jpg_sn3q0j.jpg",
+    link: "/games/mlbb-double332",
   },
   {
     id: 4,
-    title: "MLBB Double",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.53_2_tgsnly.jpg",
-    link: "/games/mlbb-double332",
+    title: "Small PHP",
+    badge: "Fast",
+    color: "from-cyan-400 to-sky-600",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/3_cj6nj4.jpg",
+    link: "/games/mlbb-smallphp980",
   },
-//   {
-//     id: 5,
-//     title: "MLBB Php",
-//     image:
-//       "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.53_1_de6vcj.jpg",
-//     link: "/games/mlbb-smallphp638",
-//   },
+  {
+    id: 5,
+    title: "PUBG Mobile",
+    badge: "Top",
+    color: "from-orange-500 to-amber-600",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+    link: "/games/bgmi-manual",
+  },
   {
     id: 6,
-    title: "Membership",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+    title: "Premium",
+    badge: "VIP",
+    color: "from-pink-500 to-rose-600",
+    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
     link: "/games/membership/silver-membership",
   },
 ];
 
 export default function StorySlider() {
   return (
-    <section className="mt-1">
-      <div
-        className="flex gap-4 overflow-x-auto px-2 py-3
-        [scrollbar-width:none]
-        [&::-webkit-scrollbar]:hidden"
-      >
-        {storyData.map((item) => (
-          <Link
+    <section className="relative py-10 px-4 overflow-hidden select-none">
+      <div className="max-w-7xl mx-auto flex gap-6 md:gap-10 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory px-4 lg:px-0 scroll-smooth">
+        {storyData.map((item, index) => (
+          <motion.div
             key={item.id}
-            href={item.link}
-            className="flex flex-col items-center min-w-[80px]"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: index * 0.05 }}
+            className="snap-center"
           >
-            {/* SIMPLE GRADIENT RING */}
-            <div
-              className="rounded-full p-[2px]"
-              style={{
-                background:
-                  "linear-gradient(135deg, #ff5f6d, #d946ef, #3b82f6)",
-              }}
+            <Link
+              href={item.link}
+              className="group relative flex flex-col items-center min-w-[75px] md:min-w-[95px]"
             >
-              <div className="rounded-full bg-black p-[2px]">
-                <div className="relative w-[70px] h-[70px] rounded-full overflow-hidden">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            </div>
+              <div className="relative">
+                {/* Rotating Orbital Ring (Hover Only) */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  className={`absolute -inset-[3px] rounded-[1.8rem] border border-dashed border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                />
 
-            {/* TITLE */}
-            <span className="mt-2 text-xs text-[var(--foreground)] text-center">
-              {item.title}
-            </span>
-          </Link>
+                {/* Main Glass Squircle Container */}
+                <div className={`relative p-[2.5px] rounded-[1.6rem] transition-all duration-500 group-hover:scale-110 shadow-2xl overflow-hidden`}>
+
+                  {/* Theme Border Accent */}
+                  <div className={`absolute inset-0 bg-gradient-to-tr ${item.color} opacity-30 group-hover:opacity-100 transition-opacity duration-500`} />
+
+                  <div className="relative p-[2px] rounded-[1.5rem] bg-[#050505]">
+                    <div className="relative w-[68px] h-[68px] md:w-[84px] md:h-[84px] rounded-[1.4rem] overflow-hidden bg-zinc-900 mask-squircle shadow-inner">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        sizes="(max-width: 768px) 68px, 84px"
+                        className="object-cover transition-all duration-1000 group-hover:scale-125 filter group-hover:brightness-110"
+                      />
+
+                      {/* Premium Internal Shadow (Edge Depth) */}
+                      <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] opacity-60" />
+
+                      {/* Shimmer Light Leak */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Minimalist Floating Badge */}
+                {item.badge && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20">
+                    <div className={`px-2 py-[2px] rounded-full bg-black/90 backdrop-blur-md border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-all duration-500 group-hover:bg-gradient-to-r ${item.color} group-hover:border-transparent group-hover:-translate-y-1`}>
+                      <span className="flex items-center gap-1 text-[7px] md:text-[8px] font-black uppercase tracking-[0.15em] text-white">
+                        {item.badge === "Live" && (
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                          </span>
+                        )}
+                        {item.badge}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sophisticated Labels */}
+              <div className="mt-4 flex flex-col items-center">
+                <span className="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white transition-all duration-500 transform group-hover:translate-y-[-2px]">
+                  {item.title}
+                </span>
+                <div className={`h-[1.5px] w-0 bg-gradient-to-r ${item.color} group-hover:w-full transition-all duration-500 rounded-full mt-1.5`} />
+              </div>
+            </Link>
+          </motion.div>
         ))}
       </div>
+
+      <style jsx global>{`
+        .mask-squircle {
+          border-radius: 28%;
+        }
+      `}</style>
     </section>
   );
 }
