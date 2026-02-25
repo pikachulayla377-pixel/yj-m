@@ -37,16 +37,16 @@ export default function BuyFlowPage() {
 
   /* ================= LOAD USER ================= */
   useEffect(() => {
-    setUserEmail(sessionStorage.getItem("email") || "");
-    setUserPhone(sessionStorage.getItem("phone") || "");
-    setWalletBalance(Number(sessionStorage.getItem("walletBalance") || 0));
+    setUserEmail(localStorage.getItem("email") || "");
+    setUserPhone(localStorage.getItem("phone") || "");
+    setWalletBalance(Number(localStorage.getItem("walletBalance") || 0));
   }, []);
 
   /* ================= FETCH GAME & VERIFY ITEM PRICE ================= */
   useEffect(() => {
     if (!slug || !itemSlug) return;
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     fetch(`/api/games/${slug}`, {
       headers: {

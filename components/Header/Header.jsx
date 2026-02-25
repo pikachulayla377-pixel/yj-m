@@ -22,7 +22,7 @@ export default function Header() {
 
   // ---------------- FETCH USER FROM JWT ----------------
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       setLoading(false);
       return;
@@ -39,7 +39,7 @@ export default function Header() {
           setUser(data.user);
           setImgError(false); // Reset error on new user
         } else {
-          sessionStorage.removeItem("token");
+          localStorage.removeItem("token");
         }
       })
       .finally(() => setLoading(false));
@@ -47,7 +47,7 @@ export default function Header() {
 
   // ---------------- LOGOUT ----------------
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
     setUser(null);
     setImgError(false);
     window.location.href = "/";

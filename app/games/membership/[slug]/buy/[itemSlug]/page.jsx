@@ -24,9 +24,9 @@ export default function BuyFlowPage() {
 
   /* ================= LOAD USER DATA ================= */
   useEffect(() => {
-    setUserEmail(sessionStorage.getItem("email") || "");
-    setUserPhone(sessionStorage.getItem("phone") || "");
-    setWalletBalance(Number(sessionStorage.getItem("walletBalance") || 0));
+    setUserEmail(localStorage.getItem("email") || "");
+    setUserPhone(localStorage.getItem("phone") || "");
+    setWalletBalance(Number(localStorage.getItem("walletBalance") || 0));
   }, []);
 
   /* ================= ITEM DATA ================= */
@@ -108,8 +108,8 @@ export default function BuyFlowPage() {
               style={{
                 width:
                   step === 1 ? "0%" :
-                  step === 2 ? "50%" :
-                  step === 3 ? "100%" : "0%",
+                    step === 2 ? "50%" :
+                      step === 3 ? "100%" : "0%",
               }}
             />
           </div>
@@ -119,8 +119,8 @@ export default function BuyFlowPage() {
               <div
                 className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-semibold text-sm
                 ${step >= num
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-black"
-                  : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-black"
+                    : "border-gray-600 bg-[var(--card)] text-gray-400"}`}
               >
                 {num}
               </div>

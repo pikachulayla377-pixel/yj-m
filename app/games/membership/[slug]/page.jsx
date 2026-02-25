@@ -23,12 +23,12 @@ export default function GameDetailPage() {
   const [activeItem, setActiveItem] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
   const isBGMI =
-  game?.gameName?.toLowerCase() === "pubg mobile";
+    game?.gameName?.toLowerCase() === "pubg mobile";
 
 
   /* ================= FETCH GAME ================= */
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     fetch(`/api/games/${slug}`, {
       headers: {
@@ -70,16 +70,16 @@ export default function GameDetailPage() {
     // router.push(
     //   `/games/${slug}/buy/${item.itemSlug}?${query.toString()}`
     // );
-     const isBGMI =
-    game?.gameName?.toLowerCase() === "pubg mobile";
+    const isBGMI =
+      game?.gameName?.toLowerCase() === "pubg mobile";
 
-  const basePath = isBGMI
-    ? `/games/pubg/${slug}/buy`
-    : `/games/membership/${slug}/buy`;
+    const basePath = isBGMI
+      ? `/games/pubg/${slug}/buy`
+      : `/games/membership/${slug}/buy`;
 
-  router.push(
-    `${basePath}/${item.itemSlug}?${query.toString()}`
-  );
+    router.push(
+      `${basePath}/${item.itemSlug}?${query.toString()}`
+    );
   };
 
   return (
@@ -107,38 +107,38 @@ export default function GameDetailPage() {
       </div>
 
       {/* ================= ITEM GRID ================= */}
-        {isBGMI ? (
-      <ItemGridBgmi
-        items={game.allItems}
-        activeItem={activeItem}
-        setActiveItem={setActiveItem}
-        buyPanelRef={buyPanelRef}
-      />
-         ) : (
-           <ItemGrid
-        items={game.allItems}
-        activeItem={activeItem}
-        setActiveItem={setActiveItem}
-        buyPanelRef={buyPanelRef}
-      />
-        )}
+      {isBGMI ? (
+        <ItemGridBgmi
+          items={game.allItems}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+          buyPanelRef={buyPanelRef}
+        />
+      ) : (
+        <ItemGrid
+          items={game.allItems}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+          buyPanelRef={buyPanelRef}
+        />
+      )}
 
       {/* ================= BUY PANEL ================= */}
-       {isBGMI ? (
-      <BuyPanelBgmi
-        activeItem={activeItem}
-        onBuy={goBuy}
-        redirecting={redirecting}
-        buyPanelRef={buyPanelRef}
-      />
+      {isBGMI ? (
+        <BuyPanelBgmi
+          activeItem={activeItem}
+          onBuy={goBuy}
+          redirecting={redirecting}
+          buyPanelRef={buyPanelRef}
+        />
       ) : (
-       <BuyPanel
-        activeItem={activeItem}
-        onBuy={goBuy}
-        redirecting={redirecting}
-        buyPanelRef={buyPanelRef}
-      />
-  )}
+        <BuyPanel
+          activeItem={activeItem}
+          onBuy={goBuy}
+          redirecting={redirecting}
+          buyPanelRef={buyPanelRef}
+        />
+      )}
       {/* ================= HELP GUIDE ================= */}
       {/* <div className="max-w-6xl mx-auto mt-6">
         <MLBBPurchaseGuide />

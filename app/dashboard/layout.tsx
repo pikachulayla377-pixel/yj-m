@@ -27,7 +27,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     ];
 
     const handleLogout = () => {
-        sessionStorage.clear();
+        localStorage.clear();
         router.push("/login");
     };
 

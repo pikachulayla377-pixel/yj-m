@@ -89,8 +89,8 @@ export default function QueryTab() {
 
     setIsSubmitting(true);
 
-    const storedEmail = sessionStorage.getItem("email");
-    const storedPhone = sessionStorage.getItem("phone");
+    const storedEmail = localStorage.getItem("email");
+    const storedPhone = localStorage.getItem("phone");
 
     try {
       const res = await fetch("/api/support/query", {

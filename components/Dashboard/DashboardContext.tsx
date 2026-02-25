@@ -28,7 +28,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
     const token =
         typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
+            ? localStorage.getItem("token")
             : null;
 
     useEffect(() => {

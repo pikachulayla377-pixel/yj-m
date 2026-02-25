@@ -36,7 +36,7 @@ export default function TopNoticeBanner() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const hidden = sessionStorage.getItem(STORAGE_KEY);
+    const hidden = localStorage.getItem(STORAGE_KEY);
     if (!hidden && WHATSAPP_CHANNEL_URL) setVisible(true);
   }, []);
 
@@ -133,7 +133,7 @@ export default function TopNoticeBanner() {
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
-                  sessionStorage.setItem(STORAGE_KEY, "true");
+                  localStorage.setItem(STORAGE_KEY, "true");
                   setVisible(false);
                 }}
                 className="p-2 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-lg hover:bg-[var(--accent)]/10"
