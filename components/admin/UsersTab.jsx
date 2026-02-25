@@ -480,8 +480,8 @@ export default function UsersTab() {
                 </DrawerSection>
 
                 <DrawerSection icon={<RefreshCcw size={18} />} title="Activity">
-                  <DrawerDetail label="Last Sign-in" value={selectedUser.lastLoginAt ? new Date(selectedUser.lastLoginAt).toLocaleString() : "Never"} />
-                  <DrawerDetail label="Last Network IP" value={selectedUser.lastLoginIp} />
+                  <DrawerDetail label="Last Active" value={selectedUser.lastLoginAt ? new Date(selectedUser.lastLoginAt).toLocaleString() : "Never"} />
+                  <DrawerDetail label="Last Known IP" value={selectedUser.lastLoginIp} />
                   <DrawerDetail label="Account Created" value={new Date(selectedUser.createdAt).toLocaleString()} />
                 </DrawerSection>
 

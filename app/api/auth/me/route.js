@@ -34,6 +34,13 @@ export async function GET(req) {
       );
     }
 
+    // 🕒 Update Activity status
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+    await User.findByIdAndUpdate(user._id, {
+      lastLoginAt: new Date(),
+      lastLoginIp: ip,
+    });
+
     return NextResponse.json({
       success: true,
       user: {
