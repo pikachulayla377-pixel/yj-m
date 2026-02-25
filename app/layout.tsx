@@ -8,24 +8,37 @@ import Maintenance from "@/components/Maintenance/Maintenance";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FEATURE_FLAGS } from "@/lib/config";
-
+import { connectDB } from "@/lib/mongodb";
+import SystemSettings from "@/models/SystemSettings";
 
 export const metadata: Metadata = {
   title: "yuji – MLBB Diamond Top Up | Instant & Secure",
   description: "yuji is a fast and secure Mobile Legends (MLBB) diamond top-up platform. Instant delivery, safe payments, and 24/7 automated service.",
-
 };
 
-export default function RootLayout({
+async function getMaintenanceMode() {
+  try {
+    await connectDB();
+    const settings = await SystemSettings.findOne();
+    return settings?.maintenanceMode || false;
+  } catch (err) {
+    console.error("Failed to fetch maintenance mode", err);
+    return false;
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isMaintenance = await getMaintenanceMode();
+
   return (
     <html lang="en">
       <body className="bg-black text-white">
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-          {FEATURE_FLAGS.MAINTENANCE_MODE && <Maintenance />}
+          {isMaintenance && <Maintenance />}
           <Header />
           <main className="pt-20">{children}</main>
           <Footer />

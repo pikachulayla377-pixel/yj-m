@@ -4,14 +4,47 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTool, FiAlertCircle, FiShield, FiLogOut, FiActivity } from "react-icons/fi";
 
+import { usePathname } from "next/navigation";
+
 export default function Maintenance() {
     const [show, setShow] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const pathname = usePathname();
 
     useEffect(() => {
-        const timer = setTimeout(() => setShow(true), 500);
+        // If we are on the login page, don't show the maintenance overlay
+        if (pathname === "/login") {
+            setShow(false);
+            return;
+        }
+
+        const checkOwner = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                setShow(true);
+                return;
+            }
+            try {
+                const res = await fetch("/api/auth/me", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success && data.user.userType === "owner") {
+                    setShow(false);
+                } else {
+                    setShow(true);
+                }
+            } catch (err) {
+                setShow(true);
+            }
+        };
+
+        const timer = setTimeout(() => {
+            checkOwner();
+        }, 500);
+
         return () => clearTimeout(timer);
-    }, []);
+    }, [pathname]);
 
     const handleLoggingOff = () => {
         setIsLoggingOut(true);
@@ -348,6 +381,22 @@ export default function Maintenance() {
                                                 />
                                             </div>
                                         </div>
+                                    )}
+
+                                    {!isLoggingOut && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: 0.8 }}
+                                            className="mt-6"
+                                        >
+                                            <a
+                                                href="/login"
+                                                className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors border-b border-transparent hover:border-cyan-400/30 pb-1"
+                                            >
+                                                Bypass for Authorized Entities
+                                            </a>
+                                        </motion.div>
                                     )}
                                 </motion.div>
 
