@@ -147,7 +147,7 @@ export default function SettingsTab() {
                                         </div>
                                         <p className="text-sm text-[var(--muted)] max-w-md leading-relaxed">
                                             Enable a global lockdown. All incoming regular traffic will be diverted to the upgrade screen.
-                                            Only authorized entities (Owners) bypass this layer.
+                                            Only the System Owner (Root) bypasses this layer.
                                         </p>
                                     </div>
                                 </div>

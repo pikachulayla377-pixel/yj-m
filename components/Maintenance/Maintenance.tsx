@@ -7,9 +7,9 @@ import { FiTool, FiAlertCircle, FiShield, FiLogOut, FiActivity } from "react-ico
 import { usePathname } from "next/navigation";
 
 export default function Maintenance() {
-    const [show, setShow] = useState(false);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const pathname = usePathname();
+    const [show, setShow] = useState(pathname !== "/login");
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     useEffect(() => {
         // If we are on the login page, don't show the maintenance overlay
@@ -17,6 +17,9 @@ export default function Maintenance() {
             setShow(false);
             return;
         }
+
+        // Initially show for other pages
+        setShow(true);
 
         const checkOwner = async () => {
             const token = localStorage.getItem("token");
@@ -39,11 +42,8 @@ export default function Maintenance() {
             }
         };
 
-        const timer = setTimeout(() => {
-            checkOwner();
-        }, 500);
+        checkOwner();
 
-        return () => clearTimeout(timer);
     }, [pathname]);
 
     const handleLoggingOff = () => {
@@ -394,7 +394,7 @@ export default function Maintenance() {
                                                 href="/login"
                                                 className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-cyan-400 transition-colors border-b border-transparent hover:border-cyan-400/30 pb-1"
                                             >
-                                                Bypass for Authorized Entities
+                                                Owner Bypass Protocol
                                             </a>
                                         </motion.div>
                                     )}
