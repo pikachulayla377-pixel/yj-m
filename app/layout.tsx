@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+
+export const dynamic = "force-dynamic";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import SocialFloat from "@/components/SocialFloat/SocialFloat";
