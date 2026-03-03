@@ -12,48 +12,40 @@ const BLOCKED_GAME_SLUGS = [
 ];
 
 /* ================= IMAGES ================= */
-const MLBB_MAIN_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/5_bptwwg.jpg";
+const MLBB_MAIN_IMAGE = "/game-assets/5_bptwwg.jpg";
 
-const MLBB_SMALL_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/3_cj6nj4.jpg";
+const MLBB_SMALL_IMAGE = "/game-assets/3_cj6nj4.jpg";
 
 const MLBB_SVALUE_IND_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676620/WhatsApp_Image_2026-01-18_at_00.27.52_gos46h.jpg";
 const MLBB_SVALUE_PHP_IMAGE =
   "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768676622/WhatsApp_Image_2026-01-18_at_00.27.51_yszdai.jpg";
 
-const MLBB_RUSIA_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/1_wobsjp.jpg";
-const MLBB_INDO_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/6_lxxpch.jpg";
-const MLBB_MY_SING_IMAGE =
-  "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/2_ohluaw.jpg";
-const MONTHLY_BUNDLE = "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/7_r90jci.jpg"
+const MLBB_RUSIA_IMAGE = "/game-assets/1_wobsjp.jpg";
+const MLBB_INDO_IMAGE = "/game-assets/6_lxxpch.jpg";
+const MLBB_MY_SING_IMAGE = "/game-assets/2_ohluaw.jpg";
+const MONTHLY_BUNDLE = "/game-assets/7_r90jci.jpg";
 /* ================= OTT SECTION ================= */
 const OTTS = [
   {
     name: "YouTube Premium",
     slug: "youtube-premium",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+    image: "/ott/youtube.webp",
     category: "OTT",
     available: true,
   },
   {
     name: "Netflix",
     slug: "netflix",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+    image: "/ott/netflix.webp",
     category: "OTT",
     available: true,
   },
   {
-    name: "Instagram Services",
-    slug: "instagram",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/a_jnlvg0.jpg",
-    category: "Social",
+    name: "Spotify",
+    slug: "spotify",
+    image: "/ott/spotify.webp",
+    category: "OTT",
     available: true,
   },
 ];
@@ -62,8 +54,7 @@ const MEMBERSHIPS = [
   {
     name: "Silver Membership",
     slug: "silver-membership",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+    image: "/membership/silver-m.png",
     type: "silver",
     category: "Membership",
     available: true,
@@ -71,8 +62,7 @@ const MEMBERSHIPS = [
   {
     name: "Reseller Membership",
     slug: "reseller-membership",
-    image:
-      "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/sew_zcz775.png",
+    image: "/membership/reseller-m.png",
     type: "reseller",
     category: "Membership",
     available: true,

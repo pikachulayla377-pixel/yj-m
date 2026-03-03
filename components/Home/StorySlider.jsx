@@ -10,7 +10,7 @@ const storyData = [
     title: "Weekly Pass",
     badge: "Hot",
     color: "from-emerald-400 to-emerald-600",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490928/d6d6183570eac037ba54558425c082b9.jpg_u6oo3i.jpg",
+    image: "/game-assets/11.jpg",
     link: "/games/mobile-legends988?type=weekly-pass",
   },
   {
@@ -18,7 +18,7 @@ const storyData = [
     title: "Weekly Bundle",
     badge: "Sale",
     color: "from-rose-500 to-rose-700",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/7_r90jci.jpg",
+    image: "/game-assets/12.jpg",
     link: "/games/weeklymonthly-bundle931",
   },
   {
@@ -26,7 +26,7 @@ const storyData = [
     title: "MLBB India",
     badge: "Live",
     color: "from-blue-400 to-indigo-600",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490920/63269594e10113b5c6b98f574c0b6267.jpg_gbkysa.jpg",
+    image: "/game-assets/india-mlbb.jpg",
     link: "/games/mobile-legends988",
   },
   {
@@ -34,7 +34,7 @@ const storyData = [
     title: "MLBB Double",
     badge: "New",
     color: "from-violet-400 to-purple-600",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1770490928/dc0fee8aee2fd07f24456671078f5a8f.jpg_sn3q0j.jpg",
+    image: "/game-assets/double.jpg",
     link: "/games/mlbb-double332",
   },
   {
@@ -42,7 +42,7 @@ const storyData = [
     title: "Small PHP",
     badge: "Fast",
     color: "from-cyan-400 to-sky-600",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1771431297/3_cj6nj4.jpg",
+    image: "/game-assets/3_cj6nj4.jpg",
     link: "/games/mlbb-smallphp980",
   },
   {
@@ -50,7 +50,7 @@ const storyData = [
     title: "PUBG Mobile",
     badge: "Top",
     color: "from-orange-500 to-amber-600",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1768502877/WhatsApp_Image_2026-01-16_at_00.15.15_sbkqaz.jpg",
+    image: "/game-assets/bgmi-logo.webp",
     link: "/games/bgmi-manual",
   },
   {
@@ -58,7 +58,7 @@ const storyData = [
     title: "Premium",
     badge: "VIP",
     color: "from-pink-500 to-rose-600",
-    image: "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+    image: "/membership/silver-m.png",
     link: "/games/membership/silver-membership",
   },
 ];

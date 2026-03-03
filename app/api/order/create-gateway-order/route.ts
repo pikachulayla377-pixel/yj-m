@@ -43,9 +43,9 @@ const OTTS: Record<string, OTTConfig> = {
     "nf-1m": 99,
     "nf-3m": 249,
   },
-  instagram: {
-    "ig-1k": 249,
-    "ig-5k": 1099,
+  spotify: {
+    "sp-1m": 119,
+    "sp-3m": 299,
   },
 };
 
@@ -179,7 +179,7 @@ export async function POST(req: Request) {
       });
     }
 
-    if (!email ) {
+    if (!email) {
       return NextResponse.json({
         success: false,
         message: "Provide email or phone",
@@ -190,7 +190,7 @@ export async function POST(req: Request) {
     const price = await resolvePrice(gameSlug, itemSlug, userType);
 
     /* ---------- ORDER ID ---------- */
-     const orderId =
+    const orderId =
       "TOPUP_" +
       Date.now().toString(36) +
       "_" +

@@ -9,8 +9,7 @@ const MEMBERSHIPS = {
     gameName: "Silver Membership",
     gameFrom: "Your Platform",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+      image: "/membership/silver-m.png",
     },
     gameDescription: "Unlock premium pricing and basic benefits.",
     inputFieldOne: "User Email / Phone",
@@ -26,8 +25,7 @@ const MEMBERSHIPS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+          image: "/membership/silver-m.png",
         },
       },
       {
@@ -38,8 +36,7 @@ const MEMBERSHIPS = {
         itemAvailablity: true,
         index: 3,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/rs_klee62.png",
+          image: "/membership/silver-m.png",
         },
       },
     ],
@@ -49,8 +46,7 @@ const MEMBERSHIPS = {
     gameName: "Reseller Membership",
     gameFrom: "Your Platform",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/sew_zcz775.png",
+      image: "/membership/reseller-m.png",
     },
     gameDescription: "Get reseller pricing, bulk access & dashboard.",
     inputFieldOne: "User Email / Phone",
@@ -66,8 +62,7 @@ const MEMBERSHIPS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/sew_zcz775.png",
+          image: "/membership/reseller-m.png",
         },
       },
       {
@@ -78,8 +73,7 @@ const MEMBERSHIPS = {
         itemAvailablity: true,
         index: 3,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767096434/sew_zcz775.png",
+          image: "/membership/reseller-m.png",
         },
       },
     ],
@@ -92,8 +86,7 @@ const OTTS = {
     gameName: "YouTube Premium",
     gameFrom: "Google",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+      image: "/ott/youtube.webp",
     },
     gameDescription: "Ad-free YouTube, background play, YouTube Music.",
     inputFieldOne: "Email / Phone",
@@ -109,8 +102,7 @@ const OTTS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+          image: "/ott/youtube.webp",
         },
       },
       {
@@ -121,8 +113,7 @@ const OTTS = {
         itemAvailablity: true,
         index: 2,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/aa_avjoox.jpg",
+          image: "/ott/youtube.webp",
         },
       },
     ],
@@ -132,8 +123,7 @@ const OTTS = {
     gameName: "Netflix",
     gameFrom: "Netflix Inc.",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+      image: "/ott/netflix.webp",
     },
     gameDescription: "Movies & series streaming subscription.",
     inputFieldOne: "Account Email",
@@ -149,8 +139,7 @@ const OTTS = {
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+          image: "/ott/netflix.webp",
         },
       },
       {
@@ -161,48 +150,44 @@ const OTTS = {
         itemAvailablity: true,
         index: 2,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/s_d5mln0.jpg",
+          image: "/ott/netflix.webp",
         },
       },
     ],
   },
 
-  instagram: {
-    gameName: "Instagram Services",
-    gameFrom: "Meta",
+  spotify: {
+    gameName: "Spotify Premium",
+    gameFrom: "Spotify",
     gameImageId: {
-      image:
-        "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/a_jnlvg0.jpg",
+      image: "/ott/spotify.webp",
     },
-    gameDescription: "Followers, likes & engagement services.",
-    inputFieldOne: "Username",
+    gameDescription: "Ad-free music streaming.",
+    inputFieldOne: "Account Email",
     inputFieldTwoOption: [],
     isValidationRequired: true,
     gameAvailablity: true,
     itemId: [
       {
-        itemName: "1K Followers",
-        itemSlug: "ig-1k",
-        sellingPrice: 249,
-        dummyPrice: 499,
+        itemName: "1 Month",
+        itemSlug: "sp-1m",
+        sellingPrice: 119,
+        dummyPrice: 299,
         itemAvailablity: true,
         index: 1,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/a_jnlvg0.jpg",
+          image: "/ott/spotify.webp",
         },
       },
       {
-        itemName: "5K Followers",
-        itemSlug: "ig-5k",
-        sellingPrice: 1099,
-        dummyPrice: 1999,
+        itemName: "3 Months",
+        itemSlug: "sp-3m",
+        sellingPrice: 299,
+        dummyPrice: 599,
         itemAvailablity: true,
         index: 2,
         itemImageId: {
-          image:
-            "https://res.cloudinary.com/dk0sslz1q/image/upload/v1767027180/a_jnlvg0.jpg",
+          image: "/ott/spotify.webp",
         },
       },
     ],
@@ -246,7 +231,7 @@ export async function GET(req, { params }) {
           process.env.JWT_SECRET
         );
         if (decoded?.userType) userType = decoded.userType;
-      } catch {}
+      } catch { }
     }
 
     const pricingRole = resolvePricingRole(userType);
