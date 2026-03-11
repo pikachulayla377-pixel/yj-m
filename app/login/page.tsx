@@ -58,58 +58,36 @@ export default function AuthPage() {
 
       {/* --- Premium Background System --- */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Cinematic Orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0],
-            opacity: [0.15, 0.2, 0.15],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-1/4 -left-1/4 w-full h-full bg-gradient-to-br from-[var(--accent)] to-transparent blur-[160px] rounded-full"
+        {/* Cinematic Orbs - Simplified for performance */}
+        <div
+          className="absolute -top-[20%] -left-[20%] w-full h-full bg-gradient-to-br from-[var(--accent)] to-transparent blur-[120px] rounded-full opacity-10 animate-[pulse_8s_ease-in-out_infinite] will-change-transform"
         />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [0, -90, 0],
-            opacity: [0.1, 0.15, 0.1],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-1/4 -right-1/4 w-full h-full bg-gradient-to-tl from-[#7dd3fc] to-transparent blur-[140px] rounded-full"
+        <div
+          className="absolute -bottom-[20%] -right-[20%] w-full h-full bg-gradient-to-tl from-[#7dd3fc] to-transparent blur-[100px] rounded-full opacity-10 animate-[pulse_10s_ease-in-out_infinite] will-change-transform"
         />
 
-        {/* Subtle Noise/Grain Overlay */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
-        />
+        {/* Subtle Overlay - CSS based instead of SVG filter for low-end device support */}
+        <div className="absolute inset-0 opacity-[0.4] bg-[radial-gradient(circle_at_center,transparent_0%,var(--background)_100%)]" />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-[420px] z-10"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="relative w-full max-w-[420px] z-10 will-change-[transform,opacity]"
       >
         {/* --- Card Container --- */}
         <div className="relative">
-          {/* Subtle Outer Glow */}
-          <div className="absolute -inset-4 bg-[var(--accent)]/10 blur-3xl rounded-[2.5rem] opacity-50 pointer-events-none" />
-
-          <div className="relative rounded-[2.5rem] bg-[var(--card)]/40 backdrop-blur-2xl border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] overflow-hidden p-8 sm:p-12">
+          <div className="relative rounded-[2.5rem] bg-[var(--card)]/75 backdrop-blur-md border border-white/10 shadow-xl overflow-hidden p-8 sm:p-12">
 
             {/* BRANDING SECTION */}
             <div className="mb-10 text-center">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="mx-auto mb-6 h-20 w-20 relative"
-              >
-                {/* Logo Halo */}
-                <div className="absolute inset-0 bg-[var(--accent)]/20 blur-2xl rounded-full animate-pulse" />
+              <div className="mx-auto mb-6 h-20 w-20 relative">
+                {/* Logo Halo - Performance standard blur */}
+                <div className="absolute inset-0 bg-[var(--accent)]/10 blur-md rounded-full" />
 
                 <div className="relative h-full w-full rounded-2xl bg-gradient-to-b from-white/10 to-transparent p-[1px]">
-                  <div className="h-full w-full rounded-2xl bg-[#0a0a0a]/80 backdrop-blur-md flex items-center justify-center border border-white/5 shadow-inner">
+                  <div className="h-full w-full rounded-2xl bg-[#0a0a0a]/80 backdrop-blur-sm flex items-center justify-center border border-white/5">
                     <Image
                       src="/logo.png"
                       alt="yuji Logo"
@@ -120,21 +98,16 @@ export default function AuthPage() {
                     />
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="space-y-1"
-              >
+              <div className="space-y-1">
                 <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
                   Welcome back
                 </h1>
                 <p className="text-sm text-[var(--muted)] font-medium">
                   Login to your account to continue
                 </p>
-              </motion.div>
+              </div>
             </div>
 
             {/* ERROR / SUCCESS HANDLING */}

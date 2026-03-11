@@ -76,10 +76,19 @@ export default function ThemeToggle() {
 
   // Change theme handler
   const changeTheme = (newTheme: string) => {
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    setOpen(false);
+    const applyTheme = () => {
+      setTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+      document.documentElement.setAttribute("data-theme", newTheme);
+      setOpen(false);
+    };
+
+    // ✨ Premium View Transition API support
+    if (typeof document !== "undefined" && (document as any).startViewTransition) {
+      (document as any).startViewTransition(applyTheme);
+    } else {
+      applyTheme();
+    }
   };
 
   // Close dropdown when clicking outside
@@ -104,10 +113,10 @@ export default function ThemeToggle() {
       {/* 🎨 Current Theme Button (Icon Only) */}
       <button
         onClick={() => setOpen(!open)}
-        className="w-10 h-10 flex items-center justify-center border border-[var(--border)] rounded-full bg-[var(--card)]/40 backdrop-blur-md hover:bg-[var(--accent)] hover:border-[var(--accent)] group transition-all duration-300 shadow-lg hover:shadow-[var(--accent)]/40 outline-none"
+        className="w-10 h-10 flex items-center justify-center border border-[var(--border)] rounded-full bg-[var(--card)]/40 backdrop-blur-md hover:bg-[var(--accent)] hover:border-[var(--accent)] group transition-all duration-200 shadow-lg hover:shadow-[var(--accent)]/40 outline-none"
         aria-label="Select Theme"
       >
-        <span className={`text-xl transition-transform duration-500 ${open ? 'rotate-180 scale-110' : 'group-hover:scale-120'}`}>
+        <span className={`text-xl transition-transform duration-150 ${open ? 'rotate-180 scale-110' : 'group-hover:scale-120'}`}>
           {currentTheme?.icon || "🎨"}
         </span>
       </button>
@@ -116,11 +125,11 @@ export default function ThemeToggle() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 10, rotateX: -15 }}
+            initial={{ opacity: 0, scale: 0.9, y: 5, rotateX: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 10, rotateX: -15 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="absolute right-0 mt-3 w-64 bg-[var(--card)]/80 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[100] p-4 origin-top-right overflow-hidden shadow-[var(--accent)]/10"
+            exit={{ opacity: 0, scale: 0.9, y: 5, rotateX: -10 }}
+            transition={{ type: "spring", damping: 20, stiffness: 600, mass: 0.4 }}
+            className="absolute right-0 mt-3 w-64 bg-[var(--card)]/80 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[100] p-4 origin-top-right overflow-hidden shadow-[var(--accent)]/10 will-change-transform"
           >
             <div className="grid grid-cols-4 gap-2 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
               {themes.map((t) => (
@@ -129,7 +138,7 @@ export default function ThemeToggle() {
                   title={t.label}
                   onClick={() => changeTheme(t.id)}
                   className={`
-                    flex flex-col items-center justify-center p-2 rounded-2xl transition-all duration-300
+                    flex flex-col items-center justify-center p-2 rounded-2xl transition-all duration-150
                     ${theme === t.id
                       ? "bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/30 scale-105"
                       : "hover:bg-white/10 text-[var(--foreground)] hover:scale-110"

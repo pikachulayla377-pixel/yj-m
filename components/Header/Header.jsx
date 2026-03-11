@@ -85,7 +85,7 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-200 ${scrolled
         ? "backdrop-blur-xl shadow-lg bg-[var(--card)]/90 border-b border-[var(--border)]"
         : "bg-transparent"
         }`}

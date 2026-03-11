@@ -21,7 +21,7 @@ const BRAND_NAME = process.env.NEXT_PUBLIC_BRAND_NAME || "MewJi";
 const BRAND = {
   name: BRAND_NAME,
   description:
-    "Fast and secure Mobile Legends top-ups with instant delivery and reliable 24/7 support. Join thousands of satisfied players today.",
+    "Fast and safe game top-ups. Instant delivery and 24/7 support for all players.",
 };
 
 const TK_CONTACT_LINK = "https://wa.me/9178521537";
@@ -43,7 +43,7 @@ const WHATSAPP_CHAT_LINK = WHATSAPP_NUMBER
 
 const FOOTER_LINKS = [
   {
-    title: "Company",
+    title: "Links",
     links: [
       { label: "Home", href: "/" },
       { label: "About Us", href: "/about" },
@@ -52,7 +52,7 @@ const FOOTER_LINKS = [
     ],
   },
   {
-    title: "Support",
+    title: "Help",
     links: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms & Conditions", href: "/terms-and-conditions" },
@@ -92,14 +92,17 @@ export default function Footer() {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-[var(--accent)]/10 rounded-full blur-[80px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-6 py-8 lg:py-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
 
           {/* Brand & Description */}
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4 space-y-4">
             <Link href="/" className="inline-block group">
-              <h2 className="text-3xl font-black tracking-tighter text-[var(--foreground)] transition-transform duration-300 group-hover:scale-105">
-                {BRAND.name}<span className="text-[var(--accent)]">.</span>
+              <h2 className="text-2xl font-black tracking-tighter transition-transform duration-300 group-hover:scale-105">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4f46e5] via-[#22d3ee] to-[#ec4899] bg-[length:200%_auto] animate-gradient-xy filter drop-shadow-[0_2px_10px_rgba(34,211,238,0.3)]">
+                  {BRAND.name}
+                </span>
+                <span className="text-[var(--accent)] drop-shadow-[0_0_12px_var(--accent)]">.</span>
               </h2>
             </Link>
             <p className="text-sm text-[var(--muted)] leading-relaxed max-w-sm">
@@ -113,7 +116,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ y: -4, scale: 1.1 }}
-                  className={`p-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)]/50 backdrop-blur-sm transition-all duration-300 ${social.color} ${social.glow} hover:border-[var(--accent)]/50`}
+                  className={`p-2 rounded-xl border border-[var(--border)] bg-[var(--background)]/50 backdrop-blur-sm transition-all duration-300 ${social.color} ${social.glow} hover:border-[var(--accent)]/50`}
                   aria-label={social.label}
                 >
                   <social.icon className="w-4.5 h-4.5" />
@@ -123,10 +126,10 @@ export default function Footer() {
           </div>
 
           {/* Links Grid */}
-          <div className="md:col-span-5 grid grid-cols-2 gap-8 lg:gap-10">
+          <div className="md:col-span-5 grid grid-cols-2 gap-4 lg:gap-8">
             {FOOTER_LINKS.map((section) => (
-              <div key={section.title} className="space-y-6">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted)]/60">
+              <div key={section.title} className="space-y-4">
+                <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--muted)]/60">
                   {section.title}
                 </h3>
                 <ul className="space-y-3">
@@ -148,23 +151,23 @@ export default function Footer() {
 
           {/* QR / Trust Section */}
           <div className="md:col-span-3">
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-[var(--background)]/80 to-[var(--background)]/40 border border-[var(--border)] backdrop-blur-md shadow-lg flex flex-row items-center gap-5 text-left transition-all duration-300 hover:border-[var(--accent)]/30">
-              <div className="shrink-0 p-2.5 bg-white rounded-xl shadow-inner border border-gray-100 transition-transform duration-500 hover:scale-105">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-[var(--background)]/80 to-[var(--background)]/40 border border-[var(--border)] backdrop-blur-md shadow-lg flex flex-row items-center gap-4 text-left transition-all duration-300 hover:border-[var(--accent)]/30">
+              <div className="shrink-0 p-2 bg-white rounded-xl shadow-inner border border-gray-100 transition-transform duration-500 hover:scale-105">
                 <QRCodeCanvas
                   value={TRUSTPILOT_URL}
-                  size={60}
+                  size={50}
                   bgColor="#ffffff"
                   fgColor="#000000"
                   level="H"
                 />
               </div>
-              <div className="space-y-1.5 min-w-0">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--foreground)]">
-                  <FiShield className="text-green-500 w-3.5 h-3.5" />
-                  <span>Trusted Platform</span>
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[var(--foreground)]">
+                  <FiShield className="text-green-500 w-3 h-3" />
+                  <span>Safe & Secure</span>
                 </div>
                 <p className="text-[10px] text-[var(--muted)] leading-tight">
-                  Scan to verify reviews<br />on <span className="text-[var(--foreground)] font-semibold">Trustpilot</span>
+                  Scan to see our reviews<br />on <span className="text-[var(--foreground)] font-semibold">Trustpilot</span>
                 </p>
                 <div className="pt-0.5">
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-bold bg-green-500/10 text-green-500 border border-green-500/20 whitespace-nowrap">
@@ -179,14 +182,14 @@ export default function Footer() {
         </div>
 
         {/* Divider & Bottom Bar */}
-        <div className="mt-12 pt-6 border-t border-[var(--border)]/30 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="mt-8 pt-6 border-t border-[var(--border)]/30 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col md:flex-row items-center gap-3 text-center md:text-left">
             <p className="text-[10px] font-semibold text-[var(--muted)]/70 uppercase tracking-widest">
               © {currentYear} {BRAND_NAME}
             </p>
             <span className="hidden md:block w-1 h-1 rounded-full bg-[var(--border)]" />
             <p className="text-xs font-medium text-[var(--muted)]">
-              Leading MLBB Top-up Destination
+              Best place for game top-ups
             </p>
           </div>
 

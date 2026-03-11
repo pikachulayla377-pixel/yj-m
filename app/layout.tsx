@@ -6,6 +6,7 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import SocialFloat from "@/components/SocialFloat/SocialFloat";
 import Chatbot from "@/components/Chatbot/Chatbot";
+
 import Maintenance from "@/components/Maintenance/Maintenance";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -37,8 +38,22 @@ export default async function RootLayout({
   const isMaintenance = await getMaintenanceMode();
 
   return (
-    <html lang="en">
-      <body className="bg-black text-white">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme') || 'dark';
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           {isMaintenance && <Maintenance />}
           <Header />
