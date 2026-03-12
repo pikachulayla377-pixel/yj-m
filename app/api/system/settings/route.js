@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import SystemSettings from "@/models/SystemSettings";
 
+export const revalidate = 60; // Cache for 1 minute
+
 export async function GET() {
     try {
         await connectDB();

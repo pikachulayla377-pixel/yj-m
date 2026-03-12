@@ -1,3 +1,5 @@
+export const revalidate = 86400; // Cache for 24 hours
+
 export async function GET() {
   const data = {
     stats: [

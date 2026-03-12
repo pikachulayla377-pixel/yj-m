@@ -23,9 +23,9 @@ export async function GET(req) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // 👤 Fetch user
-    const user = await User.findById(decoded.userId).select(
-      "-password -__v"
-    );
+    const user = await User.findById(decoded.userId)
+      .select("-password -__v")
+      .lean();
 
     if (!user) {
       return NextResponse.json(
@@ -34,12 +34,16 @@ export async function GET(req) {
       );
     }
 
-    // 🕒 Update Activity status
+    // 🕒 Update Activity status (throttled to once every 15 mins)
+    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
-    await User.findByIdAndUpdate(user._id, {
-      lastLoginAt: new Date(),
-      lastLoginIp: ip,
-    });
+
+    if (!user.lastLoginAt || user.lastLoginAt < fifteenMinutesAgo) {
+      await User.findByIdAndUpdate(user._id, {
+        lastLoginAt: new Date(),
+        lastLoginIp: ip,
+      });
+    }
 
     return NextResponse.json({
       success: true,

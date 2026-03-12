@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const revalidate = 300; // Cache the whole route for 5 minutes
+
 const BLOCKED_GAME_SLUGS = [
   "test-1637",
   "genshin-impact742",
@@ -78,7 +80,7 @@ export async function GET() {
       headers: {
         "x-api-key": process.env.API_SECRET_KEY!,
       },
-      cache: "no-store",
+      next: { revalidate: 300 }, // Cache for 5 minutes
     });
 
     const data = await response.json();

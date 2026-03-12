@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { unstable_cache } from 'next/cache';
+import { Poppins } from "next/font/google";
 
-export const dynamic = "force-dynamic";
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import SocialFloat from "@/components/SocialFloat/SocialFloat";
@@ -10,7 +17,6 @@ import Chatbot from "@/components/Chatbot/Chatbot";
 import Maintenance from "@/components/Maintenance/Maintenance";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { FEATURE_FLAGS } from "@/lib/config";
 import { connectDB } from "@/lib/mongodb";
 import SystemSettings from "@/models/SystemSettings";
 
@@ -19,16 +25,20 @@ export const metadata: Metadata = {
   description: "yuji is a fast and secure Mobile Legends (MLBB) diamond top-up platform. Instant delivery, safe payments, and 24/7 automated service.",
 };
 
-async function getMaintenanceMode() {
-  try {
-    await connectDB();
-    const settings = await SystemSettings.findOne();
-    return settings?.maintenanceMode || false;
-  } catch (err) {
-    console.error("Failed to fetch maintenance mode", err);
-    return false;
-  }
-}
+const getMaintenanceMode = unstable_cache(
+  async () => {
+    try {
+      await connectDB();
+      const settings = await SystemSettings.findOne();
+      return settings?.maintenanceMode || false;
+    } catch (err) {
+      console.error("Failed to fetch maintenance mode", err);
+      return false;
+    }
+  },
+  ['maintenance-mode'],
+  { revalidate: 60 } // Cache for 1 minute
+);
 
 export default async function RootLayout({
   children,
@@ -40,6 +50,8 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -53,7 +65,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body className={poppins.className}>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           {isMaintenance && <Maintenance />}
           <Header />

@@ -465,7 +465,6 @@ html[data-theme="carbon"] {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Poppins", system-ui, sans-serif;
   text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

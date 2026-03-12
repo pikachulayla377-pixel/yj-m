@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 import jwt from "jsonwebtoken";
+import { unstable_cache } from 'next/cache';
 
 /* ================= AUTH (ANY USER) ================= */
 function verifyUser(req) {
@@ -56,70 +57,57 @@ export async function GET(req) {
       match.createdAt = dateFilter;
     }
 
-    /* ---------- AGGREGATION ---------- */
-    const leaderboard = await Order.aggregate([
-      { $match: match },
-
-      {
-        $group: {
-          _id: {
-            email: "$email",
-            phone: "$phone",
+    /* ---------- FETCH DATA (CACHED) ---------- */
+    const getCachedLeaderboard = unstable_cache(
+      async (matchObj, skipVal, limitVal) => {
+        return await Order.aggregate([
+          { $match: matchObj },
+          {
+            $group: {
+              _id: { email: "$email", phone: "$phone" },
+              totalSpent: { $sum: "$price" },
+              totalOrders: { $sum: 1 },
+              lastOrderAt: { $max: "$createdAt" },
+            },
           },
-          totalSpent: { $sum: "$price" },
-          totalOrders: { $sum: 1 },
-          lastOrderAt: { $max: "$createdAt" },
-        },
-      },
-
-      {
-        $lookup: {
-          from: "users",
-          let: { email: "$_id.email", phone: "$_id.phone" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $or: [
-                    { $eq: ["$email", "$$email"] },
-                    { $eq: ["$phone", "$$phone"] },
-                  ],
+          {
+            $lookup: {
+              from: "users",
+              let: { email: "$_id.email", phone: "$_id.phone" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $or: [
+                        { $eq: ["$email", "$$email"] },
+                        { $eq: ["$phone", "$$phone"] },
+                      ],
+                    },
+                  },
                 },
-              },
+                { $project: { _id: 0, userId: 1, name: 1, email: 1, phone: 1 } },
+              ],
+              as: "user",
             },
-            {
-              $project: {
-                _id: 0,
-                userId: 1,
-                name: 1,
-                email: 1,
-                phone: 1,
-              },
+          },
+          { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+          { $sort: { totalSpent: -1 } },
+          {
+            $facet: {
+              data: [
+                { $skip: skipVal },
+                { $limit: limitVal },
+              ],
+              totalCount: [{ $count: "count" }],
             },
-          ],
-          as: "user",
-        },
+          },
+        ]);
       },
+      [`leaderboard-${range}-${page}-${limit}`],
+      { revalidate: 300, tags: ['leaderboard'] }
+    );
 
-      {
-        $unwind: {
-          path: "$user",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-
-      { $sort: { totalSpent: -1 } },
-
-      {
-        $facet: {
-          data: [
-            { $skip: skip },
-            { $limit: limit },
-          ],
-          totalCount: [{ $count: "count" }],
-        },
-      },
-    ]);
+    const leaderboard = await getCachedLeaderboard(match, skip, limit);
 
     const data = leaderboard[0]?.data || [];
     const total = leaderboard[0]?.totalCount[0]?.count || 0;

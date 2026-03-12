@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Banner from "@/models/Banner";
 
+export const revalidate = 600; // Caches the response for 10 minutes
+
 export async function GET() {
   try {
     await connectDB();

@@ -2,6 +2,16 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import PricingConfig from "@/models/PricingConfig";
+import { unstable_cache } from 'next/cache';
+
+const getCachedPricingConfig = unstable_cache(
+  async (role) => {
+    await connectDB();
+    return await PricingConfig.findOne({ userType: role }).lean();
+  },
+  ['pricing-config'],
+  { revalidate: 300 }
+);
 
 /* ================= MEMBERSHIP CONFIG ================= */
 const MEMBERSHIPS = {
@@ -241,6 +251,7 @@ export async function GET(req, { params }) {
       `https://game-off-ten.vercel.app/api/v1/game/${slug}`,
       {
         headers: { "x-api-key": process.env.API_SECRET_KEY },
+        next: { revalidate: 300 } // Cache for 5 minutes
       }
     );
 
@@ -248,13 +259,9 @@ export async function GET(req, { params }) {
     if (!data?.data?.itemId) return NextResponse.json(data);
 
     /* ===== FETCH PRICING ===== */
-    await connectDB();
-
     let pricingConfig = null;
     if (pricingRole) {
-      pricingConfig = await PricingConfig.findOne({
-        userType: pricingRole,
-      }).lean();
+      pricingConfig = await getCachedPricingConfig(pricingRole);
     }
 
     /* ===== APPLY PRICING ===== */
