@@ -97,15 +97,22 @@ export default function GameDetailPage() {
   /* ================= BUY HANDLER ================= */
   const goBuy = (item) => {
     if (redirecting) return;
-    setRedirecting(true);
 
+    // Check Authentication
+    const token = localStorage.getItem("token");
+    const email = localStorage.getItem("email");
+    if (!token && !email) {
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+
+    setRedirecting(true);
     const query = new URLSearchParams({
       name: item.itemName,
       price: item.sellingPrice?.toString() || "",
       dummy: item.dummyPrice?.toString() || "",
       image: item.itemImageId?.image || "",
     });
-
 
     const isBGMI =
       game?.gameName?.toLowerCase() === "pubg mobile" || game?.gameName?.toLowerCase() === "bgmi";
@@ -169,7 +176,7 @@ export default function GameDetailPage() {
 
           {/* ================= BUY PANEL ================= */}
           {activeItem && (
-            <AuthGuard>
+            <>
               {isBGMI ? (
                 <BuyPanelBgmi
                   activeItem={activeItem}
@@ -185,7 +192,7 @@ export default function GameDetailPage() {
                   buyPanelRef={buyPanelRef}
                 />
               )}
-            </AuthGuard>
+            </>
           )}
         </>
       ) : (

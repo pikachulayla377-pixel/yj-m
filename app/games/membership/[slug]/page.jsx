@@ -59,6 +59,15 @@ export default function GameDetailPage() {
   /* ================= BUY HANDLER ================= */
   const goBuy = (item) => {
     if (redirecting) return;
+
+    // Check Authentication
+    const token = localStorage.getItem("token");
+    const email = localStorage.getItem("email");
+    if (!token && !email) {
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+
     setRedirecting(true);
 
     const query = new URLSearchParams({
@@ -68,9 +77,6 @@ export default function GameDetailPage() {
       image: item.itemImageId?.image || "",
     });
 
-    // router.push(
-    //   `/games/${slug}/buy/${item.itemSlug}?${query.toString()}`
-    // );
     const isBGMI =
       game?.gameName?.toLowerCase() === "pubg mobile";
 
@@ -125,7 +131,7 @@ export default function GameDetailPage() {
       )}
 
       {/* ================= BUY PANEL ================= */}
-      <AuthGuard>
+      <>
         {isBGMI ? (
           <BuyPanelBgmi
             activeItem={activeItem}
@@ -141,7 +147,7 @@ export default function GameDetailPage() {
             buyPanelRef={buyPanelRef}
           />
         )}
-      </AuthGuard>
+      </>
       {/* ================= HELP GUIDE ================= */}
       {/* <div className="max-w-6xl mx-auto mt-6">
         <MLBBPurchaseGuide />
